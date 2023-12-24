@@ -74,12 +74,6 @@ const UserChatScreen = ({ params }: Props) => {
     setCurrentMessage(value);
   };
 
-  // format timestamp
-  const formatTimestamp = (seconds: number) => {
-    const date = new Date(seconds * 1000);
-    return date.toLocaleString();
-  };
-
   const sendMessage = async () => {
     try {
       if (currentMessage === "") {
@@ -113,14 +107,6 @@ const UserChatScreen = ({ params }: Props) => {
 
   // MESSAGES
   const renderMessages = () => {
-    // if (!messages?.messages || !messages.messages.length) {
-    //   return (
-    //     <div className="flex h-[63vh] justify-center place-items-center p-16">
-    //       <Loader />
-    //     </div>
-    //   );
-    // }
-
     return messages?.messages.map((message, idx) => {
       return (
         <li

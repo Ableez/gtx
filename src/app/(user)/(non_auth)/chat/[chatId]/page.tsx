@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState, useCallback, BaseSyntheticEvent } from "react";
 import {
   arrayUnion,
@@ -11,7 +10,6 @@ import {
 import { auth, db } from "@/lib/utils/firebase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { LinkIcon, PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -80,12 +78,6 @@ const UserChatScreen = ({ params }: Props) => {
     setCurrentMessage(value);
   };
 
-  // format timestamp
-  const formatTimestamp = (seconds: number) => {
-    const date = new Date(seconds * 1000);
-    return date.toLocaleString();
-  };
-
   const sendMessage = async () => {
     try {
       if (currentMessage === "") {
@@ -119,14 +111,6 @@ const UserChatScreen = ({ params }: Props) => {
 
   // MESSAGES
   const renderMessages = () => {
-    // if (!messages?.messages || !messages.messages.length) {
-    //   return (
-    //     <div className="flex h-[63vh] justify-center place-items-center p-16">
-    //       <Loader />
-    //     </div>
-    //   );
-    // }
-
     return messages?.messages.map((message, idx) => {
       return (
         <li
