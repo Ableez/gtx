@@ -29,7 +29,7 @@ export type Transaction = {
   isApproved: boolean;
   date: string;
 };
-export const TransactionCard = (
+const TransactionCard = (
   transaction: {
     link: string;
     product: string;
