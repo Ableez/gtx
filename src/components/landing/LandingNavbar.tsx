@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/navigation-menu";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { EllipsisVerticalIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import {
+  Bars3Icon,
+  EllipsisVerticalIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -34,8 +38,17 @@ export default function LandingNavbar() {
   }, [router]);
 
   return (
-    <NavigationMenu className="bg-white dark:bg-neutral-700 dark:bg-opacity-50 py-2 md:px-16 sticky top-0 container">
-      <Link href={"/"} className="flex align-middle place-items-center gap-2">
+    <NavigationMenu className="bg-white dark:bg-neutral-700 dark:bg-opacity-50 py-3 md:px-16 sticky top-0 container">
+      <button
+        className="py-3.5 pr-3 duration-300 active:skew-x-12 rounded-full md:hidden flex absolute top-1"
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <Bars3Icon width={25} />
+      </button>
+      <Link
+        href={"/"}
+        className="flex align-middle place-items-center gap-2 mx-auto md:mx-0"
+      >
         <Image
           width={38}
           height={38}
@@ -75,13 +88,6 @@ export default function LandingNavbar() {
         </Link>
       )}
 
-      <button
-        className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-full md:hidden flex"
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        <EllipsisVerticalIcon width={25} />
-      </button>
-
       <div
         onClick={() => setOpen(false)}
         className={`h-screen duration-200 w-screen bg-black bg-opacity-10 backdrop-blur-sm fixed top-0 ${
@@ -89,12 +95,12 @@ export default function LandingNavbar() {
         }`}
       ></div>
       <div
-        className={`h-screen duration-300 md:w-72 w-4/5 bg-white dark:bg-[#222] fixed top-0 ${
+        className={`h-screen ease-out duration-500 md:w-72 w-[100vw] bg-white dark:bg-[#222] fixed top-0 ${
           open ? "left-0" : "-left-[150vw] grid place-items-center"
         }`}
       >
         <div className="h-screen">
-          <div className="flex align-middle place-items-center gap-1 p-4">
+          <div className="flex align-middle place-items-center gap-1 p-4 w-fit">
             <Image
               width={38}
               height={38}
@@ -113,13 +119,21 @@ export default function LandingNavbar() {
           </Button>
           <ul className=" grid grid-flow-row place-items-start gap-2 p-4">
             <Link
+              onClick={() => setOpen(false)}
               className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
-              href={""}
+              href={"/sell"}
             >
-              <li>Sell</li>
+              <li>Gift cards</li>
             </Link>
-
             <Link
+              onClick={() => setOpen(false)}
+              className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
+              href={"/sell"}
+            >
+              <li>Crypto currencies</li>
+            </Link>
+            <Link
+              onClick={() => setOpen(false)}
               className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
               href={""}
             >
@@ -127,35 +141,30 @@ export default function LandingNavbar() {
             </Link>
 
             <Link
+              onClick={() => setOpen(false)}
               className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
-              href={""}
+              href={"/"}
             >
               <li>Policies</li>
             </Link>
-            {user ? (
-              <Link
-                className="rounded-2xl w-full bg-primary hover:bg-primary hover:bg-opacity-70 px-5 p-3 text-white font-bold"
-                href={"/sell"}
-              >
-                <li>Sell</li>
-              </Link>
-            ) : (
-              <Link
-                className="rounded-2xl w-full bg-primary hover:bg-primary hover:bg-opacity-70 px-5 p-3 text-white font-bold"
-                href={"/login"}
-              >
-                <li>Login</li>
-              </Link>
-            )}
 
-            <button
-              onClick={() => {
-                signOut(auth);
-              }}
+            <Link
+              onClick={() => setOpen(false)}
+              className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
+              href={"/login"}
             >
-              Logout
-            </button>
+              <li>Login</li>
+            </Link>
           </ul>
+          <div className="fixed bottom-0 w-full grid place-items-center p-4">
+            <Link
+              onClick={() => setOpen(false)}
+              className="rounded-2xl w-full text-center bg-primary hover:bg-primary hover:bg-opacity-70 px-5 p-3 text-white font-bold"
+              href={"/sell"}
+            >
+              Sell
+            </Link>
+          </div>
         </div>
       </div>
     </NavigationMenu>

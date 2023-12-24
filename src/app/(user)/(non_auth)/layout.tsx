@@ -11,13 +11,14 @@ type Props = {
 const UserLayout = (props: Props) => {
   const pathname = usePathname();
 
-  const regex = /^\/chat\/.*/;
-  const isChatPage = regex.test(pathname)
-
+  const chatReg = /^\/chat\/.*/;
+  const transactionsReg = /^\/transactions/;
+  const isChatPage = chatReg.test(pathname);
+  const isTransactionsPage = transactionsReg.test(pathname);
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      {!isChatPage ? <SellNavbar /> : null}
+      {isChatPage || isTransactionsPage ? null : <SellNavbar />}
       {props.children}
     </div>
   );

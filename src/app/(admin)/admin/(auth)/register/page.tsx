@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { BaseSyntheticEvent, useState } from "react";
+import Cookies from "js-cookie";
 
 type Props = {};
 
@@ -56,6 +57,8 @@ const LoginPage = (props: Props) => {
         formData.password
       );
 
+      Cookies.set("uid", user.uid);
+
       // Update user profile first
       await updateProfile(auth.currentUser as User, {
         displayName: formData.username,
@@ -73,8 +76,7 @@ const LoginPage = (props: Props) => {
       // Save user data to db
       await setDoc(doc(db, "Users", user.uid), userData);
 
-      // Redirect to the gift cards listings page
-      router.push("/sell");
+      router.push("/admin");
       setLoading(false);
     } catch (error) {
       // Handle errors

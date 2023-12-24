@@ -43,16 +43,16 @@ export default function AdminNavbar() {
   const user = useContext(AuthContext);
 
   return (
-    <div className="container pb-3 py-3 backdrop-blur-lg sticky top-0 mt-3 mb-5 bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
+    <div className="container pb-3 py-2 border-b backdrop-blur-lg sticky top-0 mt-3 mb-5 bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
       <NavigationMenu>
         <Link href={"/"} className="flex align-middle place-items-center gap-2">
           <Image
-            width={38}
-            height={38}
+            width={30}
+            height={30}
             src={"/greatexc.svg"}
             alt="Great Exchange"
           />
-          <h4 className="text-xl font-bold">Dashboard</h4>
+          <h4 className="text-base font-bold">Dashboard</h4>
         </Link>
         <NavigationMenuList className="hidden md:visible">
           <NavigationMenuItem>

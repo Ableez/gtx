@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,59 +10,71 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { auth, db } from "@/lib/utils/firebase";
+import { formatTime } from "@/lib/utils/formatTime";
 import {
-  ArrowRightIcon,
+  ChatBubbleBottomCenterIcon,
+  ChatBubbleBottomCenterTextIcon,
   EllipsisVerticalIcon,
+  InformationCircleIcon,
   TrashIcon,
+  UserIcon,
 } from "@heroicons/react/20/solid";
-import { collection, limit, onSnapshot, query } from "firebase/firestore";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import {
+  collection,
+  doc,
+  limit,
+  onSnapshot,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 type Props = {};
 
-type ChatMessage = {
-  media: string;
-  seen_at?: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  text: string;
-  sender: string;
-};
+const navBoxes = [
+  {
+    name: "Messages",
+    icon: <ChatBubbleBottomCenterTextIcon width={24} color="white" />,
+    desc: "View all conversations",
+    color: "blue",
+    link: "/admin/chat",
+  },
+  {
+    name: "Transactions",
+    icon: <CurrencyDollarIcon width={24} color="white" />,
+    desc: "Your transactions",
+    color: "green",
+    link: "/admin/transactions",
+  },
+  {
+    name: "Users",
+    icon: <UserIcon width={24} color="white" />,
+    desc: "Manage users",
+    color: "purple",
+    link: "/admin/users",
+  },
+  {
+    name: "Reports",
+    icon: <InformationCircleIcon width={24} color="white" />,
+    desc: "View reported issues",
+    color: "orange",
+    link: "/admin/reports",
+  },
+];
 
-type UserData = {
-  username: string;
-  id: string;
-  email: string;
-};
-
-type LastMessage = {
-  media: boolean;
-  timeStamp: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  text: string;
-  sender: string;
-};
-
-type ChatData = {
-  messages: ChatMessage[];
-  transactions: Record<string, unknown>;
-  user: UserData;
-  lastMessage: LastMessage;
-};
-
-type ChatObject = {
-  id: string;
-  data: ChatData;
-};
-
-const AdminPage = (props: Props) => {
+const AdminPage = function (props: Props) {
+  const [audio] = useState(new Audio("/notification.wav"));
   const [chatList, setChatList] = useState<Array<ChatObject>>([]);
   const router = useRouter();
+  const unreadMessagesNumber = chatList?.filter(
+    (chat) => !chat?.data?.lastMessage?.read
+  ).length;
+
+  const playSound = () => {};
+  playSound();
 
   useEffect(() => {
     const fetch = async () => {
@@ -84,7 +95,6 @@ const AdminPage = (props: Props) => {
                 a?.data?.lastMessage?.timeStamp?.seconds * 1000 +
                 a?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
 
-              console.log(a);
               const timeB =
                 b?.data?.lastMessage?.timeStamp?.seconds * 1000 +
                 b?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
@@ -106,116 +116,108 @@ const AdminPage = (props: Props) => {
     fetch();
   }, []);
 
-  console.log("ChatList", chatList);
-  function formatTime(date: Date) {
-    const now = new Date();
-    const diffInMilliseconds = now - date;
-
-    const seconds = Math.floor(diffInMilliseconds / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-
-    if (seconds < 60) {
-      return "just now";
-    } else if (minutes === 1) {
-      return "1 minute ago";
-    } else if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    } else if (hours === 1) {
-      return "1 hour ago";
-    } else if (hours < 24) {
-      return `${hours} hours ago`;
-    }
-  }
-
   const renderChats = chatList?.map((chat, idx) => {
     return (
-      <Link
-        href={`/admin/chat/${chat?.id}` || ""}
+      <div
         key={idx}
-        className="flex align-middle place-items-center justify-between gap-3 dark:bg-neutral-800x dark:active:bg-neutral-700 p-2 active:bg-neutral-100 hover:bg-neutral-100 duration-300 dark:hover:bg-neutral-700/40 dark:text-white"
+        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-md min-w-fit hover:px-0.5"
       >
-        <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300 active:from-stone-500 shadow-primary"></div>
-        <div className="w-full">
-          <h4 className="truncate w-52 max-w-[20rem]">
-            {chat?.data?.lastMessage?.text}
-          </h4>
-          <p className="text-xs text-neutral-500 font-semibold">
-            {chat?.data?.lastMessage?.sender || "User"}
-          </p>
-          <p className="text-xs text-secondary">
-            {formatTime(
-              new Date(
-                chat?.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                  chat?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6
-              )
-            )}
-          </p>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className=" rounded-full">
-            <EllipsisVerticalIcon
-              width={53}
-              className="p-3 hover:bg-neutral-300 dark:hover:bg-neutral-700"
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-36 mr-4 z-[9999] grid">
-            <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-              Options
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="py-2">Info</DropdownMenuItem>
-              <DropdownMenuItem className="py-2">Report</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="py-2 text-red-500 font-semibold flex align-middle place-items-center justify-between">
-                Delete
-                <TrashIcon width={20} />
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </Link>
+        <Link
+          href={`/admin/chat/${chat?.id}`}
+          className="flex align-middle place-items-center justify-between gap-3 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
+          onClick={async () => {
+            const chatRef = doc(db, "Messages", chat?.id);
+            const chatData = {
+              lastMessage: {
+                ...chat?.data?.lastMessage,
+                read: true,
+              },
+            };
+            // Update the last message
+            await updateDoc(chatRef, chatData);
+          }}
+        >
+          <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300 active:from-stone-500 shadow-primary"></div>
+          <div className="w-full">
+            <h4
+              className={`${
+                chat?.data?.lastMessage?.read ? "" : "font-bold text-secondary"
+              } truncate max-w-[13rem]`}
+            >
+              {chat?.data?.lastMessage?.text}
+            </h4>
+            <div className="flex align-middle place-items-center justify-between pt-1.5">
+              <p className="text-xs text-neutral-400 font-medium capitalize">
+                {chat?.data?.lastMessage?.sender || "User"}
+              </p>
+              <p className="text-[10px] text-secondary">
+                {formatTime(
+                  new Date(
+                    (chat?.data?.lastMessage?.timeStamp?.seconds ?? 0) * 1000 +
+                      (chat?.data?.lastMessage?.timeStamp?.nanoseconds ?? 0) /
+                        1e6
+                  ).toISOString()
+                )}
+              </p>
+            </div>
+          </div>
+        </Link>
+      </div>
     );
   });
-  console.log(renderChats, "renderchatsss");
 
   return (
-    <div className="container">
-      <div className="grid grid-flow-col align-middle place-items-center justify-between gap-4 grid-cols-2">
-        <Link
-          className="grid place-items-center dark:bg-neutral-800 dark:ring-neutral-700 rounded-2xl shadow-md hover:shadow-xl hover:shadow-pink-100 hover:ring-1 hover:ring-secondary duration-300 shadow-pink-50 w-full h-32 dark:hover:shadow-pink-950/20 dark:shadow-pink-900/10 bg-white"
-          href={"/admin/chat"}
-        >
-          <div className="grid place-items-center align-middle h-fit text-neutral-700 dark:text-neutral-300 font-bold">
-            Messages
-          </div>
-        </Link>
-        <Link
-          className="grid place-items-center dark:bg-neutral-800 dark:ring-neutral-700 rounded-2xl shadow-md hover:shadow-xl hover:shadow-pink-100 hover:ring-1 hover:ring-secondary duration-300 shadow-pink-50 w-full h-32 dark:hover:shadow-pink-950/20 dark:shadow-pink-900/10 bg-white"
-          href={"/admin/users"}
-        >
-          <div className="grid place-items-center align-middle h-fit text-neutral-700 dark:text-neutral-300 font-bold">
-            Users
-          </div>
-        </Link>
+    <div className="container pb-4">
+      <div className="grid grid-cols-2 grid-rows-2 gap-4">
+        {navBoxes.map((box, idx) => {
+          return (
+            <Link
+              href={box.link}
+              key={idx}
+              className="bg-white dark:bg-neutral-800 rounded-3xl shadow-lg shadow-purple-100 dark:shadow-purple-950/10 py-6 hover:border-purple-200 dark:hover:border-purple-600/30 hover:shadow-inner border-2 border-transparent duration-300"
+            >
+              <div className="grid align-middle place-items-center justify-center">
+                <div
+                  className={`flex align-middle place-items-center ${
+                    box.name === "Messages"
+                      ? "bg-blue-400 shadow-blue-200 dark:bg-blue-500 dark:shadow-blue-600/40"
+                      : box.name === "Reports"
+                      ? "bg-orange-400 shadow-orange-200 dark:bg-orange-500 dark:shadow-orange-600/40"
+                      : box.name === "Transactions"
+                      ? "bg-green-400 shadow-green-200 dark:bg-green-500 dark:shadow-green-600/40"
+                      : box.name === "Users"
+                      ? "bg-purple-400 shadow-purple-200 dark:bg-purple-500 dark:shadow-purple-600/40"
+                      : "bg-yellow-400 shadow-yellow-200 dark:bg-yellow-500 dark:shadow-yellow-600/40"
+                  }  p-3.5 shadow-md rounded-xl relative`}
+                >
+                  {box.icon}
+                  {box.name === "Messages" && unreadMessagesNumber > 0 && (
+                    <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-bold text-white">
+                      <h4>{unreadMessagesNumber}</h4>
+                    </div>
+                  )}
+                </div>
+                <h4 className="font-bold text-neutral-800 dark:text-white mt-2">
+                  {box.name}
+                </h4>
+              </div>
+              <h6 className="text-neutral-300 dark:text-neutral-600 w-2/3 font-medium text-xs text-center mx-auto mt-3">
+                {box.desc}
+              </h6>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="my-8 bg-white dark:bg-neutral-800 px-4 pb-2 rounded-2xl z-40">
         <div className="dark:text-neutral-400 border-b my-1 dark:border-b-neutral-700 flex align-middle place-items-center justify-between py-3">
           <h4 className="font-semibold text-neutral-500">Latest</h4>
-          <Button
-            className="group duration-300 overflow-clip relative  hover:pr-9 pr-4"
-            onClick={() => router.push("/admin/chats")}
+          <Link
+            href={"/admin/chat"}
+            className="p-2 rounded-md bg-neutral-700 text-[12px] text-secondary font-bold hover:underline"
           >
-            View All{" "}
-            <ArrowRightIcon
-              width={18}
-              className="duration-300 absolute top-1/2 -translate-y-1/2 -right-[1vw] group-hover:right-3 group-hover:opacity-100 opacity-0"
-            />
-          </Button>
+            View All
+          </Link>
         </div>
 
         <div className="divide-y dark:divide-neutral-700 h-auto text-neutral-800">

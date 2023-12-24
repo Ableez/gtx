@@ -32,7 +32,7 @@ import {
   SunIcon,
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { User, signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import { redirect, usePathname } from "next/navigation";
@@ -43,16 +43,19 @@ export default function SellNavbar() {
   const user = useContext(AuthContext);
 
   return (
-    <div className="container pb-3 py-3 backdrop-blur-lg sticky top-0 mt-3 mb-5 bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
+    <div className="container pb-3 py-4 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
       <NavigationMenu>
         <Link href={"/"} className="flex align-middle place-items-center gap-2">
           <Image
-            width={38}
-            height={38}
+            width={36}
+            height={36}
             src={"/greatexc.svg"}
             alt="Great Exchange"
+            className="sticky top-0"
           />
-          <h4 className="text-xl font-bold">Greatexc</h4>
+          <h4 className="text-lg font-bold">
+            Great Exchange
+          </h4>
         </Link>
         <NavigationMenuList className="hidden md:visible">
           <NavigationMenuItem>
@@ -89,15 +92,19 @@ export default function SellNavbar() {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem className="py-3">
-                Transaction History
-              </DropdownMenuItem>
-              <DropdownMenuItem className="py-3">Support</DropdownMenuItem>
+              <Link className="py-3" href={"/transactions"}>
+                <DropdownMenuItem>Your Transactions</DropdownMenuItem>
+              </Link>
+              <Link className="py-3" href={"/support"}>
+                <DropdownMenuItem className="py-3">Support</DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
             </DropdownMenuGroup>
 
             <DropdownMenuGroup>
-              <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>{" "}
+              <Link className="py-3" href={"/profile"}>
+                <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>
+              </Link>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="py-3">
                   Theme

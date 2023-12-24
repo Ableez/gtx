@@ -1,10 +1,11 @@
 "use client";
 
 import React, { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import Cookies from "js-cookie";
 
 type Props = {
   children: ReactNode;
@@ -12,6 +13,15 @@ type Props = {
 
 const AdminAuthProvider = (props: Props) => {
   const router = useRouter();
+
+  useEffect(() => {
+    const uid = Cookies.get("uid");
+
+    if (!uid) {
+      redirect("/admin/login");
+    }
+  }, []);
+
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {

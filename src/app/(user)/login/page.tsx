@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { BaseSyntheticEvent, useState } from "react";
+import Cookies from "js-cookie";
 
 type Props = {};
 
@@ -48,7 +49,8 @@ const LoginPage = (props: Props) => {
           formData.email,
           formData.password
         )
-          .then(() => {
+          .then((user) => {
+            Cookies.set("uid", user.user.uid);
             router.push("/sell");
           })
           .catch((e) => {

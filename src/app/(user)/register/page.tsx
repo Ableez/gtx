@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { BaseSyntheticEvent, useState } from "react";
+import Cookies from "js-cookie";
 
 type Props = {};
 
@@ -55,6 +56,8 @@ const LoginPage = (props: Props) => {
         formData.email,
         formData.password
       );
+
+      Cookies.set("uid", user.uid);
 
       // Update user profile first
       await updateProfile(auth.currentUser as User, {

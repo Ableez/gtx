@@ -4,7 +4,9 @@ import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { auth, db } from "@/lib/utils/firebase";
+import Cookies from "js-cookie";
 import {
+  User,
   browserLocalPersistence,
   createUserWithEmailAndPassword,
   setPersistence,
@@ -42,13 +44,14 @@ const AdminLogin = (props: Props) => {
     e.preventDefault();
     setLoading(true);
     setPersistence(auth, browserLocalPersistence)
-      .then(() => {
+      .then(async () => {
         return signInWithEmailAndPassword(
           auth,
           formData.email,
           formData.password
         )
-          .then(() => {
+          .then((user) => {
+            Cookies.set("uid", user.user.uid);
             router.push("/admin");
             setLoading(false);
           })

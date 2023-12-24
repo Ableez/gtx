@@ -13,11 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { db } from "@/lib/utils/firebase";
+import { formatTime } from "@/lib/utils/formatTime";
 import {
   ArrowLeftIcon,
   EllipsisVerticalIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import {
   collection,
   doc,
@@ -25,53 +27,18 @@ import {
   onSnapshot,
   query,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type Props = {};
 
-type ChatMessage = {
-  media: string;
-  seen_at?: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  text: string;
-  sender: string;
-};
-
-type UserData = {
-  username: string;
-  id: string;
-  email: string;
-};
-
-type LastMessage = {
-  media: boolean;
-  timeStamp: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  text: string;
-  sender: string;
-};
-
-type ChatData = {
-  messages: ChatMessage[];
-  transactions: Record<string, unknown>;
-  user: UserData;
-  lastMessage: LastMessage;
-};
-
-type ChatObject = {
-  id: string;
-  data: ChatData;
-};
-
 const AdminChats = (props: Props) => {
   const [chatList, setChatList] = useState<Array<ChatObject>>([]);
   const [error, setError] = useState<string>();
+  const router = useRouter();
 
   useEffect(() => {
     const fetch = async () => {
@@ -87,16 +54,15 @@ const AdminChats = (props: Props) => {
 
           const sortedChats = chatData.sort((a, b) => {
             const timeA =
-              a?.data.lastMessage.timeStamp.seconds * 1000 +
-              a?.data.lastMessage.timeStamp.nanoseconds / 1e6;
+              a?.data.lastMessage.timeStamp.seconds * 1e9 +
+              a?.data.lastMessage.timeStamp.nanoseconds;
             const timeB =
-              b?.data.lastMessage.timeStamp.seconds * 1000 +
-              b?.data.lastMessage.timeStamp.nanoseconds / 1e6;
+              b?.data.lastMessage.timeStamp.seconds * 1e9 +
+              b?.data.lastMessage.timeStamp.nanoseconds;
             return timeB - timeA;
           });
 
           setChatList(sortedChats as Array<ChatObject>);
-          console.log(chatList);
         });
 
         return () => unsubscribe(); // Cleanup the subscription when the component unmounts
@@ -106,27 +72,6 @@ const AdminChats = (props: Props) => {
     };
     fetch();
   }, []);
-
-  function formatTime(date: Date) {
-    const now = new Date();
-    const diffInMilliseconds = now - date;
-
-    const seconds = Math.floor(diffInMilliseconds / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-
-    if (seconds < 60) {
-      return "just now";
-    } else if (minutes === 1) {
-      return "1 minute ago";
-    } else if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    } else if (hours === 1) {
-      return "1 hour ago";
-    } else if (hours < 24) {
-      return `${hours} hours ago`;
-    }
-  }
 
   if (error) {
     return (
@@ -151,32 +96,58 @@ const AdminChats = (props: Props) => {
       );
     }
     return (
-      <Link
-        href={`/admin/chat/${chat?.id}` || ""}
+      <div
         key={idx}
-        className="flex align-middle place-items-center justify-between gap-3 dark:bg-neutral-800x dark:active:bg-neutral-700 p-2 active:bg-white hover:bg-white"
+        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-md min-w-fit hover:px-0.5"
       >
-        <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300 active:from-stone-500 shadow-primary"></div>
-        <div className="w-full">
-          <h4 className="truncate w-52">{chat?.data?.lastMessage?.text}</h4>
-          <p className="text-xs text-neutral-500">
-            {chat?.data?.lastMessage?.sender}
-          </p>
-          <p>
-            {formatTime(
-              new Date(
-                chat.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                  chat.data?.lastMessage?.timeStamp?.nanoseconds / 1e6
-              )
-            )}
-          </p>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className=" rounded-full">
-            <EllipsisVerticalIcon
-              width={53}
-              className="p-3 hover:bg-neutral-300"
-            />
+        <Link
+          href={`/admin/chat/${chat?.id}`}
+          className="flex align-middle place-items-center justify-between gap-3 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:hover:bg-neutral-700/40 dark:text-white rounded-l-md dark:rounded-l-none w-full h-fit"
+          onClick={async () => {
+            const chatRef = doc(db, "Messages", chat?.id);
+            const chatData = {
+              lastMessage: {
+                ...chat?.data?.lastMessage,
+                read: true,
+              },
+            };
+            // Update the last message
+            await updateDoc(chatRef, chatData);
+          }}
+        >
+          <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300 active:from-stone-500 shadow-primary"></div>
+          <div className="w-full">
+            <h4
+              className={`${
+                chat?.data?.lastMessage?.read ? "" : "font-bold text-secondary"
+              } truncate max-w-[13rem]`}
+            >
+              {chat?.data?.lastMessage?.media ||
+              chat?.data?.lastMessage?.text === "mdia__xyl" ? (
+                <PhotoIcon width={22} />
+              ) : (
+                chat?.data?.lastMessage?.text
+              )}
+            </h4>
+            <div className="flex align-middle place-items-center justify-between pt-1">
+              <p className="text-xs text-neutral-400 font-medium capitalize">
+                {chat?.data?.lastMessage?.sender || "User"}
+              </p>
+              <p className="text-[10px] text-secondary">
+                {formatTime(
+                  new Date(
+                    (chat?.data?.lastMessage?.timeStamp?.seconds ?? 0) * 1000 +
+                      (chat?.data?.lastMessage?.timeStamp?.nanoseconds ?? 0) /
+                        1e6
+                  ).toISOString()
+                )}
+              </p>
+            </div>
+          </div>
+        </Link>
+        {/* <DropdownMenu>
+          <DropdownMenuTrigger asChild className="rounded-r-md py-3.5">
+            <EllipsisVerticalIcon width={30} className="p-1" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-36 mr-4 z-[9999] grid">
             <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
@@ -195,8 +166,8 @@ const AdminChats = (props: Props) => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
-        </DropdownMenu>
-      </Link>
+        </DropdownMenu> */}
+      </div>
     );
   });
 
@@ -205,14 +176,30 @@ const AdminChats = (props: Props) => {
       <div className="flex align-middle place-items-center justify-between">
         <Link
           href={"/admin"}
-          className="bg-white  px-2 rounded-lg flex align-middle place-items-center justify-between gap-2 w-fit py-2"
+          className="bg-white dark:bg-neutral-800  px-3 rounded-lg flex align-middle place-items-center justify-between gap-2 w-fit py-2"
         >
           <ArrowLeftIcon width={18} />
           <h4 className="font-bold text-base">Back</h4>
         </Link>
+        <div className="p-2 rounded-md bg-white dark:bg-neutral-800 relative">
+          <h4 className="font-medium text-[12px] text-secondary">
+            {chatList.filter((chat) => chat.data.lastMessage.read !== true)
+              .length > 0 ? (
+              <>
+                {`${
+                  chatList.filter((chat) => chat.data.lastMessage.read !== true)
+                    .length
+                } unread messages`}
+                <div className="bg-secondary w-2 h-2 rounded-full absolute top-0 right-0" />
+              </>
+            ) : (
+              <>{`${chatList.length} messages`} </>
+            )}
+          </h4>
+        </div>
       </div>
 
-      <div className="divide-y grid grid-flow-row py-4">
+      <div className="divide-y divide-purple-100 dark:divide-neutral-700 grid grid-flow-row my-4 bg-white dark:bg-neutral-800 rounded-lg">
         {renderChats || (
           <Alert className="gap-1 grid">
             <span className="text-2xl">❌</span>
@@ -223,6 +210,8 @@ const AdminChats = (props: Props) => {
           </Alert>
         )}
       </div>
+
+      {chatList.length < 0 && <div>You dont have messages yet</div>}
     </div>
   );
 };
