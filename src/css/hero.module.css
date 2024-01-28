@@ -1,0 +1,18 @@
+.header {
+  background: var(
+    --header-gradient,
+    linear-gradient(
+      92deg,
+      #ff4975 0%,
+      #ff0093 38.69%,
+      #ff32c6 71.32%,
+      #ffbc8c 87.45%
+    )
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 1;
+  line-height: 1.2; /* 131.667% */
+}

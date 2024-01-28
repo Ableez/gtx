@@ -70,6 +70,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.35s ease-in-out",
         "accordion-up": "accordion-up 0.35s ease-in-out",
       },
+      
     },
   },
   plugins: [require("tailwindcss-animate")],

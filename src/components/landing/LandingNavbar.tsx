@@ -38,7 +38,7 @@ export default function LandingNavbar() {
   }, [router]);
 
   return (
-    <NavigationMenu className="bg-white dark:bg-neutral-700 dark:bg-opacity-50 py-3 md:px-16 sticky top-0 container">
+    <NavigationMenu className="bg-white bg-opacity-80 dark:bg-opacity-80 backdrop-blur-md border-b border-b-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 py-4 md:px-16 sticky top-0 container">
       <button
         className="py-3.5 pr-3 duration-300 active:skew-x-12 rounded-full md:hidden flex absolute top-1"
         onClick={() => setOpen((prev) => !prev)}
@@ -50,12 +50,12 @@ export default function LandingNavbar() {
         className="flex align-middle place-items-center gap-2 mx-auto md:mx-0"
       >
         <Image
-          width={38}
-          height={38}
+          width={32}
+          height={32}
           src={"greatexc.svg"}
           alt="Great Exchange"
         />
-        <h4 className="text-xl font-bold">Greatexc</h4>
+        <h4 className="text-lg font-bold">Greatexc</h4>
       </Link>
 
       <NavigationMenuList className="hidden sm:flex">
@@ -90,16 +90,16 @@ export default function LandingNavbar() {
 
       <div
         onClick={() => setOpen(false)}
-        className={`h-screen duration-200 w-screen bg-black bg-opacity-10 backdrop-blur-sm fixed top-0 ${
+        className={`h-screen duration-200 bg-black bg-opacity-10 backdrop-blur-sm fixed top-0 ${
           open ? "opacity-100 block" : "opacity-0 hidden"
         }`}
       ></div>
       <div
-        className={`h-screen ease-out duration-500 md:w-72 w-[100vw] bg-white dark:bg-[#222] fixed top-0 ${
+        className={`h-screen overflow-hidden ease-out duration-500 w-full bg-white dark:bg-[#222] fixed top-0 ${
           open ? "left-0" : "-left-[150vw] grid place-items-center"
         }`}
       >
-        <div className="h-screen">
+        <div className="h-full first-letter:overflow-hidden">
           <div className="flex align-middle place-items-center gap-1 p-4 w-fit">
             <Image
               width={38}
@@ -117,7 +117,16 @@ export default function LandingNavbar() {
           >
             <XMarkIcon width={24} />
           </Button>
-          <ul className=" grid grid-flow-row place-items-start gap-2 p-4">
+          <div className="absolute w-full grid place-items-center p-4">
+            <Link
+              onClick={() => setOpen(false)}
+              className="rounded-2xl w-full text-center bg-primary hover:bg-primary hover:bg-opacity-70 px-5 p-3 text-white font-bold"
+              href={"/sell"}
+            >
+              Sell a Gift card
+            </Link>
+          </div>
+          <ul className="grid grid-flow-row place-items-start gap-2 p-4">
             <Link
               onClick={() => setOpen(false)}
               className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-700 px-5 p-3"
@@ -156,15 +165,6 @@ export default function LandingNavbar() {
               <li>Login</li>
             </Link>
           </ul>
-          <div className="fixed bottom-0 w-full grid place-items-center p-4">
-            <Link
-              onClick={() => setOpen(false)}
-              className="rounded-2xl w-full text-center bg-primary hover:bg-primary hover:bg-opacity-70 px-5 p-3 text-white font-bold"
-              href={"/sell"}
-            >
-              Sell
-            </Link>
-          </div>
         </div>
       </div>
     </NavigationMenu>

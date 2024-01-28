@@ -1,26 +1,23 @@
 "use client";
-import { onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
-import Cookies from "js-cookie";
 
 type Props = {
   children: ReactNode;
 };
 
-export const AuthContext = createContext(auth.currentUser ? true : false);
+export const AuthContext = createContext({});
 
 const AuthProvider = (props: Props) => {
-  const [user, setUser] = useState<boolean>(false);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    const uid = Cookies.get("uid");
-
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      if (authUser && uid) {
-        setUser(true);
+      if (authUser) {
+        setUser(authUser);
       } else {
-        setUser(false);
+        setUser({});
       }
     });
 

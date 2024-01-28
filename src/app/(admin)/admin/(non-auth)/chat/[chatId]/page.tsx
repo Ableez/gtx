@@ -170,10 +170,8 @@ const UserChatScreen = ({ params }: Props) => {
       (doc) => {
         fetchChatData().then(() => {
           if (chatsAutoScroll.current) {
-            chatsAutoScroll.current.scrollTo({
-              top: chatsAutoScroll.current.scrollHeight + 400,
-              behavior: "smooth",
-            });
+            chatsAutoScroll.current.scrollTop =
+              chatsAutoScroll.current.scrollHeight;
           }
         });
       }
@@ -225,6 +223,15 @@ const UserChatScreen = ({ params }: Props) => {
       if (currentMessage === "") {
         return;
       }
+
+      const newMessage = {
+        sender: "admin",
+        text: currentMessage,
+        sent_at: new Date(),
+        media: "",
+      };
+
+      messages?.messages.push(newMessage);
 
       setCurrentMessage("");
       const messagesRef = doc(db, "Messages", params.chatId);
@@ -327,9 +334,9 @@ const UserChatScreen = ({ params }: Props) => {
   const renderMessages = () => {
     return messages?.messages.map((message, idx) => {
       return (
-        <li
+        <div
           key={idx}
-          className={`flex leading-5 ${
+          className={`flex leading-5 mb-6 ${
             message.sender !== "admin" ? "justify-start" : "justify-end"
           }`}
         >
@@ -366,22 +373,24 @@ const UserChatScreen = ({ params }: Props) => {
                   }}
                   className="rounded-md w-auto h-auto min-h-max hover:scale-[1.024] duration-200 cursor-pointer"
                 />
-                </>
+              </>
             ) : (
               <span className="block">{message.text}</span>
             )}
           </div>
-        </li>
+        </div>
       );
     });
   };
 
   return (
-    <div
-      className="overflow-scroll h-screen will-change-scroll duration-300"
-      ref={chatsAutoScroll}
-    >
-      <ul className="space-y-2 px-4 my-24">{renderMessages()}</ul>
+    <div className="overflow-hidden duration-300">
+      <div
+        className="space-y-2 py-24 px-4 h-screen overflow-scroll border"
+        ref={chatsAutoScroll}
+      >
+        {renderMessages()}
+      </div>
       <AlertDialog open={view.open}>
         <AlertDialogContent className="pt-16">
           <AlertDialogCancel
@@ -620,6 +629,11 @@ const UserChatScreen = ({ params }: Props) => {
                     copyToClipboard();
                     setWaitForDetails(false);
                     setOpenT(false);
+                    setTransactionDetails({
+                      accountName: "",
+                      accountNumber: "",
+                      bank: "",
+                    });
                   }}
                 >
                   Okay Copy

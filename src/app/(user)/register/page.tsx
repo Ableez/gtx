@@ -15,7 +15,7 @@ import {
 import { collection, doc, setDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { BaseSyntheticEvent, useState } from "react";
 import Cookies from "js-cookie";
 
@@ -57,7 +57,17 @@ const LoginPage = (props: Props) => {
         formData.password
       );
 
-      Cookies.set("uid", user.uid);
+      Cookies.set("uid", user.uid, { expires: 7 * 24 });
+      Cookies.set(
+        "user",
+        JSON.stringify({
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        }),
+        { expires: 7 * 24 }
+      );
 
       // Update user profile first
       await updateProfile(auth.currentUser as User, {
@@ -77,7 +87,7 @@ const LoginPage = (props: Props) => {
       await setDoc(doc(db, "Users", user.uid), userData);
 
       // Redirect to the gift cards listings page
-      router.push("/sell");
+      redirect("/sell");
       setLoading(false);
     } catch (error) {
       // Handle errors

@@ -1,17 +1,33 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import AuthProvider from "@/lib/context/AuthProvider";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { cookies } from "next/headers";
 // import { Toast } from "@/components/ui/toast";
 
-const inter = DM_Sans({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Great Exchange",
-  description: "Greate exchange is a giftcard exchange company, we buy your giftcards at high rates.",
+  description:
+    "Great exchange is a giftcard exchange company, we buy your giftcards at high rates.",
+  creator: "Ahmed Abdullahi (Ableez)",
+  authors: [
+    {
+      name: "Ahmed Abdullahi",
+      url: "https://github.com/ableez",
+    },
+    {
+      name: "Ahmed Abdullahi",
+      url: "https://instagram.com/ableezz",
+    },
+    {
+      name: "Ahmed Abdullahi",
+      url: "https://twitter.com/Ableezz",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -22,7 +38,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`bg-[#f5f5f5] dark:bg-[#222] ${inter.className}`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          disableTransitionOnChange
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </ThemeProvider>
       </body>

@@ -1,18 +1,25 @@
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import Link from "next/link";
+import Contact from "@/components/landing/Contact";
+import Cwu from "@/components/landing/Cwu";
+import FAQs from "@/components/landing/FAQs";
+import Features from "@/components/landing/Features";
+import Hero from "@/components/landing/Hero";
+import Metrics from "@/components/landing/Metrics";
+import Service from "@/components/landing/Service";
+import ServiceDetail from "@/components/landing/ServiceDetail";
+import UserFeedBacks from "@/components/landing/UserFeedBacks";
 
 export default function Home() {
   return (
-    <>
-      <LandingNavbar />
-      <main className="min-h-screen p-24 flex flex-row place-items-center gap-2">
-        <h4 className="text-5xl font-bold">Landing Page</h4>
-        <Link className="text-3xl font-semibold" href={"/sell"}>
-          <Button variant={"secondary"}>Sell</Button>
-        </Link>
-      </main>
-    </>
+    <main className="text-center tracking-normal">
+      <Hero />
+      <Service />
+      <Metrics />
+      <Cwu />
+      <Features />
+      <ServiceDetail />
+      <UserFeedBacks />
+      <FAQs />
+      <Contact />
+    </main>
   );
 }

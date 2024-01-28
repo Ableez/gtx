@@ -5,7 +5,7 @@ type Props = {};
 
 const Loading = (props: Props) => {
   return (
-    <div className="grid place-items-center justify-center py-16">
+    <div className="grid place-items-center justify-center align-middle h-[80vh]">
       <Loader />
     </div>
   );

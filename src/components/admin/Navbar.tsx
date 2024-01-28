@@ -35,12 +35,14 @@ import { useTheme } from "next-themes";
 import { useContext, useState } from "react";
 import { User, signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { AuthContext } from "@/lib/context/AuthProvider";
+import Cookies from "js-cookie";
 
 export default function AdminNavbar() {
   const { setTheme } = useTheme();
   const user = useContext(AuthContext);
+  const router = useRouter();
 
   return (
     <div className="container pb-3 py-2 border-b backdrop-blur-lg sticky top-0 mt-3 mb-5 bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
@@ -131,6 +133,17 @@ export default function AdminNavbar() {
                 </DropdownMenuPortal>
               </DropdownMenuSub>
             </DropdownMenuGroup>
+            <DropdownMenuItem
+              onClick={() => {
+                signOut(auth);
+                Cookies.remove("uid");
+                Cookies.remove("role")
+                router.replace("/admin/login");
+              }}
+              className="py-3 bg-red-500 hover:bg-red-600"
+            >
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </NavigationMenu>

@@ -1,6 +1,8 @@
 import React from "react";
 
-type Props = {};
+type Props = {
+  color?: string;
+};
 
 const Loader = (props: Props) => {
   return (
@@ -8,7 +10,10 @@ const Loader = (props: Props) => {
       width="25"
       height="25"
       viewBox="0 0 15 15"
-      className="animate-spin text-neutral-400"
+      className={`animate-spin ${
+        !props.color && "dark:text-white text-neutral-800"
+      } will-change-transform`}
+      style={{ color: props.color }}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

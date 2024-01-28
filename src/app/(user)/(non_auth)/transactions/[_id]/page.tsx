@@ -37,10 +37,12 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ShareIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: {
@@ -170,23 +172,24 @@ const TransactionDetail = ({ params }: Props) => {
 
   return (
     <div className="font-bold text-lg relative max-w-screen-md mx-auto">
-      <nav className="bg-white shadow flex align-middle place-items-center justify-between px-4 py-2 border-b border-b-neutral-300 sticky top-0">
-        <div className="flex align-middle justify-between place-items-center gap-2">
+      <nav className="mx-auto px-4 py-3 flex align-middle justify-between place-items-center">
+        <div className="flex align-middle justify-between place-items-center gap-3">
           <Button
             variant={"ghost"}
-            onClick={() => {
-              router.back();
-            }}
-            className="border rounded-lg text-neutral-800 shadow-none bg-neutral-100 dark:bg-neutral-700 p-3"
+            className="border px-2"
+            onClick={() => router.back()}
           >
-            <ArrowLeftIcon width={20} />
+            <ArrowLeftIcon width={22} />
           </Button>
-          <h4 className="text-center mx-auto">Transaction</h4>
+          <h4 className="text-center mx-auto">Details</h4>
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="bg-primary py-2 px-4 text-sm text-white rounded-lg shadow shadow-primary/40 focus-within:outline-none">
-            Share
+          <DropdownMenuTrigger>
+            <Button>
+              {" "}
+              <ShareIcon width={18} />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-2">
             <div className="grid grid-flow-row gap-3">
@@ -216,13 +219,13 @@ const TransactionDetail = ({ params }: Props) => {
             </p>
           </div>
           <div className="gri d grid-flow-row divide-y">
-            <div className="bg-white px-4 py-2">
+            <div className=" px-4 py-2">
               <h4 className="">${transactionData?.amount}</h4>
               <span className="font-medium text-[12px]">
                 {subCategory && subCategory.title}
               </span>
             </div>
-            <div className="bg-white px-4 py-2 flex align-middle place-items-center justify-between">
+            <div className=" px-4 py-2 flex align-middle place-items-center justify-between">
               <div>
                 <span className="font-medium text-neutral-400 text-[12px]">
                   Payment Method
@@ -238,7 +241,7 @@ const TransactionDetail = ({ params }: Props) => {
                 {transactionData?.payment.details.bank}
               </div>
             </div>
-            <div className="bg-white px-4 py-2">
+            <div className=" px-4 py-2">
               <span className="font-medium text-neutral-400 text-[12px]">
                 Status
               </span>
@@ -257,7 +260,7 @@ const TransactionDetail = ({ params }: Props) => {
                 {transactionData?.status}
               </h4>
             </div>
-            <div className="bg-white px-4 py-2">
+            <div className=" px-4 py-2">
               <span className="font-medium text-neutral-400 text-[12px]">
                 Transaction ID
               </span>
@@ -265,7 +268,7 @@ const TransactionDetail = ({ params }: Props) => {
                 {transactionData?.link || params._id}
               </h4>
             </div>
-            <div className="bg-white px-4 py-2">
+            <div className=" px-4 py-2">
               <span className="font-medium text-neutral-400 text-[12px]">
                 Reference ID
               </span>
@@ -279,10 +282,10 @@ const TransactionDetail = ({ params }: Props) => {
           <div className="my-6 grid grid-flow-row gap-1 text-sm">
             <Link
               href={`/chat/${transactionData?.chatId}`}
-              className="flex align-middle place-items-center justify-between w-full p-4 bg-white border-y border-purple-100 hover:shadow-sm group text-purple-900"
+              className="flex align-middle place-items-center justify-between w-full p-4 border-purple-100 dark:border-transparent dark:hover:bg-purple-600 dark:hover:bg-opacity-5 duration-300 hover:shadow-md group text-purple-900"
             >
               <div className="flex align-middle place-items-center justify-between gap-4">
-                <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-purple-400 bg-purple-100">
+                <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md bg-purple-100 dark:bg-purple-600 dark:bg-opacity-10 dark:text-purple-400">
                   <ChatBubbleBottomCenterTextIcon width={22} />
                 </div>
                 View Conversation
@@ -296,6 +299,10 @@ const TransactionDetail = ({ params }: Props) => {
             <Dialog
               onOpenChange={(e) => {
                 console.log(e);
+                setReportData({
+                  subject: "",
+                  body: "",
+                });
                 if (e === false) {
                   setError("");
                 }
@@ -316,10 +323,10 @@ const TransactionDetail = ({ params }: Props) => {
                     console.log(error);
                   }
                 }}
-                className="flex align-middle place-items-center justify-between w-full p-4 bg-white border-y border-pink-100 hover:shadow-sm group text-orange-700"
+                className="flex align-middle place-items-center justify-between w-full p-4 border-rose-100 dark:border-transparent dark:hover:bg-rose-600 dark:hover:bg-opacity-5 duration-300 hover:shadow-md group text-rose-900"
               >
                 <div className="flex align-middle place-items-center justify-between gap-4">
-                  <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-pink-400 bg-pink-100">
+                  <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md bg-rose-100 dark:bg-rose-600 dark:bg-opacity-10 dark:text-rose-400">
                     <InformationCircleIcon width={22} />
                   </div>
                   Report Conversation
@@ -332,15 +339,14 @@ const TransactionDetail = ({ params }: Props) => {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <h4 className="font-semibold text-neutral-800">
-                    Report Transaction
-                  </h4>
+                  <DialogTitle>Report Transaction</DialogTitle>
                 </DialogHeader>
                 <DialogDescription>
-                  <p className="text-sm leading-6 text-gray-600 text-center">
+                  <p>
+                    {" "}
                     Hey{" "}
-                    <span className="capitalize">
-                      {auth.currentUser?.displayName}
+                    <span className="capitalize font-semibold">
+                      {auth.currentUser?.displayName || "User"}
                     </span>{" "}
                     Tell us the problem
                   </p>
@@ -352,20 +358,20 @@ const TransactionDetail = ({ params }: Props) => {
                   }}
                 >
                   <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                    <div className="sm:col-span-4">
+                    <div className="col-span-full">
                       <label
                         htmlFor="subject"
-                        className="block text-sm font-medium leading-6 text-gray-900"
+                        className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-500"
                       >
                         Subject
                       </label>
                       <div className="mt-2">
-                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 focus-within:ring-inset focus-within:ring-0 sm:max-w-md">
                           <Input
                             type="text"
                             name="subject"
                             id="subject"
-                            className="block flex-1 border-0 bg-transparent  text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="block flex-1 border-0 bg-transparent  text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:ring-0 sm:text-sm sm:leading-6"
                             placeholder="Subject"
                             onChange={(e) => {
                               setReportData({
@@ -381,7 +387,7 @@ const TransactionDetail = ({ params }: Props) => {
                     <div className="col-span-full">
                       <label
                         htmlFor="reportBody"
-                        className="block text-sm font-medium leading-6 text-gray-900"
+                        className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-500"
                       >
                         Whats the problem?
                       </label>
@@ -390,7 +396,7 @@ const TransactionDetail = ({ params }: Props) => {
                           id="reportBody"
                           name="reportBody"
                           rows={3}
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 px-2"
+                          className="block w-full rounded-md border-0 py-1.5 text-neutral-900 shadow-sm placeholder:text-neutral-400 sm:text-sm sm:leading-6 px-2 dark:bg-neutral-800 dark:text-white outline"
                           defaultValue={""}
                           onChange={(e) => {
                             setReportData({
@@ -401,7 +407,7 @@ const TransactionDetail = ({ params }: Props) => {
                         />
                       </div>
                       {reportData.body.split(" ").length < 3 && (
-                        <p className="text-neutral-500 text-xs">
+                        <p className="text-rose-500 py-2 text-xs">
                           Minimum 3 words
                         </p>
                       )}

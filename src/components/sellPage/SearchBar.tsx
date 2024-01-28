@@ -15,7 +15,7 @@ type Props = {
 const SearchBar = (props: Props) => {
   return (
     <div className="sticky top-0 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-50">
-      <div className="p-2 bg-white dark:bg-[#2c2c2c] rounded-xl flex align-middle place-items-center justify-between shadow-none">
+      <div className="p-2 bg-white dark:bg-[#2c2c2c] rounded-xl flex align-middle place-items-center justify-between shadow border">
         <Input
           className="w-full bg-transparent border-none shadow-none focus-visible:ring-0 text-base font-semibold"
           type="text"
@@ -25,7 +25,7 @@ const SearchBar = (props: Props) => {
         />
 
         {!props.val ? (
-          <Button variant={"ghost"} className="hover:bg-white">
+          <Button disabled={!props.val} variant={"ghost"} className="">
             <MagnifyingGlassIcon
               color="#222"
               width={24}
@@ -46,7 +46,7 @@ const SearchBar = (props: Props) => {
               className={`dark:bg-[#2c2c2c] shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] ${
                 props.tabTitle === tab.link
                   ? "bg-primary dark:bg-primary hover:bg-primary dark:hover:bg-primary text-white"
-                  : "bg-white dark:bg-[#2c2c2c] hover:bg-white dark:hover:bg-[#2c2c2c] text-neutral-700 dark:text-white"
+                  : "bg-white dark:bg-[#2c2c2c] hover:bg-white dark:hover:bg-[#2c2c2c] text-neutral-700 dark:text-white border"
               }`}
               onClick={() => props.setTabTitle(tab.link)}
               key={idx}

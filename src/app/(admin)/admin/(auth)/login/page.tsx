@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { BaseSyntheticEvent, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
 
 type Props = {};
 
@@ -50,10 +51,16 @@ const AdminLogin = (props: Props) => {
           formData.email,
           formData.password
         )
-          .then((user) => {
-            Cookies.set("uid", user.user.uid);
-            router.push("/admin");
-            setLoading(false);
+          .then(async (user) => {
+            const docRef = doc(db, "Users", user.user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists() && docSnap.data().role === "admin") {
+              Cookies.set("role", "admin", { expires: 7 * 24 });
+              Cookies.set("uid", user.user.uid, { expires: 7 * 24 });
+              router.push("/admin");
+              setLoading(false);
+            }
           })
           .catch((e) => {
             setError(e);

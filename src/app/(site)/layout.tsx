@@ -1,4 +1,6 @@
+import Footer from "@/components/landing/Footer";
 import LandingNavbar from "@/components/landing/LandingNavbar";
+import Navbar from "@/components/landing/Navbar";
 import React from "react";
 
 type Props = {
@@ -7,10 +9,11 @@ type Props = {
 
 const LandingLayout = (props: Props) => {
   return (
-    <div>
-      {/* <LandingNavbar /> */}
+    <>
+      <LandingNavbar />
       {props.children}
-    </div>
+      <Footer />
+    </>
   );
 };
 
