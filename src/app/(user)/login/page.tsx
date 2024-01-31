@@ -18,7 +18,7 @@ const LoginPage = (props: Props) => {
             <Image
               width={38}
               height={38}
-              src={"greatexc.svg"}
+              src={"/greatexc.svg"}
               alt="Great Exchange"
             />
             <h4 className="text-xl font-bold">Greatexc</h4>

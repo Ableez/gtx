@@ -23,6 +23,7 @@ type Props = {
   };
   edit?: boolean;
   idx?: number;
+  scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
 const AccountComp = ({
@@ -67,10 +68,10 @@ const AccountComp = ({
     <Dialog open={openAccount} onOpenChange={setOpenAccount}>
       <DialogContent className="w-[95vw] max-w-md rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-medium text-neutral-800">
-            Bank Details
+          <DialogTitle className="text-lg font-semibold">
+            {edit && "Edit "} Bank Details
           </DialogTitle>
-          <DialogDescription className="text-neutral-400">
+          <DialogDescription className="text-neutral-400 text-sm">
             We will make transfer to this account.
           </DialogDescription>
         </DialogHeader>
@@ -115,7 +116,7 @@ const AccountComp = ({
               />
             </div>
 
-            {error && error}
+            {error && <p className="text-xs text-rose-500">Error: {error}</p>}
 
             <Button
               disabled={loading}
@@ -127,7 +128,7 @@ const AccountComp = ({
                   className="animate-spin duration-1000 text-white"
                 />
               )}
-              Send
+              {edit ? "Edit" : "Send"}
             </Button>
           </form>
         </div>

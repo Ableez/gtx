@@ -7,7 +7,7 @@ interface Timestamp {
   nanoseconds: number;
 }
 
-enum MessageInterfaceinterfac {
+enum MessageInterfaceinterface {
   TEXT = "text",
   MEDIA = "media",
 }
@@ -30,7 +30,7 @@ interface Sender {
 }
 
 interface ReadReceipt {
-  time: null | any;
+  time: Date;
   delivery_status: string;
   status: boolean;
 }
@@ -54,7 +54,6 @@ interface Message {
     url: string;
     metadata: MediaMeta;
   } | null;
-  interface: MessageInterfaceinterfa;
   recipient: string;
   edited: boolean;
   deleted_at: null | any;
@@ -71,6 +70,7 @@ interface Transaction {
     subcategory: string;
     price: number;
     ecode?: number;
+    rate: string;
   };
   accountDetails: {
     accountName: string;
@@ -79,105 +79,31 @@ interface Transaction {
   };
 }
 
+interface LastMessage {
+  id: string;
+  read_receipt: ReadReceipt;
+  sender: string;
+  content: {
+    text: string;
+    media: boolean;
+  };
+}
 interface Conversation {
   id: string;
   transaction: Transaction;
   messages: Message[];
-  lastMessage: {
-    id: string;
-    content: {
-      sender: Sender;
-      text: string;
-      media?: {
-        url: string;
-        metadata?: MediaMeta;
-      };
-    };
-  };
+  lastMessage: LastMessage;
   user: {
     username: string;
     uid: string;
     email: string;
+    photoUrl: string;
   };
   created_at: Date;
   updated_at: Date;
 }
 
-// // Example usage
-// const conversation: Conversation = {
-//   id: uuid(),
-//   transaction: {
-//     started: false,
-//     cardDetails: {
-//       id: "",
-//       name: "",
-//       vendor: "",
-//       subcategory: "",
-//       price: 0,
-//     },
-//     accountDetails: {
-//       accountName: "",
-//       accountNumber: 0,
-//       bankName: "",
-//     },
-//   },
-//   messages: [
-//     {
-//       id: uuid(),
-//       edited_at: null,
-//       deleted: false,
-//       timeStamp: { seconds: 0, nanoseconds: 0 },
-//       content: {
-//         text: "",
-//         media: {
-//           caption: "",
-//           url: "",
-//           metadata: {
-//             media_name: "",
-//             media_size: "",
-//             media_interface: ,
-//           },
-//         },
-//       },
-//       quoted_message: null,
-//       interface: MessageInterfaceinterface.TE,
-//       recipient: "",
-//       edited: false,
-//       deleted_at: null,
-//       sender: {
-//         uid: "",
-//         username: "",
-//       },
-//       read_receipt: {
-//         time: null,
-//         delivery_status: "",
-//         status: false,
-//       },
-//     },
-//   ],
-//   lastMessage: {
-//     id: "",
-//     content: {
-//       sender: {
-//         uid: "",
-//         username: "",
-//       },
-//       text: "",
-//       media: {
-//         url: "",
-//         metadata: {
-//           media_name: "",
-//           media_size: "",
-//           media_interface: ,
-//         },
-//       },
-//     },
-//   },
-//   user: {
-//     username: "",
-//     uid: "",
-//     email: "",
-//   },
-//   created_at: new Date(),
-//   updated_at: new Date(),
-// };
+export type ConversationCollections = {
+  id: string;
+  data: Conversation;
+}[];

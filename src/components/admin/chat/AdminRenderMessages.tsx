@@ -2,43 +2,46 @@ import { CheckIcon, ClockIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { memo, useState } from "react";
-import { Message } from "../../../chat";
+import { Message } from "../../../../chat";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Button } from "../ui/button";
-import AccountComp from "./account-dialog";
-import { EyeClosedIcon } from "@radix-ui/react-icons";
-import ECodeComp from "./eCode";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import AccountComp from "@/components/chat/account-dialog";
+import { CopyIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import ECodeComp from "@/components/chat/eCode";
+import SetRateComp from "./setRateDialog";
 
 type Props = {
   data: Message[];
   scrollToBottom: React.MutableRefObject<HTMLDivElement | null>;
   id: string;
-  card: {
-    id: string;
-    name: string;
-    vendor: string;
-    subcategory: string;
-    price: number;
-    ecode?: number | undefined;
-    rate: string;
-  };
+  card:
+    | {
+        id: string;
+        name: string;
+        vendor: string;
+        subcategory: string;
+        price: number;
+        ecode?: number | undefined;
+      }
+    | undefined;
 };
 
-const RenderMessages = memo(function RenderMessages({
+const AdminRenderMessages = memo(function AdminRenderMessages({
+  card,
   data,
   scrollToBottom,
   id,
-  card,
 }: Props) {
   const [openAccount, setOpenAccount] = useState(false);
-  const [openEcode, setOpenEcode] = useState(false);
+  const [openRate, setOpenRate] = useState(false);
   const [hideCode, setHideCode] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   const renderUI = data.map((message, idx) => {
     if (message.type === "text") {
@@ -46,14 +49,14 @@ const RenderMessages = memo(function RenderMessages({
         <div
           key={idx}
           className={`max-w-[250px] md:max-w-[500px] transition-all duration-500 px-2 ${
-            message.recipient === "admin"
+            message.recipient !== "admin"
               ? "justify-self-end"
               : "justify-self-start"
           }`}
         >
           <div
             className={`${
-              message.recipient === "admin"
+              message.recipient !== "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                 : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
             } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
@@ -64,10 +67,10 @@ const RenderMessages = memo(function RenderMessages({
               {message.content.text}
               <br />
             </div>
-            {message.recipient === "admin" && (
+            {message.recipient !== "admin" && (
               <div
                 className={`${
-                  message.recipient === "admin"
+                  message.recipient !== "admin"
                     ? "text-neutral-200"
                     : "text-neutral-400"
                 } w-fit float-right flex align-middle place-items-center justify-end justify-self-end gap-1 mt-1`}
@@ -116,7 +119,7 @@ const RenderMessages = memo(function RenderMessages({
         <div
           key={idx}
           className={`max-w-[350px] md:max-w-[500px] transition-all duration-500 px-2 ${
-            message.recipient === "admin"
+            message.recipient !== "admin"
               ? "justify-self-end"
               : "justify-self-start"
           }`}
@@ -124,61 +127,60 @@ const RenderMessages = memo(function RenderMessages({
           {message.card.title === "Account Details" && (
             <div
               className={`${
-                message.recipient === "admin"
-                  ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                message.recipient !== "admin"
+                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                   : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
-              } flex align-middle place-items-end justify-between gap-2`}
+              } flex align-middle place-items-end justify-between gap-2 border`}
             >
-              <Card className="border-none shadow-none">
+              <Card className="border-none shadow-none rounded-tl-[3px]">
                 <CardHeader>
                   <CardTitle className="text-lg">Account Details</CardTitle>
                 </CardHeader>
-                <CardContent className="max-w-[420px] min-w-[200px]">
+                <CardContent className="max-w-[250px] min-w-[200px]">
                   <div className="border-t">
-                    <dl className="divide-y divide-neutral-200">
+                    <dl className="divide-y divide-neutral-200 dark:divide-neutral-700">
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-neutral-500">
+                        <dt className="text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400">
                           Account Number
                         </dt>
-                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 sm:col-span-2 sm:mt-0 font-bold">
+                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0 font-bold">
                           {message.card.data?.accountNumber}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-neutral-500">
+                        <dt className="text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400">
                           Account Name
                         </dt>
-                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 sm:col-span-2 sm:mt-0 font-bold">
+                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0 font-bold">
                           {message.card.data?.accountName}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-neutral-500">
+                        <dt className="text-sm font-medium leading-6 text-neutral-500 dark:text-neutral-400">
                           Account Bank
                         </dt>
-                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 sm:col-span-2 sm:mt-0 font-bold">
+                        <dd className="mt-1 text-sm tracking-wide leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0 font-bold">
                           {message.card.data?.bankName}
                         </dd>
                       </div>
                     </dl>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={() => setOpenAccount(true)}>Edit</Button>
-                  <AccountComp
-                    id={id}
-                    scrollToBottom={scrollToBottom}
-                    data={{
-                      accountNumber: message?.card?.data?.accountNumber,
-                      accountName: message?.card?.data?.accountName,
-                      bankName: message?.card?.data?.bankName,
-                    }}
-                    idx={idx}
-                    edit={true}
-                    openAccount={openAccount}
-                    setOpenAccount={setOpenAccount}
-                  />
-                </CardFooter>
+                <Button
+                  onClick={() => {
+                    setTimeout(() => {
+                      setCopied(true);
+                    }, 1500);
+                  }}
+                  title="Copy Account Number"
+                  variant={"ghost"}
+                  className="float-right"
+                >
+                  {
+                    copied && "Copied"
+                  }
+                  <CopyIcon width={18} />
+                </Button>
               </Card>
             </div>
           )}
@@ -186,14 +188,14 @@ const RenderMessages = memo(function RenderMessages({
           {message.card.title === "card_detail" && (
             <div
               className={`${
-                message.recipient === "admin"
-                  ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                message.recipient !== "admin"
+                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                   : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
-              } flex align-middle place-items-end justify-between gap-2`}
+              } flex align-middle place-items-end justify-between gap-2 border`}
             >
-              <Card className="border shadow-md dark:bg-black rounded-tr-[3px]">
+              <Card className="border shadow-md dark:bg-black rounded-tl-[3px]">
                 <CardHeader>
-                  <CardTitle className="dark:text-neutral-400">
+                  <CardTitle className="dark:text-white">
                     Card Details
                   </CardTitle>
                 </CardHeader>
@@ -207,7 +209,7 @@ const RenderMessages = memo(function RenderMessages({
                       className="w-8 p-1 bg-primary rounded-3xl"
                     />
                     <h4 className="md:text-xl text-base font-bold">
-                      {message?.card?.data?.vendor} Card
+                      {message.card.data.vendor} Card
                     </h4>
                   </div>
 
@@ -217,16 +219,16 @@ const RenderMessages = memo(function RenderMessages({
                         <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
                           Subcategory
                         </dt>
-                        <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                          {message?.card?.data?.subcategory || "Please wait..."}
+                        <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0">
+                          {message.card.data.subcategory || "Please wait..."}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
                           Price
                         </dt>
-                        <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                          {message?.card?.data?.price || "Please wait..."}
+                        <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0">
+                          {message.card.data.price || "Please wait..."}
                         </dd>
                       </div>
                     </dl>
@@ -239,12 +241,12 @@ const RenderMessages = memo(function RenderMessages({
           {message.card.title === "e-Code" && (
             <div
               className={`${
-                message.recipient === "admin"
-                  ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                message.recipient !== "admin"
+                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                   : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
-              } flex align-middle place-items-end justify-between gap-2`}
+              } flex align-middle place-items-end justify-between gap-2 border`}
             >
-              <Card className="border-none shadow-none">
+              <Card className="border-none shadow-none rounded-tl-[3px]">
                 <CardHeader>
                   <CardTitle className="text-xl">E-code</CardTitle>
                 </CardHeader>
@@ -267,17 +269,6 @@ const RenderMessages = memo(function RenderMessages({
                     </button>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={() => setOpenEcode(true)}>Edit</Button>
-                  <ECodeComp
-                    scrollToBottom={scrollToBottom}
-                    id={id}
-                    idx={idx}
-                    edit={true}
-                    openEcode={openEcode}
-                    setOpenEcode={setOpenEcode}
-                  />
-                </CardFooter>
               </Card>
             </div>
           )}
@@ -285,12 +276,12 @@ const RenderMessages = memo(function RenderMessages({
           {message.card.title === "rate" && (
             <div
               className={`${
-                message.recipient === "admin"
-                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                message.recipient !== "admin"
+                  ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                   : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
-              } flex align-middle place-items-end justify-between gap-2 border`}
+              } flex align-middle place-items-end justify-between gap-2`}
             >
-              <Card className="border-none shadow-none rounded-tl-[3px]">
+              <Card className="border-none shadow-none">
                 <CardHeader>
                   <CardTitle className="text-xl">Card Rate</CardTitle>
                 </CardHeader>
@@ -302,6 +293,18 @@ const RenderMessages = memo(function RenderMessages({
                     for {card?.price}
                   </div>
                 </CardContent>
+                <CardFooter>
+                  <Button onClick={() => setOpenRate(true)}>Edit</Button>
+                  <SetRateComp
+                    card={card}
+                    scrollToBottom={scrollToBottom}
+                    id={id}
+                    idx={idx}
+                    edit={true}
+                    openRate={openRate}
+                    setOpenRate={setOpenRate}
+                  />
+                </CardFooter>
               </Card>
             </div>
           )}
@@ -314,14 +317,14 @@ const RenderMessages = memo(function RenderMessages({
         <div
           key={idx}
           className={`max-w-[250px] md:max-w-[500px] transition-all duration-500 px-2 ${
-            message.recipient === "admin"
+            message.recipient !== "admin"
               ? "justify-self-end"
               : "justify-self-start"
           }`}
         >
           <div
             className={`${
-              message.recipient === "admin"
+              message.recipient !== "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                 : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
             } grid align-middle place-items-center justify-between px-2 gap-2 py-1.5`}
@@ -368,4 +371,4 @@ const RenderMessages = memo(function RenderMessages({
   );
 });
 
-export default RenderMessages;
+export default AdminRenderMessages;

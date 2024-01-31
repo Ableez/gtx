@@ -16,7 +16,8 @@ const ADMINNONAUTHLAYOUT = (props: Props) => {
 
   return (
     <div>
-      {!isChatPage ? <AdminNavbar /> : null}
+      {/* {!isChatPage ? <AdminNavbar /> : null} */}
+      <AdminNavbar />
       {props.children}
     </div>
   );

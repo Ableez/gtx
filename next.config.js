@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // dangerouslyAllowSVG: true,
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: "https",

@@ -58,6 +58,10 @@ const LoginPage = (props: Props) => {
       );
 
       Cookies.set("uid", user.uid);
+      Cookies.set("role", "admin", { expires: 7 * 24 });
+      user.reload();
+      Cookies.set("user", JSON.stringify(user.toJSON()));
+      Cookies.set("isLoggedIn", "true");
 
       // Update user profile first
       await updateProfile(auth.currentUser as User, {
@@ -76,6 +80,7 @@ const LoginPage = (props: Props) => {
       // Save user data to db
       await setDoc(doc(db, "Users", user.uid), userData);
 
+      router.refresh();
       router.push("/admin");
       setLoading(false);
     } catch (error) {
@@ -94,7 +99,7 @@ const LoginPage = (props: Props) => {
             <Image
               width={38}
               height={38}
-              src={"greatexc.svg"}
+              src={"/greatexc.svg"}
               alt="Great Exchange"
             />
             <h4 className="text-xl font-bold">Admin</h4>

@@ -1,46 +1,24 @@
 "use client";
-
 import Link from "next/link";
 import {
   NavigationMenu,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import {
-  Bars3Icon,
-  EllipsisVerticalIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
-import { useEffect, useState } from "react";
-import { auth } from "@/lib/utils/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
-
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
+import Cookies from "js-cookie";
+import { User } from "firebase/auth";
 export default function LandingNavbar() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<boolean>(false);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      if (authUser) {
-        setUser(true);
-      } else {
-        setUser(false);
-      }
-    });
-    // Cleanup
-    return () => unsubscribe();
-  }, [router]);
+  const cachedUser = Cookies.get("user");
+  const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
   return (
     <NavigationMenu className="bg-white bg-opacity-80 dark:bg-opacity-80 backdrop-blur-md border-b border-b-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 py-4 md:px-16 sticky top-0 container">
       <button
-        className="py-3.5 pr-3 duration-300 active:skew-x-12 rounded-full md:hidden flex absolute top-1"
+        className="py-3.5 pr-3 duration-300 active:skew-x-12 rounded-full sm:hidden flex absolute top-1"
         onClick={() => setOpen((prev) => !prev)}
       >
         <Bars3Icon width={25} />
@@ -52,7 +30,7 @@ export default function LandingNavbar() {
         <Image
           width={32}
           height={32}
-          src={"greatexc.svg"}
+          src={"/greatexc.svg"}
           alt="Great Exchange"
         />
         <h4 className="text-lg font-bold">Greatexc</h4>
@@ -78,6 +56,7 @@ export default function LandingNavbar() {
           Policies
         </Link>
       </NavigationMenuList>
+
       {user ? (
         <Link className="sm:flex hidden" href="/sell">
           <Button className="px-10 rounded-2xl">Sell</Button>
@@ -104,7 +83,7 @@ export default function LandingNavbar() {
             <Image
               width={38}
               height={38}
-              src={"greatexc.svg"}
+              src={"/greatexc.svg"}
               alt="Great Exchange"
             />
             <h4 className="text-xl font-bold">Greatexc</h4>

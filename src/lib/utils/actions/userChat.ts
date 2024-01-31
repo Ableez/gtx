@@ -1,5 +1,4 @@
 "use server";
-
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { cookies } from "next/headers";
 import { db } from "../firebase";
@@ -42,11 +41,29 @@ export const sendUserMessage = async (
       };
 
   try {
+    const msg = {
+      id: v4(),
+      timeStamp: new Date(),
+    };
     await updateDoc(chatDocRef, {
+      lastMessage: {
+        id: msg.id,
+        sender: "user",
+        read_receipt: {
+          delivery_status: "sent",
+          status: false,
+          time: msg.timeStamp,
+        },
+        content: {
+          text: message || "",
+          media: media ? true : false,
+        },
+      },
       messages: arrayUnion({
-        id: v4(),
+        id: msg.id,
         type: media ? "media" : "text",
         deleted: false,
+        timeStamp: timeStamp,
         sender: {
           username: user.displayName,
           uid: user.uid,
@@ -56,13 +73,14 @@ export const sendUserMessage = async (
           text: message || "",
           media: content,
         },
-        timeStamp: timeStamp,
         edited: false,
         read_receipt: {
           delivery_status: "sent",
           status: false,
+          time: msg.timeStamp,
         },
       }),
+      updated_at: msg.timeStamp,
     });
 
     return { success: true };
@@ -71,33 +89,133 @@ export const sendUserMessage = async (
   }
 };
 
-export const sendEcodeToAdmin = async (id: string, e: FormData) => {
+export const sendEcodeToAdmin = async (
+  id: string,
+  e: FormData,
+  convo: Conversation,
+  edit?: boolean,
+  idx?: number
+) => {
   try {
     const ecode = e.get("ecode");
+
+    const cachedUser = cookies().get("user")?.value;
+    const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+
+    if (!user) {
+      return {
+        message: "User not found",
+        success: false,
+      };
+    }
+
     const chatDocRef = doc(db, "Messages", id as string);
 
+    const docSnapshot = await getDoc(chatDocRef);
+    const data = docSnapshot.data() as Conversation;
+
+    console.log(data);
+
     await updateDoc(chatDocRef, {
-      transaction: {
-        cardDetails: {
-          ecode: ecode,
-        },
+      "lastMessage.read_receipt": {
+        delivery_status: "seen",
+        status: true,
       },
-    })
-      .then(() => {
-        return {
-          message: "Ecode sent to successfully",
-          success: true,
-        };
-      })
-      .catch((e) => {
-        console.log(e);
-        return {
-          message: "Ecode not sent",
-          success: false,
-        };
+      updated_at: new Date(),
+      "transaction.cardDetails.ecode": ecode,
+    });
+
+    if (!edit) {
+      const msg = {
+        id: v4(),
+        timeStamp: new Date(),
+      };
+
+      console.log("Not edit");
+
+      await updateDoc(chatDocRef, {
+        lastMessage: {
+          id: msg.id,
+          content: {
+            text: "",
+            media: {
+              caption: "",
+              url: "",
+              metadata: {
+                media_name: "",
+                media_size: "",
+                media_type: "",
+              },
+            },
+          },
+          read_receipt: {
+            delivery_status: "sent",
+            status: false,
+            time: msg.timeStamp,
+          },
+        },
+        messages: arrayUnion({
+          id: msg.id,
+          type: "card",
+          deleted: false,
+          sender: {
+            username: user.displayName,
+            uid: user.uid,
+          },
+          recipient: "admin",
+          card: {
+            title: "e-Code",
+            data: {
+              value: ecode,
+            },
+          },
+          timeStamp: msg.timeStamp,
+          edited: false,
+          read_receipt: {
+            delivery_status: "sent",
+            status: false,
+            time: msg.timeStamp,
+          },
+        }),
+        updated_at: msg.timeStamp,
       });
+    } else {
+      if (data) {
+        const index =
+          idx ||
+          data.messages.findLastIndex((msg) => msg.card.title === "e-Code");
+
+        console.log(index, "ECODE");
+
+        if (Array.isArray(data.messages)) {
+          data.messages[index] = {
+            ...data.messages[index],
+            card: {
+              title: "e-Code",
+              data: {
+                value: ecode,
+              },
+            },
+          };
+
+          await updateDoc(chatDocRef, {
+            messages: data.messages,
+          });
+        }
+      }
+    }
+
+    return {
+      message: "Ecode sent to successfully",
+      success: true,
+    };
   } catch (error) {
-    console.log(error);
+    console.log("SEND_ECODE_TO_ADMIN", error);
+
+    return {
+      message: "Ecode not sent",
+      success: false,
+    };
   }
 };
 
@@ -133,15 +251,44 @@ export const sendAccountToAdmin = async (
     const data = docSnapshot.data() as Conversation;
 
     await updateDoc(chatDocRef, {
-      "transaction.accountDetails": {
-        accountDetails: accountDetails,
+      "lastMessage.read_receipt": {
+        delivery_status: "seen",
+        status: true,
       },
+      "transaction.accountDetails": {
+        ...accountDetails,
+      },
+      updated_at: new Date(),
     });
-
     if (!edit) {
+      const msg = {
+        id: v4(),
+        timeStamp: new Date(),
+      };
+
       await updateDoc(chatDocRef, {
+        lastMessage: {
+          id: msg.id,
+          content: {
+            text: "",
+            media: {
+              caption: "",
+              url: "",
+              metadata: {
+                media_name: "",
+                media_size: "",
+                media_type: "",
+              },
+            },
+          },
+          read_receipt: {
+            delivery_status: "sent",
+            status: false,
+            time: msg.timeStamp,
+          },
+        },
         messages: arrayUnion({
-          id: v4(),
+          id: msg.id,
           type: "card",
           deleted: false,
           sender: {
@@ -153,21 +300,29 @@ export const sendAccountToAdmin = async (
             title: "Account Details",
             data: accountDetails,
           },
-          timeStamp: new Date(),
+          timeStamp: msg.timeStamp,
           edited: false,
           read_receipt: {
             delivery_status: "sent",
             status: false,
+            time: msg.timeStamp,
           },
         }),
+        updated_at: msg.timeStamp,
       });
     } else {
-      // #TODO fix this: you want to update an object in the messages array, find a way to manipulate arrays in firestore
+      if (data) {
+        const index =
+          idx ||
+          data.messages.findLastIndex(
+            (msg) => msg.card.title === "Account Details"
+          );
 
-      if (data && idx) {
+        console.log(index);
+
         if (Array.isArray(data.messages)) {
-          data.messages[idx] = {
-            ...data.messages[idx],
+          data.messages[index] = {
+            ...data.messages[index],
             card: {
               title: "Account Details",
               data: accountDetails,

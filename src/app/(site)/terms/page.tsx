@@ -1,7 +1,6 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
-import { Text } from "@radix-ui/themes";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
@@ -16,26 +15,28 @@ const page = (props: Props) => {
 
   return (
     <>
-      <div className="text-justify px-4 md:px-0">
-        <div className="pb-24 pt-8 max-w-screen-lg mx-auto text-sm text-slate-400">
+      <div className="px-4 md:px-0">
+        <div className="pb-24 pt-8 max-w-screen-lg mx-auto text-sm text-slate-400 grid gap-10">
           <div className="bg-purple-200 p-3 px-6 rounded-full w-fit mx-auto my-8 font-semibold text-black">
             Terms of Service
           </div>
 
           <div className="text-center grid md:m-16">
-            <Text className="font-semibold text-4xl md:text-7xl text-black">Our terms of service</Text>
-            <Text>
+            <p className="font-semibold text-4xl md:text-7xl text-black">
+              Our terms of service
+            </p>
+            <p>
               Read our terms below to learn more about your rights and
               responsibilities as a Great Exchange customer.
-            </Text>
+            </p>
           </div>
           <div className="w-fit place-self-start my-6">
-            <Text className="text-2xl font-semibold text-black">
+            <p className="text-2xl font-semibold text-black">
               Updated October 15, 2023
-            </Text>
+            </p>
           </div>
           <div className="grid gap-8">
-            <Text>
+            <div>
               <h4 className="text-xl font-semibold text-neutral-600 my-4">
                 Policy
               </h4>
@@ -48,8 +49,8 @@ const page = (props: Props) => {
                 accordance with this Privacy Policy and the terms of your
                 agreements with Great Exchange. This Privacy Policy explains:
               </p>
-            </Text>
-            <Text>
+            </div>
+            <div>
               <h4 className="text-xl font-semibold text-neutral-600 my-4">
                 How We Collect Personal Information
               </h4>
@@ -71,8 +72,8 @@ const page = (props: Props) => {
                 disclose information relating to you and/or where not otherwise
                 restricted.
               </p>
-            </Text>
-            <Text>
+            </div>
+            <div>
               <h4 className="text-xl font-semibold text-neutral-600 my-4">
                 How we use personal information
               </h4>
@@ -90,8 +91,8 @@ const page = (props: Props) => {
                 and background; personal information that you provide when you
                 apply for any of our products and services.
               </p>
-            </Text>
-            <Text>
+            </div>
+            <div>
               <h4 className="text-xl font-semibold text-neutral-600 my-4">
                 How We Use Cookies
               </h4>
@@ -103,8 +104,8 @@ const page = (props: Props) => {
                 device when you visit our website. They allow us to remember
                 your actions or preferences over time.
               </p>
-            </Text>
-            <Text>
+            </div>
+            <div>
               <h4 className="text-xl font-semibold text-neutral-600 my-4">
                 We use cookies to collect data that helps us to
               </h4>
@@ -131,8 +132,8 @@ const page = (props: Props) => {
                 browser, or visit www.allaboutcookies.org, where you will also
                 find more information about cookies generally.
               </p>
-            </Text>
-            <Text className="mt-8">
+            </div>
+            <div className="">
               <h4
                 className="text-xl font-semibold text-neutral-600 my-4"
                 id="privacy"
@@ -157,7 +158,7 @@ const page = (props: Props) => {
                 aforementioned third parties may in some instances be located
                 outside of your country.
               </p>
-            </Text>
+            </div>
           </div>
         </div>
       </div>

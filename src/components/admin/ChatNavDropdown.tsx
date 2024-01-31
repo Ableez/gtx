@@ -68,7 +68,7 @@ const ChatNavDropdown = (props: Props) => {
       >
         <ArrowLeftIcon width={24} />
       </Button>
-      <h4 className="font-bold">Admin</h4>
+      <h4 className="font-bold">Chat</h4>
 
       {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>

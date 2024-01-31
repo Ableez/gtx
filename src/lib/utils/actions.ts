@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
 import { redirect } from "next/navigation";
 import { Conversation } from "../../../chat";
+import { GiftCard } from "../../../types";
+import { User } from "firebase/auth";
 
 export const getCardData = (id: string | undefined): GiftCard | null => {
   if (!id) {
@@ -24,9 +26,10 @@ export const getCardData = (id: string | undefined): GiftCard | null => {
 };
 
 export const startChat = async (data: GiftCard, formData: FormData) => {
-  const userFrCookie = cookies().get("user");
+  const cachedUser = cookies().get("user")?.value;
+  const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
-  if (userFrCookie === undefined || userFrCookie === null) {
+  if (!user) {
     return {
       link: "/",
       logged: false,
@@ -34,8 +37,6 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       proceed: false,
     };
   }
-
-  const user = JSON.parse(userFrCookie?.value || "user")?.providerData[0];
 
   const price = formData.get("price");
   const subcategoryValue = formData.get("subcategory");
@@ -61,6 +62,11 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
   };
 
   try {
+    const msg = {
+      id: uuid(),
+      timeStamp: new Date(),
+    };
+
     const messagesRef = collection(db, "Messages");
     const createdChat = await addDoc(messagesRef, {
       transaction: {
@@ -75,28 +81,25 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       },
       messages: [
         {
-          id: uuid(),
-          type: "text",
+          id: msg.id,
+          type: "card",
           deleted: false,
-          deleted_at: null, //date
           sender: {
-            username: user.displayName,
-            uid: user.uid,
+            username: user?.displayName,
+            uid: user?.uid,
           },
           recipient: "admin",
-          content: {
-            text: `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory} gift card`,
-            media: {
-              caption: "",
-              url: "",
-              metadata: {
-                media_name: "",
-                media_size: "",
-                media_type: "",
-              }, //?optional
+          card: {
+            title: "card_detail",
+            data: {
+              id: data.id,
+              name: data.name,
+              vendor: data.name,
+              subcategory: cardInfo.subcategory,
+              price: cardInfo.price,
             },
           },
-          timeStamp: new Date(),
+          timeStamp: msg.timeStamp,
           edited: false,
           edited_at: null, //date
           read_receipt: {
@@ -116,35 +119,30 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
         },
       ],
       lastMessage: {
-        id: "", // Message ref id
+        id: msg.id,
+        sender: "user",
         content: {
-          sender: {
-            username: "",
-            uid: "",
-          },
-          text: "",
-          media: {
-            url: "",
-            metadata: {
-              media_name: "",
-              media_size: "",
-              media_type: "",
-            }, //?optional
-          },
+          text: `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory} gift card`,
+          media: false,
+        },
+        read_receipt: {
+          delivery_status: "sent",
+          status: false,
+          time: msg.timeStamp,
         },
       },
       user: {
-        username: "",
-        uid: "",
-        email: "",
+        username: user?.displayName,
+        uid: user?.uid,
+        email: user?.email,
+        photoUrl: user?.photoURL,
       },
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: msg.timeStamp,
+      updated_at: msg.timeStamp,
     });
 
     const link = `${createdChat.id}`;
 
-    // redirect(`${createdChat.id}`);
     return {
       link,
       logged: true,

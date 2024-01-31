@@ -1,15 +1,14 @@
 "use client";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import React, { ChangeEvent, useRef, useState } from "react";
-import UserChatNav from "../userChatNav";
-import RenderMessages from "./renderMessages";
 import { User } from "firebase/auth";
 import { SunIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import AttachFile from "./AttachFile";
-import { Conversation, Message } from "../../../chat";
-import TransactionConfirmation from "./TransactionConfirmation";
+import { Conversation, Message } from "../../../../chat";
+import AdminRenderMessages from "./AdminRenderMessages";
+import AdminAttachFile from "./AdminAttachFile";
+import { Card } from "@/components/ui/card";
 
 type Props = {
   allMessages?: Conversation;
@@ -21,9 +20,20 @@ type Props = {
   scrollToBottom: React.RefObject<HTMLDivElement>;
   setNewMessage: React.Dispatch<React.SetStateAction<Message | undefined>>;
   id: string;
+  card:
+    | {
+        id: string;
+        name: string;
+        vendor: string;
+        subcategory: string;
+        price: number;
+        ecode?: number | undefined;
+      }
+    | undefined;
 };
 
-const UserChatWrapper = ({
+const AdminChatWrapper = ({
+  card,
   user,
   allMessages,
   sendMessageAction,
@@ -60,18 +70,10 @@ const UserChatWrapper = ({
 
   return (
     <div className="box-border overflow-clip">
-      <TransactionConfirmation />
-      <div ref={chatsAutoScroll} className="h-[100vh] overflow-y-scroll">
-        <UserChatNav data={allMessages} />
-        <p className="text-xs text-center text-neutral-400 dark:text-neutral-500 py-4 mt-10 pb-10 px-8 leading-4 border-b">
-          Secure your transaction & chat directly with our expert agents. Get
-          real-time guidance, resolve issues seamlessly, & share your feedback -
-          all within this chat. Let&apos;s make your transaction smooth &
-          hassle-free!
-        </p>
+      <div ref={chatsAutoScroll} className="">
         {allMessages ? (
-          <RenderMessages
-            card={allMessages.transaction.cardDetails}
+          <AdminRenderMessages
+            card={card}
             scrollToBottom={scrollToBottom}
             data={allMessages.messages}
             id={id}
@@ -112,7 +114,7 @@ const UserChatWrapper = ({
               )}
             </div>
           )}
-          <AttachFile
+          <AdminAttachFile
             scrollToBottom={scrollToBottom}
             id={id}
             formRef={formRef}
@@ -151,4 +153,4 @@ const UserChatWrapper = ({
   );
 };
 
-export default UserChatWrapper;
+export default AdminChatWrapper;

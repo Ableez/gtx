@@ -6,12 +6,7 @@ type Props = {
 };
 
 const AdminChatIDLayout = (props: Props) => {
-  return (
-    <div className="overflow-hidden contain">
-      <ChatNavDropdown />
-      {props.children}
-    </div>
-  );
+  return <>{props.children}</>;
 };
 
 export default AdminChatIDLayout;

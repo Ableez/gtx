@@ -10,26 +10,22 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTrigger,
-} from "../ui/drawer";
 import { formatFileSize } from "@/lib/utils/formartFileSize";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/lib/utils/firebase";
-import { Progress } from "../ui/progress";
-import { sendUserMessage } from "@/lib/utils/actions/userChat";
-import SuccessCheckmark from "../successMark";
-import ECodeComp from "./eCode";
-import { Conversation } from "../../../chat";
-import AccountComp from "./account-dialog";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { SunIcon } from "@heroicons/react/24/outline";
+import { CurrencyDollarIcon, SunIcon } from "@heroicons/react/24/outline";
+import { Conversation } from "../../../../chat";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Progress } from "@/components/ui/progress";
+import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
+import SetRateComp from "./setRateDialog";
 
 type Props = {
   message?: Conversation;
@@ -38,7 +34,7 @@ type Props = {
   scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
-const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
+const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
   const [error, setError] = useState("");
   const [caption, setCaption] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
@@ -47,7 +43,7 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
   const { pending } = useFormStatus();
   const [progress, setProgress] = useState(0);
   const [sent, setSent] = useState(false);
-  const [openEcode, setOpenEcode] = useState(false);
+  const [openRate, setOpenRate] = useState(false);
   const [openAccount, setOpenAccount] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -93,9 +89,15 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
         async () => {
           const mediaurl = await getDownloadURL(uploadTask.snapshot.ref);
 
-          const sentMessage = await sendUserMessage(
+          const sentMessage = await sendAdminMessage(
             { timeStamp: new Date() },
             id,
+            message?.user as {
+              username: string;
+              uid: string;
+              email: string;
+              photoUrl: string;
+            },
             formData,
             {
               caption: caption,
@@ -109,8 +111,8 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
             true
           );
 
-          if (sentMessage?.error) {
-            setError(sentMessage?.error);
+          if (!sentMessage?.success) {
+            setError(sentMessage?.message);
             setLoading(false);
             return;
           }
@@ -147,7 +149,6 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
             {image || pdfFile ? (
               <div className="p-4">
                 <button
-                  title="Cancel"
                   onClick={() => {
                     setImage(null);
                     setPdfFile(null);
@@ -224,6 +225,7 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                       id="message"
                       name="message"
                       disabled={loading}
+                      aria-disabled={loading}
                       value={caption}
                       onChange={(e) => setCaption(e.target.value)}
                       autoCorrect="true"
@@ -235,8 +237,8 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                       data-enable-grammarly="false"
                     />
                     <button
-                      title="Send Message"
                       disabled={loading}
+                      aria-disabled={loading}
                       type="submit"
                       className="focus:outline-none col-span-2 border-secondary duration-300 w-full h-full py-1 grid place-items-center align-middle bg-secondary text-white rounded-r-lg p-2 px-4 disabled:cursor-not-allowed disabled:bg-opacity-50"
                     >
@@ -246,7 +248,7 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-3 pb-8 gap-1.5 md:gap-4 transition-all duration-400 md:p-4 px-2 py-6">
+              <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
                 <label
                   htmlFor="gallery"
                   className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl "
@@ -271,14 +273,16 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                 </label>
 
                 <DrawerClose
-                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl"
-                  onClick={() => setOpenEcode(true)}
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
+                  onClick={() => setOpenRate(true)}
                 >
-                  <LockClosedIcon width={30} />
-                  <p className="text-xs">
-                    {message?.transaction?.cardDetails?.ecode && "Edit "}
-                    E-Code
-                  </p>
+                  <CurrencyDollarIcon width={30} />
+                  <p className="text-xs">Set Rate</p>
+                  {!message?.transaction.cardDetails.rate && (
+                    <span className="text-[10px] py-0.5 px-1.5 bg-rose-400 rounded-full text-white absolute -top-1 right-0">
+                      Not Set
+                    </span>
+                  )}
                 </DrawerClose>
 
                 <DrawerClose
@@ -286,55 +290,28 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                   onClick={() => setOpenAccount(true)}
                 >
                   <CreditCardIcon width={30} />
-                  <p className="text-xs">
-                    {message?.transaction?.accountDetails?.accountNumber &&
-                      "Edit "}
-                    Account
-                  </p>
+                  <p className="text-xs">Transaction</p>
                 </DrawerClose>
               </div>
             )}
           </div>
         </DrawerContent>
       </Drawer>
-      <ECodeComp
+      <SetRateComp
+        edit={message?.transaction.cardDetails.rate ? true : false}
         scrollToBottom={scrollToBottom}
         id={id}
-        openEcode={openEcode}
-        setOpenEcode={setOpenEcode}
-        edit={message?.transaction?.cardDetails?.ecode ? true : false}
-        data={message as Conversation}
+        openRate={openRate}
+        setOpenRate={setOpenRate}
+        card={message?.transaction.cardDetails}
       />
-      <AccountComp
+      {/* <AccountComp
         scrollToBottom={scrollToBottom}
         id={id}
         openAccount={openAccount}
         setOpenAccount={setOpenAccount}
-        edit={
-          message?.transaction?.accountDetails?.accountNumber ? true : false
-        }
-      />
+      /> */}
     </>
   );
 };
-export default AttachFile;
-
-// sent && !(image || pdfFile) ? (
-//               <div className="grid gap-3 transition-all duration-400 p-4">
-//                 <DrawerHeader>Sent</DrawerHeader>
-//                 <div>
-//                   <SuccessCheckmark />
-//                 </div>
-//                 <DrawerClose
-//                   className="bg-primary py-3 w-3/4 px-6 mx-auto rounded-lg text-white hover:border-pink-400 border-2 border-primary duration-300"
-//                   onClick={() => {
-//                     setSent(false);
-//                     setImage(null);
-//                     setPdfFile(null);
-//                     setCaption("");
-//                   }}
-//                 >
-//                   Close
-//                 </DrawerClose>
-//               </div>
-//             ) :
+export default AdminAttachFile;

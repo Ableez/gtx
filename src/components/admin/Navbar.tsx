@@ -1,16 +1,9 @@
 "use client";
 
 import Link from "next/link";
-
-import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import Image from "next/image";
+
+import { NavigationMenu } from "@/components/ui/navigation-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,64 +18,69 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
+  ArrowLeftIcon,
   ComputerDesktopIcon,
   MoonIcon,
   SunIcon,
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { User, signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/lib/context/AuthProvider";
 import Cookies from "js-cookie";
+import { Button } from "../ui/button";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 
 export default function AdminNavbar() {
   const { setTheme } = useTheme();
-  const user = useContext(AuthContext);
   const router = useRouter();
+  const pathName = usePathname();
+  const [pageTitle, setPageTitle] = useState("Dashboard");
 
+  useEffect(() => {
+    if (pathName == "/admin") {
+      setPageTitle("Dashboard");
+    } else if (pathName.split("/")[2] === "chat") {
+      setPageTitle("Chat");
+    } else if (pathName.split("/")[2] === "transactions") {
+      setPageTitle("Transactions");
+    } else if (pathName.split("/")[2] === "reports") {
+      setPageTitle("Reports");
+    }
+  }, [pathName]);
   return (
-    <div className="container pb-3 py-2 border-b backdrop-blur-lg sticky top-0 mt-3 mb-5 bg-[#f5f5f56f] dark:bg-[#2222226d] z-[999]">
+    <div className="container pb-3 py-2 backdrop-blur-lg sticky top-0  mb-5 bg-[#f5f5f5f2] dark:bg-[#2222226d] z-40">
       <NavigationMenu>
-        <Link href={"/"} className="flex align-middle place-items-center gap-2">
-          <Image
-            width={30}
-            height={30}
-            src={"/greatexc.svg"}
-            alt="Great Exchange"
-          />
-          <h4 className="text-base font-bold">Dashboard</h4>
-        </Link>
-        <NavigationMenuList className="hidden md:visible">
-          <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Sell
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                About Us
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Policies
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-        </NavigationMenuList>
+        {pathName === "/admin" ? (
+          <Link href={"/"} className="p-3">
+            <Image
+              src={"/greatexc.svg"}
+              alt={"Great Exchange logo"}
+              width={30}
+              height={30}
+            />
+          </Link>
+        ) : (
+          <Button
+            onClick={() => router.back()}
+            variant={"ghost"}
+            className="hover:bg-white border p-3 py-4 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white"
+          >
+            <ArrowLeftIcon width={24} />
+          </Button>
+        )}
 
+        <h4 className="text-lg font-bold">{pageTitle}</h4>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300  active:from-stone-500 shadow-primary"></div>
+            <Button
+              variant={"ghost"}
+              className="hover:bg-white border p-3 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white"
+            >
+              <EllipsisVerticalIcon width={22} />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
             <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
@@ -92,7 +90,7 @@ export default function AdminNavbar() {
 
             <DropdownMenuGroup>
               <DropdownMenuItem className="py-3">
-                Transaction History
+                Transactions History
               </DropdownMenuItem>
               <DropdownMenuItem className="py-3">
                 Contact Support
@@ -137,10 +135,11 @@ export default function AdminNavbar() {
               onClick={() => {
                 signOut(auth);
                 Cookies.remove("uid");
-                Cookies.remove("role")
+                Cookies.remove("role");
+                router.refresh();
                 router.replace("/admin/login");
               }}
-              className="py-3 bg-red-500 hover:bg-red-600"
+              className="w-full py-3 flex align-middle place-items-center justify-between text-primary border border-primary bg-pink-100 font-semibold dark:bg-pink-500 dark:bg-opacity-10"
             >
               Logout
             </DropdownMenuItem>

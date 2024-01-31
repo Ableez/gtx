@@ -57,7 +57,10 @@ const AdminLogin = (props: Props) => {
 
             if (docSnap.exists() && docSnap.data().role === "admin") {
               Cookies.set("role", "admin", { expires: 7 * 24 });
-              Cookies.set("uid", user.user.uid, { expires: 7 * 24 });
+              user.user.reload();
+              Cookies.set("user", JSON.stringify(user.user.toJSON()));
+              Cookies.set("isLoggedIn", "true");
+              router.refresh()
               router.push("/admin");
               setLoading(false);
             }
@@ -165,6 +168,15 @@ const AdminLogin = (props: Props) => {
             </div>
           </form>
         </div>
+        <p className="mt-10 text-center text-sm text-neutral-500 dark:text-white">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/admin/register"
+            className="font-semibold leading-6 text-primary hover:text-primary"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </>
   );
