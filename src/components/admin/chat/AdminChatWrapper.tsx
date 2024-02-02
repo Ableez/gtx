@@ -75,7 +75,7 @@ const AdminChatWrapper = ({
           <AdminRenderMessages
             card={card}
             scrollToBottom={scrollToBottom}
-            data={allMessages.messages}
+            data={allMessages}
             id={id}
           />
         ) : (
@@ -95,6 +95,7 @@ const AdminChatWrapper = ({
           {selectedFile && (
             <div className="absolute bg-neutral-900 p-4 rounded-xl left-1/2 -translate-x-1/2">
               <button
+                title="Cancel"
                 className="bg-neutral-700 p-2 rounded-full"
                 onClick={() => {
                   setSelectedFile(null);
@@ -136,7 +137,6 @@ const AdminChatWrapper = ({
 
           <button
             disabled={loading || message.length === 0}
-            aria-disabled={loading}
             type="submit"
             className="focus:outline-none col-span-2 md:col-span-1 border-secondary rounded-xl duration-300 w-full h-full py-1 grid place-items-center align-middle bg-secondary disabled:bg-purple-300 text-white"
             title={loading ? "Sending..." : "Send Message"}

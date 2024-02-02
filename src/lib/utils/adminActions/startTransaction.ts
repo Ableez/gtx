@@ -7,15 +7,15 @@ import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
 
-export const setCardRate = async (
+export const startTransaction = async (
   id: string,
-  e: FormData,
-  edit?: boolean,
+  update?: {
+    status: string;
+  },
+  resend?: boolean,
   idx?: number
 ) => {
   try {
-    const rate = e.get("rate");
-
     const user = await checkServerAdmin();
 
     if (!user?.isAdmin)
@@ -29,16 +29,18 @@ export const setCardRate = async (
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
 
-    await updateDoc(chatDocRef, {
-      "lastMessage.read_receipt": {
-        delivery_status: "seen",
-        status: true,
-      },
-      updated_at: new Date(),
-      "transaction.cardDetails.rate": rate,
-    });
+    if (!update && !data.transaction.started) {
+      await updateDoc(chatDocRef, {
+        "lastMessage.read_receipt": {
+          delivery_status: "seen",
+          status: true,
+        },
+        updated_at: timeStamper(),
+        "transaction.started": true,
+        "transaction.accepted": false,
+        "transaction.status": "pending",
+      });
 
-    if (!edit) {
       const msg = {
         id: v4(),
         timeStamp: new Date(),
@@ -48,7 +50,7 @@ export const setCardRate = async (
         lastMessage: {
           id: msg.id,
           content: {
-            text: "Card Rate",
+            text: "Transaction Request",
             media: false,
           },
           read_receipt: {
@@ -67,13 +69,14 @@ export const setCardRate = async (
           },
           recipient: "user",
           card: {
-            title: "rate",
+            title: "start_transaction",
             data: {
-              value: rate,
+              rate: data.transaction.cardDetails.rate,
+              price: data.transaction.cardDetails.price,
             },
           },
           timeStamp: msg.timeStamp,
-          edited: false,
+          resended: false,
           read_receipt: {
             delivery_status: "sent",
             status: false,
@@ -86,16 +89,20 @@ export const setCardRate = async (
       if (data) {
         const index =
           idx ||
-          data.messages.findLastIndex((msg) => msg.card.title === "rate");
+          data.messages.findLastIndex(
+            (msg) => msg.card.title === "start_transaction"
+          );
 
         const time = timeStamper();
+
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
             card: {
-              title: "rate",
+              title: "start_transaction",
               data: {
-                value: rate,
+                rate: data.transaction.cardDetails.rate,
+                price: data.transaction.cardDetails.price,
               },
             },
             edited: true,
@@ -106,8 +113,16 @@ export const setCardRate = async (
           await updateDoc(chatDocRef, {
             messages: data.messages,
             updated_at: time,
+            "transaction.started": true,
+            "transaction.accepted": false,
+            "transaction.status": update?.status,
           });
         }
+      } else {
+        return {
+          message: "Transaction not found",
+          success: false,
+        };
       }
     }
     return {

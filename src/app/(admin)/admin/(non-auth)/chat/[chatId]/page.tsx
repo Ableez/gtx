@@ -24,7 +24,7 @@ type Props = {
   };
 };
 
-const UserChatScreen = ({ params }: Props) => {
+const AdminChatScreen = ({ params }: Props) => {
   const [messages, setMessages] = useState<Conversation>();
   const cachedUser = Cookies.get("user");
   const user = cachedUser ? JSON.parse(cachedUser) : null;
@@ -45,11 +45,28 @@ const UserChatScreen = ({ params }: Props) => {
       (doc) => {
         if (!doc.exists()) {
           setError("chat not found!");
-          // router.replace("/sell");
+          router.replace("/sell");
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 
-          setMessages(fetchedMessages);
+          const sortedArray = fetchedMessages.messages.sort((a, b) => {
+            const timeStampA = new Date(
+              a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
+            );
+
+            const timeStampB = new Date(
+              b.timeStamp.seconds * 1000 + b.timeStamp.nanoseconds / 1e6
+            );
+
+            return timeStampA.getTime() - timeStampB.getTime();
+          });
+
+          const newChat = {
+            ...fetchedMessages,
+            messages: sortedArray,
+          };
+
+          setMessages(newChat as Conversation);
 
           if (scrollToBottom.current) {
             scrollToBottom.current.scrollIntoView({
@@ -109,4 +126,4 @@ const UserChatScreen = ({ params }: Props) => {
   );
 };
 
-export default UserChatScreen;
+export default AdminChatScreen;

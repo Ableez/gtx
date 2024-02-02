@@ -26,6 +26,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import SetRateComp from "./setRateDialog";
+import StartAdminTransaction from "./StartTransaction";
 
 type Props = {
   message?: Conversation;
@@ -45,6 +46,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
   const [sent, setSent] = useState(false);
   const [openRate, setOpenRate] = useState(false);
   const [openAccount, setOpenAccount] = useState(false);
+  const [openStartTransaction, setOpenStartTransaction] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -149,6 +151,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
             {image || pdfFile ? (
               <div className="p-4">
                 <button
+                  title="Cancel"
                   onClick={() => {
                     setImage(null);
                     setPdfFile(null);
@@ -225,7 +228,6 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                       id="message"
                       name="message"
                       disabled={loading}
-                      aria-disabled={loading}
                       value={caption}
                       onChange={(e) => setCaption(e.target.value)}
                       autoCorrect="true"
@@ -237,8 +239,8 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                       data-enable-grammarly="false"
                     />
                     <button
+                      title="Send Message"
                       disabled={loading}
-                      aria-disabled={loading}
                       type="submit"
                       className="focus:outline-none col-span-2 border-secondary duration-300 w-full h-full py-1 grid place-items-center align-middle bg-secondary text-white rounded-r-lg p-2 px-4 disabled:cursor-not-allowed disabled:bg-opacity-50"
                     >
@@ -251,7 +253,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
               <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
                 <label
                   htmlFor="gallery"
-                  className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl "
+                  className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl "
                 >
                   <input
                     accept="image/*"
@@ -273,11 +275,14 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                 </label>
 
                 <DrawerClose
-                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
                   onClick={() => setOpenRate(true)}
                 >
                   <CurrencyDollarIcon width={30} />
-                  <p className="text-xs">Set Rate</p>
+                  <p className="text-xs">
+                    {message?.transaction.cardDetails.rate ? "Edit " : "Set "}
+                    Rate
+                  </p>
                   {!message?.transaction.cardDetails.rate && (
                     <span className="text-[10px] py-0.5 px-1.5 bg-rose-400 rounded-full text-white absolute -top-1 right-0">
                       Not Set
@@ -286,8 +291,8 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                 </DrawerClose>
 
                 <DrawerClose
-                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-purple-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-purple-100 text-purple-500 dark:bg-purple-400 dark:bg-opacity-10 rounded-3xl"
-                  onClick={() => setOpenAccount(true)}
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-purple-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-purple-100 text-purple-500 dark:bg-purple-400 dark:bg-opacity-10 rounded-3xl"
+                  onClick={() => setOpenStartTransaction(true)}
                 >
                   <CreditCardIcon width={30} />
                   <p className="text-xs">Transaction</p>
@@ -305,12 +310,13 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
         setOpenRate={setOpenRate}
         card={message?.transaction.cardDetails}
       />
-      {/* <AccountComp
+      <StartAdminTransaction
+        openStartTransaction={openStartTransaction}
+        setOpenStartTransaction={setOpenStartTransaction}
+        card={message}
         scrollToBottom={scrollToBottom}
         id={id}
-        openAccount={openAccount}
-        setOpenAccount={setOpenAccount}
-      /> */}
+      />
     </>
   );
 };

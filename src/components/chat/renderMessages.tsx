@@ -2,7 +2,7 @@ import { CheckIcon, ClockIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { memo, useState } from "react";
-import { Message } from "../../../chat";
+import { Conversation, Message } from "../../../chat";
 import {
   Card,
   CardContent,
@@ -14,9 +14,10 @@ import { Button } from "../ui/button";
 import AccountComp from "./account-dialog";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
 import ECodeComp from "./eCode";
+import ConfirmTransaction from "./ConfirmTransaction";
 
 type Props = {
-  data: Message[];
+  data: Conversation;
   scrollToBottom: React.MutableRefObject<HTMLDivElement | null>;
   id: string;
   card: {
@@ -38,9 +39,10 @@ const RenderMessages = memo(function RenderMessages({
 }: Props) {
   const [openAccount, setOpenAccount] = useState(false);
   const [openEcode, setOpenEcode] = useState(false);
+  const [openConfirmTransaction, setOpenConfirmTransaction] = useState(false);
   const [hideCode, setHideCode] = useState(true);
 
-  const renderUI = data.map((message, idx) => {
+  const renderUI = data.messages.map((message, idx) => {
     if (message.type === "text") {
       return (
         <div
@@ -305,6 +307,68 @@ const RenderMessages = memo(function RenderMessages({
               </Card>
             </div>
           )}
+
+          {message.card.title === "start_transaction" && (
+            <div
+              className={`${
+                message.recipient === "admin"
+                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+              } flex align-middle place-items-end justify-between gap-2 border`}
+            >
+              <Card
+                className={` ${
+                  message.card.data.status === "rejected_by_user"
+                    ? "bg-red-100 border-2 border-red-400"
+                    : (message.card.data.status = "accepted_by_user"
+                        ? "bg-emerald-400"
+                        : "bg-neutral-200")
+                } border-none shadow-none rounded-tl-[3px]`}
+              >
+                <CardHeader>
+                  <CardTitle
+                    className={`${
+                      message.card.data.status === "rejected_by_user"
+                        ? "text-rose-600"
+                        : (message.card.data.status = "accepted_by_user"
+                          ? "text-emerald-600"
+                            : "")
+                    } text-xl`}
+                  >
+                    {message.card.data.status === "rejected_by_user"
+                      ? "Rejected"
+                      : (message.card.data.status = "accepted_by_user"
+                          ? "Accepted"
+                          : "Confirm")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
+                  {message.card.data.status === "rejected_by_user" ? (
+                    <p>You rejected this transaction</p>
+                  ) : (
+                    (message.card.data.status = "accepted_by_user" ? (
+                      <p>Transaction is Confirmed</p>
+                    ) : (
+                      <p>Please confirm details to complete the transaction</p>
+                    ))
+                  )}
+
+                  {message.card.data.status !== "rejected_by_user" &&
+                  message.card.data.status !== "accepted_by_user" ? (
+                    <Button
+                      className="mt-2"
+                      disabled={data.transaction.accepted}
+                      onClick={() => setOpenConfirmTransaction(true)}
+                    >
+                      {data.transaction.accepted ? "Confirmed" : "Confirm"}
+                    </Button>
+                  ) : (
+                    <p></p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       );
     }
@@ -364,6 +428,14 @@ const RenderMessages = memo(function RenderMessages({
           ref={scrollToBottom}
         ></div>
       </div>
+      <ConfirmTransaction
+        scrollToBottom={scrollToBottom}
+        id={id}
+        openConfirmTransaction={openConfirmTransaction}
+        setOpenConfirmTransaction={setOpenConfirmTransaction}
+        edit={data?.transaction?.cardDetails?.ecode ? true : false}
+        data={data}
+      />
     </>
   );
 });

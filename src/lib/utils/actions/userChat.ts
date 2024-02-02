@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import { v4 } from "uuid";
 import { User } from "firebase/auth";
 import { Conversation } from "../../../../chat";
+import { timeStamper } from "../timeStamper";
 
 export const sendUserMessage = async (
   data: {
@@ -92,7 +93,6 @@ export const sendUserMessage = async (
 export const sendEcodeToAdmin = async (
   id: string,
   e: FormData,
-  convo: Conversation,
   edit?: boolean,
   idx?: number
 ) => {
@@ -114,8 +114,6 @@ export const sendEcodeToAdmin = async (
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
 
-    console.log(data);
-
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {
         delivery_status: "seen",
@@ -130,8 +128,6 @@ export const sendEcodeToAdmin = async (
         id: v4(),
         timeStamp: new Date(),
       };
-
-      console.log("Not edit");
 
       await updateDoc(chatDocRef, {
         lastMessage: {
@@ -185,8 +181,7 @@ export const sendEcodeToAdmin = async (
           idx ||
           data.messages.findLastIndex((msg) => msg.card.title === "e-Code");
 
-        console.log(index, "ECODE");
-
+        const time = timeStamper();
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
@@ -196,10 +191,14 @@ export const sendEcodeToAdmin = async (
                 value: ecode,
               },
             },
+            edited: true,
+            edited_at: time,
+            timeStamp: time,
           };
 
           await updateDoc(chatDocRef, {
             messages: data.messages,
+            updated_at: time,
           });
         }
       }
@@ -318,7 +317,7 @@ export const sendAccountToAdmin = async (
             (msg) => msg.card.title === "Account Details"
           );
 
-        console.log(index);
+        const time = timeStamper();
 
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
@@ -327,10 +326,14 @@ export const sendAccountToAdmin = async (
               title: "Account Details",
               data: accountDetails,
             },
+            edited: true,
+            edited_at: time,
+            timeStamp: time,
           };
 
           await updateDoc(chatDocRef, {
             messages: data.messages,
+            updated_at: time,
           });
         }
       }

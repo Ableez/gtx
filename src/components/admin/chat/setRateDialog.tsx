@@ -65,9 +65,7 @@ const SetRateComp = ({ card, openRate, setOpenRate, id, edit, idx }: Props) => {
     <Dialog open={openRate} onOpenChange={setOpenRate}>
       <DialogContent className="w-[95vw] max-w-md rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-medium">
-            Set rate
-          </DialogTitle>
+          <DialogTitle className="text-2xl font-medium">Set rate</DialogTitle>
           <DialogDescription className="text-neutral-400">
             Enter price in Naira:{" "}
             <span className="font-bold text-black">{card?.price}</span>
@@ -81,6 +79,7 @@ const SetRateComp = ({ card, openRate, setOpenRate, id, edit, idx }: Props) => {
                 id="rate"
                 disabled={loading}
                 type="text"
+                required
                 name="rate"
                 onChange={(e) => setRate(e.target.value)}
                 placeholder="0"

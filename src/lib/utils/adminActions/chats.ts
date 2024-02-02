@@ -2,7 +2,7 @@
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 } from "uuid";
-import { checkIsAdmin } from "./checkAdmin";
+import { checkServerAdmin } from "./checkServerAdmin";
 
 export const sendAdminMessage = async (
   data: {
@@ -31,7 +31,7 @@ export const sendAdminMessage = async (
 
   const { timeStamp } = data;
 
-  const user = await checkIsAdmin();
+  const user = await checkServerAdmin();
 
   if (!user?.isAdmin)
     return {

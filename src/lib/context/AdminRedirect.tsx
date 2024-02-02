@@ -5,8 +5,7 @@ import { auth, db } from "@/lib/utils/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import Cookies from "js-cookie";
+import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
 
 type Props = {
   children: ReactNode;
@@ -23,31 +22,18 @@ const AdminLayoutProtect = (props: Props) => {
       try {
         setIsLoading(true);
 
-        if (!authUser) {
+        const admin = await checkIsAdmin();
+
+        if (!admin?.isAdmin || !authUser) {
           setIsLoading(false);
           router.replace("/admin/login");
           setIsLoading(false);
           return;
         }
 
-        const uid = Cookies.get("uid");
-        const cachedRole = Cookies.get("role");
-
-        if (cachedRole === "admin") {
+        if (admin.isAdmin) {
           setUser(true);
           setIsLoading(false);
-        } else {
-          const docRef = doc(db, "Users", uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists() && docSnap.data().role === "admin") {
-            Cookies.set("role", "admin", { expires: 7 * 24 });
-            setUser(true);
-            setIsLoading(false);
-          } else {
-            setIsLoading(false);
-            router.replace("/admin/login");
-          }
         }
       } catch (error) {
         console.log(error);

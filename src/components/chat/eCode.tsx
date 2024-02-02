@@ -17,7 +17,7 @@ type Props = {
   openEcode: boolean;
   setOpenEcode: React.Dispatch<React.SetStateAction<boolean>>;
   scrollToBottom: React.RefObject<HTMLDivElement>;
-  data: Conversation;
+  data?: Conversation;
   edit?: boolean;
   idx?: number;
 };
@@ -35,7 +35,6 @@ const ECodeComp = ({ data, openEcode, setOpenEcode, id, edit, idx }: Props) => {
       const res = await sendEcodeToAdmin(
         id,
         new FormData(e.target as HTMLFormElement),
-        data,
         edit,
         idx
       );
@@ -71,7 +70,9 @@ const ECodeComp = ({ data, openEcode, setOpenEcode, id, edit, idx }: Props) => {
               id="ecode"
               disabled={loading}
               type="text"
+              minLength={16}
               maxLength={19}
+              required
               name="ecode"
               onChange={(e) => setEcode(e.target.value)}
               placeholder="●●●● ●●●● ●●●● ●●●●"

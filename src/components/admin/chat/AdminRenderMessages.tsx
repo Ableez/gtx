@@ -1,8 +1,8 @@
 import { CheckIcon, ClockIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React, { memo, useState } from "react";
-import { Message } from "../../../../chat";
+import React, { memo, useEffect, useState } from "react";
+import { Conversation, Message } from "../../../../chat";
 import {
   Card,
   CardContent,
@@ -11,13 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import AccountComp from "@/components/chat/account-dialog";
 import { CopyIcon, EyeClosedIcon } from "@radix-ui/react-icons";
-import ECodeComp from "@/components/chat/eCode";
 import SetRateComp from "./setRateDialog";
 
 type Props = {
-  data: Message[];
+  data: Conversation;
   scrollToBottom: React.MutableRefObject<HTMLDivElement | null>;
   id: string;
   card:
@@ -43,7 +41,14 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
   const [hideCode, setHideCode] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  const renderUI = data.map((message, idx) => {
+  useEffect(() => {
+    if (copied)
+      setTimeout(() => {
+        setCopied(false);
+      }, 1800);
+  }, [copied]);
+
+  const renderUI = data.messages.map((message, idx) => {
     if (message.type === "text") {
       return (
         <div
@@ -58,7 +63,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
             className={`${
               message.recipient !== "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
             } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
           >
             <div
@@ -129,7 +134,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               className={`${
                 message.recipient !== "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
             >
               <Card className="border-none shadow-none rounded-tl-[3px]">
@@ -168,18 +173,23 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                 </CardContent>
                 <Button
                   onClick={() => {
-                    setTimeout(() => {
-                      setCopied(true);
-                    }, 1500);
+                    navigator.clipboard
+                      .writeText(message.card.data?.accountNumber)
+                      .then(() => {
+                        setCopied(true);
+                      });
                   }}
                   title="Copy Account Number"
                   variant={"ghost"}
-                  className="float-right"
+                  className="float-right text-xs"
                 >
-                  {
-                    copied && "Copied"
-                  }
-                  <CopyIcon width={18} />
+                  {copied ? (
+                    <div className="flex gap-1 align-middle place-items-center items-center">
+                      Copied <CheckIcon width={18} />
+                    </div>
+                  ) : (
+                    <CopyIcon width={18} />
+                  )}
                 </Button>
               </Card>
             </div>
@@ -190,7 +200,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               className={`${
                 message.recipient !== "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
             >
               <Card className="border shadow-md dark:bg-black rounded-tl-[3px]">
@@ -208,7 +218,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                       src={"/logoplace.svg"}
                       className="w-8 p-1 bg-primary rounded-3xl"
                     />
-                    <h4 className="md:text-xl text-base font-bold">
+                    <h4 className="md:text-base text-base font-bold">
                       {message.card.data.vendor} Card
                     </h4>
                   </div>
@@ -243,23 +253,23 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               className={`${
                 message.recipient !== "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
             >
               <Card className="border-none shadow-none rounded-tl-[3px]">
                 <CardHeader>
-                  <CardTitle className="text-xl">E-code</CardTitle>
+                  <CardTitle className="text-base">E-code</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex align-middle justify-center place-items-center">
-                    <div className="select-none py-1 px-2.5 hover:bg-neutral-100 duration-300 rounded-lg tracking-widest bg-neutral-200 text-neutral-600">
+                    <div className="select-none py-1 px-2.5 hover:bg-neutral-100 duration-300 rounded-lg tracking-widest bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-white">
                       {!hideCode
                         ? message.card.data?.value.split("")
                         : "●●●● ●●●● ●●●● ●●●●"}
                     </div>
                     <button
                       onClick={() => setHideCode((prev) => !prev)}
-                      className="p-1.5 rounded-full hover:bg-purple-200"
+                      className="p-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-900"
                     >
                       {hideCode ? (
                         <EyeIcon width={18} />
@@ -278,15 +288,15 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               className={`${
                 message.recipient !== "admin"
                   ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2`}
             >
               <Card className="border-none shadow-none">
                 <CardHeader>
-                  <CardTitle className="text-xl">Card Rate</CardTitle>
+                  <CardTitle className="text-base">Card Rate</CardTitle>
                 </CardHeader>
                 <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
-                  <div className="select-none text-xl font-semibold">
+                  <div className="select-none text-base font-semibold">
                     ₦{message.card.data?.value}
                   </div>
                   <div className="select-none text-neutral-600">
@@ -308,6 +318,62 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               </Card>
             </div>
           )}
+
+          {message.card.title === "start_transaction" && (
+            <div
+              className={`${
+                message.recipient === "admin"
+                  ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
+              } flex align-middle place-items-end justify-between gap-2 border`}
+            >
+              <Card
+                className={`${
+                  message.card.data.status === "rejected_by_user"
+                    ? "text-rose-600 dark:border-red-600 border-2"
+                    : (message.card.data.status = "accepted_by_user"
+                        ? "text-emerald-600"
+                        : "")
+                } border-none shadow-none rounded-tl-[3px]`}
+              >
+                <CardHeader>
+                  <CardTitle
+                    className={`${
+                      message.card.data.status === "rejected_by_user"
+                        ? "text-rose-600"
+                        : (message.card.data.status = "accepted_by_user"
+                            ? "text-emerald-600"
+                            : "")
+                    } text-base`}
+                  >
+                    {message.card.data.status === "rejected_by_user"
+                      ? "Rejected by user"
+                      : (message.card.data.status = "accepted_by_user"
+                          ? "User Accepted"
+                          : "Transaction")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent
+                  className={`max-w-[250px] min-w-[200px] grid gap-1 dark:text-neutral-500 text-neutral-400`}
+                >
+                  {message.card.data.status === "rejected_by_user"
+                    ? "Transaction has been rejected by user"
+                    : (message.card.data.status = "accepted_by_user"
+                        ? "User Accepted"
+                        : "Waiting for user to confirm")}
+                  <div className="mt-2">
+                    {message.card.data.status === "rejected_by_user" ? (
+                      <Button>Resend</Button>
+                    ) : (
+                      (message.card.data.status = "accepted_by_user" ? (
+                        <Button>Finish transaction</Button>
+                      ) : null)
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       );
     }
@@ -326,7 +392,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
             className={`${
               message.recipient !== "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
             } grid align-middle place-items-center justify-between px-2 gap-2 py-1.5`}
           >
             <div className="rounded-2xl overflow-clip">
@@ -336,7 +402,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                   alt={message.content.media.metadata?.media_name as string}
                   width={220}
                   height={220}
-                  className="w-full bg-neutral-200 dark:bg-neutral-700"
+                  className="w-full bg-neutral-200 dark:bg-neutral-800"
                 />
               ) : (
                 <div className="flex align-middle place-items-center justify-center w-full h-full">

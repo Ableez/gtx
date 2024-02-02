@@ -50,6 +50,7 @@ export default function AdminNavbar() {
       setPageTitle("Reports");
     }
   }, [pathName]);
+
   return (
     <div className="container pb-3 py-2 backdrop-blur-lg sticky top-0  mb-5 bg-[#f5f5f5f2] dark:bg-[#2222226d] z-40">
       <NavigationMenu>

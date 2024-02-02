@@ -59,7 +59,6 @@ const AdminLogin = (props: Props) => {
               Cookies.set("role", "admin", { expires: 7 * 24 });
               user.user.reload();
               Cookies.set("user", JSON.stringify(user.user.toJSON()));
-              Cookies.set("isLoggedIn", "true");
               router.refresh()
               router.push("/admin");
               setLoading(false);

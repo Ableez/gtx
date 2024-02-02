@@ -4,8 +4,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
@@ -20,9 +18,6 @@ const TransactionConfirmation = (props: Props) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm</AlertDialogTitle>
-            {/* <AlertDialogDescription>
-              Please confirm these details before we proceed.
-            </AlertDialogDescription> */}
           </AlertDialogHeader>
           <div className="grid gap-6 divide-y divide-neutral-300">
             <div className="flex align-middle pt-6 place-items-start justify-between">

@@ -1,18 +1,16 @@
-// "use server"
+"use server";
 
 import { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import Cookies from "js-cookie";
 import { db } from "../firebase";
+import { cookies } from "next/headers";
 
-export const checkIsAdmin = async () => {
+export const checkServerAdmin = async () => {
   try {
-    const cachedUser = Cookies.get("user");
+    const cachedUser = cookies().get("user")?.value;
     const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
     const getUser = await getDoc(doc(db, "Users", user?.uid as string));
-
-    console.log("CHECK_ADMIN: ", getUser.data());
 
     const checkUser = getUser.data() as {
       imageUrl: string | null;

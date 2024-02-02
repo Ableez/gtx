@@ -82,6 +82,8 @@ const AccountComp = ({
               <Input
                 required
                 id="accountNumber"
+                minLength={11}
+                maxLength={11}
                 disabled={loading}
                 defaultValue={formData?.accountNumber || ""}
                 type="number"
@@ -95,6 +97,7 @@ const AccountComp = ({
               <Input
                 required
                 id="accountName"
+                minLength={3}
                 disabled={loading}
                 defaultValue={formData?.accountName || ""}
                 type="text"

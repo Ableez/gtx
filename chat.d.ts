@@ -30,11 +30,36 @@ interface Sender {
 }
 
 interface ReadReceipt {
-  time: Date;
+  time: Timestamp;
   delivery_status: string;
   status: boolean;
 }
 
+interface Message {
+  id: string;
+  type: string;
+  edited_at: null | any;
+  deleted: boolean;
+  timeStamp: Timestamp;
+  content: {
+    text: string;
+    media: MediaContent;
+  };
+  card: {
+    title: string;
+    data: any;
+  };
+  quoted_message: {
+    text: string;
+    url: string;
+    metadata: MediaMeta;
+  } | null;
+  recipient: string;
+  edited: boolean;
+  deleted_at: null | any;
+  sender: Sender;
+  read_receipt: ReadReceipt;
+}
 interface Message {
   id: string;
   type: string;
@@ -77,6 +102,10 @@ interface Transaction {
     accountNumber: number;
     bankName: string;
   };
+  started: true;
+  accepted: false;
+  completed: false;
+  status: "pending" | "done" | "cancelled" | "rejected" | "processing";
 }
 
 interface LastMessage {
@@ -99,8 +128,8 @@ interface Conversation {
     email: string;
     photoUrl: string;
   };
-  created_at: Date;
-  updated_at: Date;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 
 export type ConversationCollections = {
