@@ -2,6 +2,8 @@
 
 import {
   GoogleAuthProvider,
+  browserLocalPersistence,
+  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -28,20 +30,21 @@ export const signInCredentials = async (
   }
 
   try {
-    const newUser = await signInWithEmailAndPassword(auth, email, password);
-    if (newUser.user) {
-      newUser.user.reload();
-      cookies().set("user", JSON.stringify(newUser.user.toJSON()));
-      cookies().set("isLoggedIn", "true");
-      logged = true;
-    }
+    await setPersistence(auth, browserLocalPersistence).then(() => {
+      console.log("Persistence set");
+
+      return signInWithEmailAndPassword(auth, email, password).then((user) => {
+        cookies().set("user", JSON.stringify(user.user.toJSON()));
+        logged = true;
+      });
+    });
   } catch (e) {
     const err = e as FirebaseError;
     console.log(err);
     return {
       message:
         err?.code === "auth/invalid-login-credentials"
-          ? "Invalid login credentials"
+          ? "Wrong password or email"
           : err?.code === "auth/user-not-found"
           ? "User not found"
           : err?.code === "auth/wrong-password"
@@ -54,7 +57,8 @@ export const signInCredentials = async (
 
   if (logged) {
     console.log("Logged", logged);
-    redirect(url || "/sell");
+
+    // redirect(url || "/sell");
   }
 
   revalidatePath("/");

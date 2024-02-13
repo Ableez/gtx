@@ -12,7 +12,7 @@ export async function adminLoader() {
   }
 
   // Check if user has admin privileges
-  const ref = doc(db, "Users", auth.currentUser.uid);
+  const ref = doc(db, "Users", auth?.currentUser?.uid as string);
   const snap = await getDoc(ref);
 
   if (!snap.exists()) {

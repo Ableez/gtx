@@ -24,16 +24,20 @@ import {
   SunIcon,
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
-import { useContext, useEffect, useState } from "react";
-import { User, signOut } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/lib/context/AuthProvider";
 import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 
-export default function AdminNavbar() {
+type Props = {
+  setConfirmClose: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function AdminNavbar({ setConfirmClose }: Props) {
   const { setTheme } = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -52,7 +56,7 @@ export default function AdminNavbar() {
   }, [pathName]);
 
   return (
-    <div className="container pb-3 py-2 backdrop-blur-lg sticky top-0  mb-5 bg-[#f5f5f5f2] dark:bg-[#2222226d] z-40">
+    <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-[#222222db] z-50">
       <NavigationMenu>
         {pathName === "/admin" ? (
           <Link href={"/"} className="p-3">
@@ -88,62 +92,79 @@ export default function AdminNavbar() {
               {auth.currentUser?.displayName || "Not Logged in"}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {/\/admin\/chat\/(.*)$/.test(pathName) ? (
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setConfirmClose(true);
+                    }}
+                    className="py-3 border border-red-600 bg-rose-100"
+                  >
+                    Close chat
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </DropdownMenuGroup>
+              </>
+            ) : (
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="py-3">
+                    Transactions History
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="py-3">
+                    Contact Support
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </DropdownMenuGroup>
 
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="py-3">
-                Transactions History
-              </DropdownMenuItem>
-              <DropdownMenuItem className="py-3">
-                Contact Support
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </DropdownMenuGroup>
-
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>{" "}
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="py-3">
-                  Theme
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem
-                      className="flex align-middle justify-between place-items-center py-3"
-                      onClick={() => setTheme("light")}
-                    >
-                      Light
-                      <SunIcon width={20} />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="flex align-middle justify-between place-items-center py-3"
-                      onClick={() => setTheme("dark")}
-                    >
-                      Dark
-                      <MoonIcon width={20} />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="flex align-middle justify-between place-items-center py-3"
-                      onClick={() => setTheme("system")}
-                    >
-                      System
-                      <ComputerDesktopIcon width={20} />
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={() => {
-                signOut(auth);
-                Cookies.remove("uid");
-                Cookies.remove("role");
-                router.refresh();
-                router.replace("/admin/login");
-              }}
-              className="w-full py-3 flex align-middle place-items-center justify-between text-primary border border-primary bg-pink-100 font-semibold dark:bg-pink-500 dark:bg-opacity-10"
-            >
-              Logout
-            </DropdownMenuItem>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>{" "}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger className="py-3">
+                      Theme
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                      <DropdownMenuSubContent>
+                        <DropdownMenuItem
+                          className="flex align-middle justify-between place-items-center py-3"
+                          onClick={() => setTheme("light")}
+                        >
+                          Light
+                          <SunIcon width={20} />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="flex align-middle justify-between place-items-center py-3"
+                          onClick={() => setTheme("dark")}
+                        >
+                          Dark
+                          <MoonIcon width={20} />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="flex align-middle justify-between place-items-center py-3"
+                          onClick={() => setTheme("system")}
+                        >
+                          System
+                          <ComputerDesktopIcon width={20} />
+                        </DropdownMenuItem>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                  </DropdownMenuSub>
+                </DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => {
+                    signOut(auth);
+                    Cookies.remove("uid");
+                    Cookies.remove("role");
+                    router.refresh();
+                    router.replace("/admin/login");
+                  }}
+                  className="w-full py-3 flex align-middle place-items-center justify-between text-primary border border-primary bg-pink-100 font-semibold dark:bg-pink-500 dark:bg-opacity-10"
+                >
+                  Logout
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </NavigationMenu>

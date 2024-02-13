@@ -1,17 +1,12 @@
 "use client";
 
-import {
-  ArrowRightIcon,
-  ChevronRightIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { ClipboardCopyIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "@/lib/utils/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/utils/firebase";
 import { formatTime } from "@/lib/utils/formatTime";
 import { giftcards } from "@/lib/data/giftcards";
 import {
@@ -19,24 +14,22 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   ChatBubbleBottomCenterTextIcon,
-  ChevronDownIcon,
+  CheckIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import Loading from "@/app/loading";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { TransactionRec } from "../../../../../../../chat";
+import { User } from "../../../../../../../types";
+import ApproveTransaction from "@/components/admin/transactions/approve_transaction";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
+import { cancelTransaction } from "@/lib/utils/adminActions/startTransaction";
+import DownloadReceipt from "@/components/admin/transactions/download_receipt";
 
 type Props = {
   params: {
@@ -45,27 +38,42 @@ type Props = {
 };
 
 const TransactionDetail = ({ params }: Props) => {
-  const [transactionData, setTransactionData] = useState<Transaction>();
+  const [transaction, setTransaction] = useState<TransactionRec>();
   const transactionId = params._id;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [openRef, setOpenRef] = useState({
-    open: false,
-    referenceId: "",
-  });
-  const router = useRouter();
+  const [user, setUser] = useState<User>();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const fetchTransactionData = async () => {
+    if (copied)
+      setTimeout(() => {
+        setCopied(false);
+      }, 1800);
+  }, [copied]);
+
+  useEffect(() => {
+    const fetchTransaction = async () => {
       setLoading(true);
       try {
         const docRef = doc(db, "Transactions", transactionId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          const data = docSnap.data() as Transaction;
-          setTransactionData(data);
-          console.log("Document data:", data);
+          const data = {
+            ...docSnap.data(),
+            id: docSnap.id,
+          } as TransactionRec;
+          const docRef = doc(db, "Users", data.userId);
+          const userSnap = await getDoc(docRef);
+
+          if (userSnap.exists()) {
+            setUser(userSnap.data() as User);
+          } else {
+            console.log("User not found");
+          }
+
+          setTransaction(data);
         } else {
           console.log("No such document!");
         }
@@ -76,252 +84,195 @@ const TransactionDetail = ({ params }: Props) => {
       }
     };
 
-    fetchTransactionData();
+    fetchTransaction();
   }, [transactionId]);
 
   const card = giftcards.find((card) => {
-    return card.name === transactionData?.vendor;
+    return card.name === transaction?.data.cardDetails.vendor;
   });
 
-  const subCategory = card?.subCategory.find((sub) => {
-    return sub.value === transactionData?.subcategory;
-  });
+  // const subCategory = card?.subCategory.find((sub) => {
+  //   return sub.value === transaction?.data.cardDetails.subcategory;
+  // });
 
   const date = formatTime(
     new Date(
-      (transactionData?.date.seconds ?? 0) * 1000 +
-        (transactionData?.date.nanoseconds ?? 0) / 1e6
+      (transaction?.created_at.seconds ?? 0) * 1000 +
+        (transaction?.created_at.nanoseconds ?? 0) / 1e6
     ).toISOString()
   );
 
-  const approveTransaction = async () => {
-    try {
-      const transactionRef = doc(db, "Transactions", transactionId);
-
-      await updateDoc(transactionRef, {
-        referenceId: openRef.referenceId,
-        isApproved: true,
-        status: "done",
-      });
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const cancelTransaction = async () => {
-    try {
-      const transactionRef = doc(db, "Transactions", transactionId);
-
-      await updateDoc(transactionRef, {
-        isApproved: false,
-        status: "cancelled",
-      });
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
-    <div className="font-bold text-lg relative max-w-screen-sm pb-8">
+    <div className="relative max-w-screen-sm py-8 mx-auto">
       {loading ? (
         <Loading />
       ) : (
         <>
-          <div className="container">
-            <Button
-              onClick={() => {
-                router.back();
-              }}
-              variant={"ghost"}
-              className="border"
-            >
-              <ArrowLeftIcon width={20} />
-            </Button>
-          </div>
-          <div className="my-6">
-            <div className="flex align-middle place-items-center px-4 w-fit mx-auto gap-4 py-4">
+          <div className="">
+            <div className="flex w-full justify-start place-items-start px-8 mx-auto gap-4 py-4">
               <Image
                 src={"/logoplace.svg"}
                 alt="Vendor Logo"
-                width={50}
-                height={50}
-                className="dark:opacity-20"
+                width={35}
+                height={35}
+                className="p-1 bg-purple-400 rounded-full mt-1 border-purple-200 border-4 box-content"
               />
-              {transactionData?.vendor} Card
-            </div>
-            <p className="text-center text-[12px] text-neutral-400 dark:text-neutral-500 font-medium">
-              {transactionData ? date : "Loading date..."}
-            </p>
-          </div>
-          <div className="gri d grid-flow-row divide-y">
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2">
-              <h4 className="capitalize">{transactionData?.user.username}</h4>
-              <span className="font-medium text-[12px]">
-                {transactionData?.user.email}
-              </span>
-            </div>
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2">
-              <h4 className="">${transactionData?.amount}</h4>
-              <span className="font-medium text-[12px] text-neutral-400">
-                {subCategory && subCategory.title}
-              </span>
-            </div>
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2 flex align-middle place-items-center justify-between">
               <div>
-                <span className="font-medium text-neutral-400 dark:text-neutral-400 text-[12px]">
+                <h6 className="font-semibold text-base">
+                  {transaction?.data.cardDetails.vendor} Card
+                </h6>
+                <h6 className="text-[10px] dark:text-neutral-300">
+                  {transaction?.data.cardDetails.subcategory.value}
+                </h6>
+                <h6 className="font-bold text-base">
+                  ₦
+                  {transaction?.data.cardDetails?.rate &&
+                    formatCurrency(transaction.data.cardDetails.rate)}
+                </h6>
+              </div>
+            </div>
+            {/* <p className="text-center text-[12px] text-neutral-500 dark:text-neutral-300 ">
+              {transaction ? date : "Loading date..."}
+            </p> */}
+          </div>
+          <div className="grid grid-flow-row py-4 gap-2">
+            <div className="px-4">
+              <h6 className="text-neutral-500 dark:text-neutral-300 text-[12px]">
+                Time
+              </h6>
+              <h6 className="">{date}</h6>
+            </div>
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4">
+              <h6 className="text-neutral-500 dark:text-neutral-300 text-[12px]">
+                {user?.email}
+              </h6>
+              <h6 className="">{user?.username}</h6>
+            </div>
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4">
+              <span className=" text-[12px] dark:text-neutral-300">
+                {transaction?.data.cardDetails.subcategory.value}
+              </span>
+              <h6 className="font-semibold">
+                {transaction?.data.cardDetails.price}
+              </h6>
+            </div>
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4 flex align-middle place-items-center justify-between">
+              <div>
+                <span className=" text-neutral-500 dark:text-neutral-300 text-[12px]">
                   Payment Method
                 </span>
-                <h4 className="text-[0.8rem]">Transfer</h4>
+                <h6 className="font-semibold">{transaction?.payment.method}</h6>
               </div>
-              <div
-                className="text-left gap-0 text-[10px] font-medium"
-                style={{ lineHeight: "16px" }}
-              >
-                {transactionData?.payment.details.accountNumber} <br />
-                {transactionData?.payment.details.accountName} <br />
-                {transactionData?.payment.details.bank}
+              <div className="text-left font-semibold text-xs">
+                <ul>
+                  <li>{transaction?.data.accountDetails.accountNumber}</li>
+                  <li>{transaction?.data.accountDetails.accountName}</li>
+                  <li>{transaction?.data.accountDetails.bankName}</li>
+                </ul>
               </div>
             </div>
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2 flex align-middle place-items-center justify-between">
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4 flex align-middle place-items-center justify-between">
               <div>
-                <span className="font-medium text-neutral-400 dark:text-neutral-400 text-[12px]">
+                <span className=" text-neutral-500 dark:text-neutral-300 text-[12px]">
                   Status
                 </span>
-                <h4 className="flex align-middle place-items-center gap-2 text-[0.8rem] capitalize">
+                <h6 className="flex align-middle place-items-center gap-2 font-semibold capitalize ">
                   <span
-                    className={`w-4 h-4 rounded-full ${
-                      transactionData?.isApproved
-                        ? "bg-green-400"
-                        : transactionData?.status === "done"
-                        ? "bg-green-400"
-                        : transactionData?.status === "pending"
+                    className={`w-2 h-2 animate-pulse rounded-full ${
+                      transaction?.data.completed
+                        ? "bg-neutral-500"
+                        : transaction?.data.status === "done"
+                        ? "bg-green-600"
+                        : transaction?.data.status === "pending"
                         ? "bg-orange-400"
-                        : "bg-red-500"
+                        : transaction?.data.status === "processing"
+                        ? "bg-yellow-500"
+                        : "bg-red-600"
                     }`}
                   ></span>
-                  {transactionData?.status}
-                </h4>
+                  {transaction?.data.status}
+                </h6>
               </div>
 
-              {/* <DropdownMenu>
-                <DropdownMenuTrigger className="text-xs bg-purple-300 px-2 py-1.5 rounded-md flex align-middle place-items-center justify-between gap-1">
-                  Change <ChevronDownIcon width={16} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setOpenRef((prev) => {
-                        return {
-                          ...prev,
-                          open: true,
-                        };
-                      });
-                    }}
-                  >
-                    Approve
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Cancel</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-
-              <Button
-                variant={"ghost"}
-                disabled={transactionData?.isApproved}
-                className="border shadow-none bg-green-400 border-green-600 hover:bg-green-400 hover:border-green-900 disabled:bg-green-100 disabled:text-green-700 dark:disabled:bg-green-950 dark:disabled:text-green-100 hover:shadow-inner inset-x-4 inset-y-2"
-                onClick={() => {
-                  setOpenRef((prev) => {
-                    return {
-                      ...prev,
-                      open: true,
-                    };
-                  });
-                }}
-              >
-                {transactionData?.isApproved ? "Approved" : "Approve"}
-              </Button>
+              {transaction?.data.status === "done" ? (
+                <div className="border hover:bg-green-100 text-green-600 hover:text-green-600 bg-green-100 dark:bg-green-950 border-green-700 grid place-items-center px-2 py-1 rounded-xl first-letter:font-bold grid-flow-col gap-1">
+                  <CheckIcon width={14} strokeWidth={3} />
+                  Approved
+                </div>
+              ) : null}
             </div>
-
-            <Dialog open={openRef.open}>
-              <DialogContent>
-                <DialogClose
-                  onClick={() => {
-                    setOpenRef((prev) => {
-                      return {
-                        ...prev,
-                        open: false,
-                      };
-                    });
-                  }}
-                  className="absolute top-3 right-4 bg-white dark:bg-neutral-800 p-2.5 border rounded-md z-50"
-                >
-                  <XMarkIcon width={18} />
-                </DialogClose>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    approveTransaction();
-                  }}
-                  className="pb-6 pt-8 grid gap-3"
-                >
-                  <DialogDescription className="text-xs leading-6">
-                    Enter the transfer reference Id to approve transaction
-                  </DialogDescription>
-                  <Input
-                    placeholder="Reference ID"
-                    className="shadow-none"
-                    onChange={(e) => {
-                      setOpenRef((prev) => {
-                        return {
-                          ...prev,
-                          referenceId: e.target.value,
-                        };
-                      });
-                    }}
-                  />
-                  {error && error}
-                  <Button
-                    disabled={openRef.referenceId.split("").length < 10}
-                    onClick={() => {
-                      setOpenRef((prev) => {
-                        return {
-                          ...prev,
-                          open: false,
-                        };
-                      });
-                    }}
-                  >
-                    Approve
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2">
-              <span className="font-medium text-neutral-400 dark:text-neutral-400 text-[12px]">
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4">
+              <span className=" text-neutral-500 dark:text-neutral-300 text-[12px]">
                 Transaction ID
               </span>
-              <h4 className="flex align-middle place-items-center gap-2 text-[0.8rem]">
-                {transactionData?.link || params._id}
-              </h4>
+              <h6 className="flex align-middle place-items-center gap-2 font-semibold">
+                {transaction?.id || params._id}
+              </h6>
             </div>
-            <div className="bg-white dark:bg-neutral-800 px-4 py-2">
-              <span className="font-medium text-neutral-400 dark:text-neutral-400 text-[12px]">
-                Reference ID
-              </span>
-              <h4 className="flex align-middle place-items-center gap-2 text-[0.8rem]">
-                {transactionData?.isApproved
-                  ? transactionData.referenceId
-                  : "N/A"}
-              </h4>
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
+            <div className="px-4 flex align-middle place-items-center justify-between">
+              <div>
+                <span className=" text-neutral-500 dark:text-neutral-300 text-[12px]">
+                  Reference ID
+                </span>
+                <h6
+                  className={`${
+                    transaction?.data.status === "done" ? "" : "text-red-500"
+                  } flex align-middle place-items-center gap-2 font-semibold`}
+                >
+                  {transaction?.data.status === "done"
+                    ? transaction.payment.reference
+                    : "N/A"}
+                </h6>
+              </div>
+              {transaction?.data.status === "done" && (
+                <Button
+                  title="Copy reference ID"
+                  onClick={() => {
+                    navigator.clipboard
+                      .writeText(
+                        transaction?.payment?.reference ||
+                          "Guy chill na, the app never load 😹😹😹"
+                      )
+                      .then(() => {
+                        setCopied(true);
+                      });
+                  }}
+                  variant={"ghost"}
+                  className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 aspect-square p-0 border ${
+                    copied
+                      ? "bg-purple-300 hover:bg-purple-300 dark:bg-purple-800 dark:hover:bg-purple-800"
+                      : ""
+                  }`}
+                >
+                  {copied ? (
+                    <CheckIcon width={15} strokeWidth={2} />
+                  ) : (
+                    <ClipboardCopyIcon width={15} strokeWidth={2} />
+                  )}
+                </Button>
+              )}
             </div>
+            <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
+            {/* Seperator /> */}
           </div>
-          <div className="my-6 grid grid-flow-row gap-1 text-sm">
+          <div className="my-6 grid grid-flow-row divide-y text-sm">
             <Link
-              href={`/admin/chat/${transactionData?.chatId}`}
-              className="flex align-middle place-items-center justify-between w-full p-4 bg-white dark:bg-neutral-800 border-y border-purple-100 dark:border-neutral-600 dark:border-opacity-40 hover:shadow-sm group text-purple-900"
+              href={`/admin/chat/${transaction?.chatId}`}
+              className="flex align-middle place-items-center justify-between w-full p-4 border-purple-100 dark:border-neutral-600 dark:border-opacity-40 hover:shadow-sm group text-purple-900"
             >
-              <div className="flex align-middle place-items-center justify-between gap-4 dark:text-neutral-400">
+              <div className="flex align-middle place-items-center justify-between gap-4 dark:text-neutral-300">
                 <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-purple-400 bg-purple-100 dark:bg-purple-950 dark:bg-opacity-40 dark:border-purple-700 dark:text-purple-500">
                   <ChatBubbleBottomCenterTextIcon width={22} />
                 </div>
@@ -333,50 +284,71 @@ const TransactionDetail = ({ params }: Props) => {
                 className="group-hover:ml-2 duration-300 ease-in"
               />
             </Link>
-            <Dialog
-              onOpenChange={(e) => {
-                console.log(e);
-                if (e === false) {
-                  setError("");
-                }
-              }}
-            >
-              <DialogTrigger className="flex align-middle place-items-center justify-between w-full p-4 bg-white dark:bg-neutral-800 border-y border-pink-100 dark:border-neutral-600 dark:border-opacity-40 hover:shadow-sm group text-orange-700">
-                <div className="flex align-middle place-items-center justify-between gap-4">
-                  <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-red-400 bg-red-100 dark:bg-red-950 dark:bg-opacity-40 dark:border-red-700 dark:text-red-500">
-                    <TrashIcon width={22} />
+            {transaction?.data.status === "cancelled" ||
+            transaction?.data.status === "rejected" ? (
+              <ApproveTransaction
+                id={transaction?.chatId as string}
+                transaction={transaction}
+                reval={{
+                  update: true,
+                  transaction: transaction as TransactionRec,
+                }}
+              />
+            ) : (
+              <Dialog
+                onOpenChange={(e) => {
+                  if (e === false) {
+                    setError("");
+                  }
+                }}
+              >
+                <DialogTrigger className="flex align-middle place-items-center justify-between w-full p-4 border-pink-100 dark:border-neutral-600 bg-white dark:bg-neutral-800 dark:border-opacity-40 hover:shadow-sm group text-orange-700">
+                  <div className="flex align-middle place-items-center justify-between gap-4">
+                    <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-red-400 bg-red-100 dark:bg-red-950 dark:bg-opacity-40 dark:border-red-700 dark:text-red-500">
+                      <TrashIcon width={22} />
+                    </div>
+                    Cancel transaction
                   </div>
-                  Cancel transaction
-                </div>
 
-                <ChevronRightIcon
-                  width={22}
-                  className="group-hover:ml-2 duration-300 ease-in"
-                />
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <h4 className="font-semibold text-neutral-800">
-                    Are you sure?
-                  </h4>
-                </DialogHeader>
-                <DialogDescription className="text-center">
-                  Cancel the transaction
-                </DialogDescription>
-                <div className="flex align-middle justify-between gap-3">
-                  <DialogClose
-                    className="w-full shadow-none bg-primary rounded-md py-2.5 font-medium text-white"
-                    onClick={() => cancelTransaction()}
-                  >
-                    Okay
-                  </DialogClose>
-                  <DialogClose className="w-full shadow-none border rounded-md py-2.5 font-medium">
-                    Cancel
-                  </DialogClose>
-                </div>
-              </DialogContent>
-            </Dialog>
+                  <ChevronRightIcon
+                    width={22}
+                    className="group-hover:ml-2 duration-300 ease-in"
+                  />
+                </DialogTrigger>
+                <DialogContent className="w-[95vw] rounded-xl">
+                  <DialogHeader>
+                    <h6 className="font-semibold text-neutral-800">
+                      Are you sure?
+                    </h6>
+                  </DialogHeader>
+                  <DialogDescription className="text-center">
+                    This will close chat related to transaction and set the
+                    status to cancelled.
+                  </DialogDescription>
+                  <div className="flex align-middle justify-between gap-3">
+                    <DialogClose className="w-full shadow-none border rounded-md py-2.5 ">
+                      Cancel
+                    </DialogClose>
+                    <DialogClose
+                      className="w-full shadow-none bg-primary rounded-md py-2.5 text-white"
+                      onClick={async () => {
+                        await cancelTransaction(
+                          transaction?.chatId as string,
+                          transaction?.id as string
+                        );
+
+                        window.location.reload();
+                      }}
+                    >
+                      Okay
+                    </DialogClose>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
+
+          <DownloadReceipt />
         </>
       )}
     </div>

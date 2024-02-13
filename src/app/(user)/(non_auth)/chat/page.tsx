@@ -23,6 +23,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   setDoc,
 } from "firebase/firestore";
@@ -61,7 +62,10 @@ const UserChats = (props: Props) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const q = query(collection(db, "Messages"));
+        const q = query(
+          collection(db, "Messages"),
+          orderBy("lastMessage.read_receipt.time", "desc")
+        );
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
           const chatData = querySnapshot.docs.map((doc) => {
             if (doc.exists()) {

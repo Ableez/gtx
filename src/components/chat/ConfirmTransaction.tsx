@@ -14,6 +14,7 @@ import { Label } from "../ui/label";
 import { Conversation } from "../../../chat";
 import Image from "next/image";
 import { sendConfirmTransactionToAdmin } from "@/lib/utils/actions/sendConfirmTransactionToAdmin";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
   id: string;
@@ -67,7 +68,7 @@ const ConfirmTransaction = ({
       <DialogContent className="w-[95vw] max-w-md rounded-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            {edit && "Edit "} Bank Details
+            Double-check
           </DialogTitle>
           <DialogDescription className="text-neutral-400 text-sm">
             Please confirm the details below.
@@ -76,15 +77,31 @@ const ConfirmTransaction = ({
         <div>
           <div className="my-4">
             <div className="flex pb-2 align-middle place-items-center justify-start gap-3">
-              <Image
-                alt="Card logo"
-                width={100}
-                height={100}
-                src={"/logoplace.svg"}
-                className="w-8 p-1 bg-primary rounded-3xl"
-              />
+              <div className="relative">
+                <Image
+                  alt="Card logo"
+                  width={120}
+                  height={120}
+                  src={
+                    data?.transaction?.cardDetails?.image || "/logoplace.svg"
+                  }
+                  className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl "
+                />
+                <div className="absolute bottom-0 right-0">
+                  <Image
+                    alt="Subcategory logo"
+                    width={30}
+                    height={30}
+                    src={
+                      data?.transaction?.cardDetails?.subcategory?.image ||
+                      "/logoplace.svg"
+                    }
+                    className="w-4 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl"
+                  />
+                </div>
+              </div>
               <h4 className="md:text-xl text-base tracking-wide font-bold">
-                {data?.transaction.cardDetails.vendor} Card
+                {data?.transaction?.cardDetails?.vendor} Card
               </h4>
             </div>
             <div className="border-t border-neutral-200 dark:border-neutral-700">
@@ -94,24 +111,42 @@ const ConfirmTransaction = ({
                     Subcategory
                   </dt>
                   <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                    {data?.transaction.cardDetails.subcategory ||
+                    {data?.transaction.cardDetails?.subcategory?.value ||
                       "Please wait..."}
                   </dd>
                 </div>
                 <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
-                    You will be sending
+                    You will be receiving
                   </dt>
                   <dd className="flex align-middle items-center place-items-center justify-between">
                     <div className="mt-1 text-base font-semibold leading-6 text-black dark:text-white sm:col-span-2 sm:mt-0">
                       <span>&#x20A6;</span>
-                      {data?.transaction.cardDetails.rate ||
+                      {formatCurrency(data?.transaction.cardDetails.rate) ||
                         "Please wait..."}{" "}
                       <span className="text-xs font-normal text-neutral-700 dark:text-neutral-400">
                         for{" "}
-                        {data?.transaction.cardDetails.price ||
+                        {formatCurrency(data?.transaction.cardDetails.price) ||
                           "Please wait..."}
                       </span>
+                    </div>
+                  </dd>
+                </div>
+
+                <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
+                    Account details
+                  </dt>
+                  <dd className="grid align-middle">
+                    <h6 className="text-sm">
+                      {data?.transaction?.accountDetails?.accountNumber}{" "}
+                    </h6>
+                    <div className="flex gap-2 text-xs">
+                      <span>
+                        {data?.transaction?.accountDetails?.accountName}
+                      </span>
+                      •
+                      <span>{data?.transaction?.accountDetails?.bankName}</span>
                     </div>
                   </dd>
                 </div>
@@ -122,12 +157,12 @@ const ConfirmTransaction = ({
           <div>
             {!data?.transaction?.accountDetails?.accountNumber && (
               <p className="font-medium text-[10px] text-center text-rose-500">
-                Request for bank details to continue
+                Please you must send your account details.
               </p>
             )}
             {!data?.transaction?.cardDetails?.rate && (
               <p className="font-medium text-[10px] text-center text-amber-500">
-                You have not set the $ rate
+                Please request for the rate $.
               </p>
             )}
           </div>

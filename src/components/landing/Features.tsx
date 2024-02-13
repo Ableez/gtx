@@ -24,17 +24,13 @@ const renderUI = data.map((feat, idx) => {
   return (
     <Card
       key={idx}
-      className="grid justify-center align-middle place-items-center max-w-sm"
+      className="justify-center align-middle place-items-center max-w-sm aspect-square"
     >
       <CardHeader className="justify-center grid place-items-center gap-2">
         <Image src={feat.icon} alt={feat.title} width={60} height={60} />
         <CardTitle className="text-xl">{feat.title}</CardTitle>
       </CardHeader>
-      {/* <h4 className="text-lg font-extrabold"></h4> */}
-      <CardContent className="text-neutral-600 dark:text-neutral-500">
-        {feat.desc}
-      </CardContent>
-      {/* <p></p> */}
+      <CardContent>{feat.desc}</CardContent>
     </Card>
   );
 });
@@ -47,7 +43,7 @@ const Features = () => {
         <div className="bg-secondary p-0.5 w-1/5  absolute bottom-1 rounded-full left-1/2 -translate-x-1/2" />
       </h4>
 
-      <div className="md:flex grid grid-flow-row align-top md:justify-between place-items-center justify-center gap-12 max-w-screen-lg mx-auto px-4 py-8">
+      <div className="grid grid-flow-row md:grid-flow-col align-top md:justify-between place-items-start justify-center gap-12 max-w-screen-lg mx-auto px-4 py-8">
         {renderUI}
       </div>
     </section>

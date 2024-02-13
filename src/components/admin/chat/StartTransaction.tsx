@@ -110,7 +110,7 @@ const StartAdminTransaction = ({
                       Subcategory
                     </dt>
                     <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                      {card?.transaction.cardDetails.subcategory ||
+                      {card?.transaction?.cardDetails?.subcategory?.value ||
                         "Please wait..."}
                     </dd>
                   </div>

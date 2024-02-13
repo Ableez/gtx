@@ -28,7 +28,6 @@ import {
   DrawerTitle,
 } from "../ui/drawer";
 import Loader from "../Loader";
-import { isNull } from "util";
 
 type Props = {
   id: string;
@@ -77,14 +76,14 @@ const CardSelector = ({ id }: Props) => {
   const startChatAction = startChat.bind(null, data);
 
   const selectsWhatsapp = async () => {
-    const subcategoryData = data.subCategory.find(
+    const subcategoryData = data.subcategory.find(
       (c) => c.value === subcategoryValue
     );
 
     const cardInfo = {
       cardTitle: data.title,
       price: `$${price}`,
-      subcategory: `${subcategoryData?.title}`,
+      subcategory: `${subcategoryData?.value}`,
     };
 
     const whatsappMessage = `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory} giftcard`;
@@ -109,11 +108,13 @@ const CardSelector = ({ id }: Props) => {
       }
       setError(res?.error as string);
       if (res?.proceed) {
-        router.refresh()
+        router.refresh();
         router.push(`/chat/${res.link}`);
       }
     } catch (error) {
       console.log("START_CHAT_ACTION => ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,11 +160,11 @@ const CardSelector = ({ id }: Props) => {
       <div className="grid place-items-center justify-center gap-6">
         <h4 className="text-center">{data.name} Giftcard</h4>
         <Image
-          src={"/logoplace.svg"}
-          alt="Vendor Logo"
-          width={120}
-          height={120}
-          className="dark:opacity-20"
+          src={data.image || "/logoplace.svg"}
+          width={65}
+          height={65}
+          alt="Vender Logo"
+          className="text-xs"
         />
       </div>
 
@@ -194,10 +195,18 @@ const CardSelector = ({ id }: Props) => {
             <SelectContent className="z-50">
               <SelectGroup>
                 <SelectLabel>Subcategory</SelectLabel>
-                {data.subCategory.map((sub, idx) => {
+                {data.subcategory.map((sub, idx) => {
                   return (
                     <SelectItem key={idx} value={sub.value}>
-                      {sub.title}
+                      <div className="flex align-middle place-items-center justify-start gap-3">
+                        <Image
+                          src={sub.image}
+                          width={20}
+                          height={20}
+                          alt="Flag"
+                        />
+                        <span>{sub.value}</span>
+                      </div>
                     </SelectItem>
                   );
                 })}

@@ -31,9 +31,23 @@ export const sendUserMessage = async (
   const cachedUser = cookies().get("user")?.value;
   const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
-  if (!user) return { error: "User not found" };
+  if (!user)
+    return {
+      message: "User does not exists",
+      success: false,
+    };
 
   const chatDocRef = doc(db, "Messages", id as string);
+
+  const docSnapshot = await getDoc(chatDocRef);
+  const chatData = docSnapshot.data() as Conversation;
+
+  if (chatData.chatStatus === "closed") {
+    return {
+      message: "Can't send message. Chat closed!",
+      success: false,
+    };
+  }
 
   const content = media
     ? mediaContent
@@ -46,6 +60,7 @@ export const sendUserMessage = async (
       id: v4(),
       timeStamp: new Date(),
     };
+
     await updateDoc(chatDocRef, {
       lastMessage: {
         id: msg.id,
@@ -84,9 +99,10 @@ export const sendUserMessage = async (
       updated_at: msg.timeStamp,
     });
 
-    return { success: true };
+    return { success: true, message: "Message sent" };
   } catch (error) {
     console.log(error);
+    return { success: false, message: "Internal error" };
   }
 };
 

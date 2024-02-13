@@ -14,7 +14,8 @@ import { User } from "firebase/auth";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/button";
 
 export default function SellNavbar() {
   const cookieUser = Cookies.get("user");
@@ -29,8 +30,8 @@ export default function SellNavbar() {
     <div className="container py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4">
       <Link href={"/"} className="flex align-middle place-items-center gap-2">
         <img
-          width={36}
-          height={36}
+          width={34}
+          height={34}
           src={"/greatexc.svg"}
           alt="Great Exchange"
           className="sticky top-0"
@@ -40,9 +41,15 @@ export default function SellNavbar() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="bg-neutral-200 dark:bg-neutral-600 w-14 h-14 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
-            {user?.uid ? user?.displayName?.charAt(0) : "N/A"}
-          </div>
+          {user?.uid && user?.displayName?.charAt(0) ? (
+            <div className="bg-neutral-200 dark:bg-neutral-600 w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
+              {user?.uid && user?.displayName?.charAt(0)}
+            </div>
+          ) : (
+            <Button variant={"ghost"} className="rounded-full" size={"icon"}>
+              <EllipsisVerticalIcon width={24} />
+            </Button>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
           <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">

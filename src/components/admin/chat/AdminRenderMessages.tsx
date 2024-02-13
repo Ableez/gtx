@@ -13,6 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { CopyIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import SetRateComp from "./setRateDialog";
+import StartAdminTransaction from "./StartTransaction";
+import { formatTime } from "@/lib/utils/formatTime";
+import FinishTransaction from "./FinishTransaction";
 
 type Props = {
   data: Conversation;
@@ -36,10 +39,15 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
   scrollToBottom,
   id,
 }: Props) {
-  const [openAccount, setOpenAccount] = useState(false);
+  const [openStartTransaction, setOpenStartTransaction] = useState(false);
+  const [finishTransaction, setFinishTransaction] = useState(false);
   const [openRate, setOpenRate] = useState(false);
   const [hideCode, setHideCode] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [resend, setResend] = useState(false);
+  const [update, setUpdate] = useState({
+    status: "",
+  });
 
   useEffect(() => {
     if (copied)
@@ -63,57 +71,25 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
             className={`${
               message.recipient !== "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
             } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
           >
-            <div
-              className={`md:font-medium font-normal leading-6 text-sm antialiased`}
-            >
-              {message.content.text}
-              <br />
-            </div>
-            {message.recipient !== "admin" && (
-              <div
-                className={`${
-                  message.recipient !== "admin"
-                    ? "text-neutral-200"
-                    : "text-neutral-400"
-                } w-fit float-right flex align-middle place-items-center justify-end justify-self-end gap-1 mt-1`}
+            <div className="flex align-baseline place-items-end gap-4">
+              <p
+                className={`md:font-medium font-normal leading-6 text-sm antialiased`}
               >
-                <p className="text-[10px] font-light leading-3">9:12PM</p>
-                {message.read_receipt.delivery_status === "not_sent" ? (
-                  <ClockIcon width={12} />
-                ) : message.read_receipt.delivery_status === "sent" ? (
-                  <CheckIcon width={12} />
-                ) : message.read_receipt.delivery_status === "delivered" ? (
-                  <div className="flex align-middle place-items-center">
-                    <CheckIcon
-                      className="font-bold"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                    <CheckIcon
-                      className="font-bold -mx-1.5"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                  </div>
-                ) : message.read_receipt.delivery_status === "seen" ? (
-                  <div className="flex align-middle place-items-center">
-                    <CheckIcon
-                      className="dark:text-blue-500 text-blue-600 font-bold"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                    <CheckIcon
-                      className="dark:text-blue-500 text-blue-600 font-bold -mx-1.5"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                  </div>
-                ) : null}
-              </div>
-            )}
+                {message.content.text}
+                <br />
+              </p>
+              <p className="text-[10px] font-light leading-3">
+                {formatTime(
+                  new Date(
+                    (message?.timeStamp?.seconds ?? 0) * 1000 +
+                      (message?.timeStamp?.nanoseconds ?? 0) / 1e6
+                  ).toISOString()
+                )}
+              </p>
+            </div>
           </div>
         </div>
       );
@@ -230,7 +206,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                           Subcategory
                         </dt>
                         <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0">
-                          {message.card.data.subcategory || "Please wait..."}
+                          {message.card.data.subcategory.value || "Please wait..."}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -318,11 +294,10 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               </Card>
             </div>
           )}
-
           {message.card.title === "start_transaction" && (
             <div
               className={`${
-                message.recipient === "admin"
+                message.recipient !== "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
                   : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
@@ -330,46 +305,76 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
               <Card
                 className={`${
                   message.card.data.status === "rejected_by_user"
-                    ? "text-rose-600 dark:border-red-600 border-2"
-                    : (message.card.data.status = "accepted_by_user"
-                        ? "text-emerald-600"
-                        : "")
-                } border-none shadow-none rounded-tl-[3px]`}
+                    ? "bg-red-100 dark:border-red-600 border-2"
+                    : message.card.data.status === "accepted_by_user"
+                    ? "bg-emerald-100"
+                    : ""
+                } border-none shadow-none rounded-tr-[3px]`}
               >
                 <CardHeader>
                   <CardTitle
                     className={`${
                       message.card.data.status === "rejected_by_user"
                         ? "text-rose-600"
-                        : (message.card.data.status = "accepted_by_user"
-                            ? "text-emerald-600"
-                            : "")
+                        : message.card.data.status === "accepted_by_user"
+                        ? "text-emerald-600"
+                        : ""
                     } text-base`}
                   >
                     {message.card.data.status === "rejected_by_user"
                       ? "Rejected by user"
-                      : (message.card.data.status = "accepted_by_user"
-                          ? "User Accepted"
-                          : "Transaction")}
+                      : message.card.data.status === "accepted_by_user"
+                      ? "User Accepted"
+                      : message.card.data.status === "waiting_for_user"
+                      ? "Transaction Confirmation sent!"
+                      : null}
                   </CardTitle>
                 </CardHeader>
                 <CardContent
-                  className={`max-w-[250px] min-w-[200px] grid gap-1 dark:text-neutral-500 text-neutral-400`}
+                  className={`max-w-[250px] min-w-[200px] grid gap-1 `}
                 >
                   {message.card.data.status === "rejected_by_user"
                     ? "Transaction has been rejected by user"
-                    : (message.card.data.status = "accepted_by_user"
-                        ? "User Accepted"
-                        : "Waiting for user to confirm")}
-                  <div className="mt-2">
-                    {message.card.data.status === "rejected_by_user" ? (
-                      <Button>Resend</Button>
-                    ) : (
-                      (message.card.data.status = "accepted_by_user" ? (
-                        <Button>Finish transaction</Button>
-                      ) : null)
-                    )}
-                  </div>
+                    : message.card.data.status === "accepted_by_user"
+                    ? "User has accepted transaction terms. you can make transfer and then close chat."
+                    : message.card.data.status === "waiting_for_user"
+                    ? "Waiting for user to confirm"
+                    : null}
+
+                  {data.chatStatus === "open" ? (
+                    <div className="mt-2">
+                      {!data.transaction.accepted &&
+                      message.card.data.status === "rejected_by_user" ? (
+                        <Button
+                          className="hover:text-black dark:hover:text-primary border border-white bg-white/40"
+                          variant={"outline"}
+                          onClick={() => {
+                            setResend(true);
+                            setOpenStartTransaction(true);
+                          }}
+                        >
+                          Resend
+                        </Button>
+                      ) : message.card.data.status === "accepted_by_user" ? (
+                        <Button
+                          className="hover:text-black dark:hover:text-primary border border-white bg-white/40"
+                          variant={"outline"}
+                          onClick={() => {
+                            setUpdate({
+                              status: "done",
+                            });
+                            setFinishTransaction(true);
+                          }}
+                        >
+                          Finish transaction
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <div className="italic text-xs text-opacity-60 text-black mt-2">
+                      Transaction has been closed
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -429,10 +434,30 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
       <div className="grid gap-2 py-3">
         {renderUI}
         <div
-          className="mb-12 transition-all duration-500"
+          className="h-[110px] transition-all duration-500"
           ref={scrollToBottom}
         ></div>
       </div>
+
+      <StartAdminTransaction
+        openStartTransaction={openStartTransaction}
+        setOpenStartTransaction={setOpenStartTransaction}
+        card={data}
+        scrollToBottom={scrollToBottom}
+        id={id}
+        resend={resend}
+        update={update}
+      />
+
+      <FinishTransaction
+        finishTransaction={finishTransaction}
+        setFinishTransaction={setFinishTransaction}
+        card={data}
+        scrollToBottom={scrollToBottom}
+        id={id}
+        resend={resend}
+        update={update}
+      />
     </>
   );
 });

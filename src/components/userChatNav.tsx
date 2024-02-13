@@ -42,8 +42,10 @@ const UserChatNav = ({ data }: Props) => {
                     alt="Card logo"
                     width={100}
                     height={100}
-                    src={"/logoplace.svg"}
-                    className="w-8 p-1 bg-primary rounded-3xl"
+                    src={
+                      data?.transaction.cardDetails.image || "/logoplace.svg"
+                    }
+                    className="w-8 p-0.5 bg-neutral-200 rounded-3xl"
                   />
                   <h4 className="md:text-xl text-base tracking-wide font-bold">
                     {data?.transaction.cardDetails.vendor} Card
@@ -57,7 +59,7 @@ const UserChatNav = ({ data }: Props) => {
                         Subcategory
                       </dt>
                       <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                        {data?.transaction.cardDetails.subcategory ||
+                        {data?.transaction.cardDetails.subcategory.value ||
                           "Please wait..."}
                       </dd>
                     </div>

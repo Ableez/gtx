@@ -29,6 +29,7 @@ const UserChatScreen = ({ params }: Props) => {
   const [error, setError] = useState("");
   const scrollToBottom = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState<Message>();
+  const [mount, setMount] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -68,6 +69,7 @@ const UserChatScreen = ({ params }: Props) => {
           if (scrollToBottom.current) {
             scrollToBottom.current.scrollIntoView({
               behavior: "smooth",
+              block: "center",
             });
           }
         }
@@ -83,35 +85,28 @@ const UserChatScreen = ({ params }: Props) => {
     params.chatId
   );
 
-  useEffect(() => {
-    if (error === "chat not found!") {
-    }
-  }, [error, router]);
-
   if (!messages)
     <div className="text-center p-8">
       Please wait...{" "}
       <div>
         <p>{error}</p>
         <div>
-          <Link href={"/sell"}>Start over</Link>
           <Button onClick={() => router.refresh()}>Reload page</Button>
+          <Link href={"/sell"}>Start over</Link>
         </div>
       </div>
     </div>;
 
   return (
-    <>
-      <UserChatWrapper
-        user={user}
-        id={params.chatId}
-        allMessages={messages}
-        sendMessageAction={sendMessageAction}
-        updateMessages={setMessages}
-        scrollToBottom={scrollToBottom}
-        setNewMessage={setNewMessage}
-      />
-    </>
+    <UserChatWrapper
+      user={user}
+      id={params.chatId}
+      allMessages={messages}
+      sendMessageAction={sendMessageAction}
+      updateMessages={setMessages}
+      scrollToBottom={scrollToBottom}
+      setNewMessage={setNewMessage}
+    />
   );
 };
 

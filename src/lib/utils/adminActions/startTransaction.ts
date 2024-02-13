@@ -1,8 +1,16 @@
 "use server";
 
-import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase";
-import { Conversation } from "../../../../chat";
+import { Conversation, TransactionRec } from "../../../../chat";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
@@ -29,7 +37,7 @@ export const startTransaction = async (
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
 
-    if (!update && !data.transaction.started) {
+    if (!update || !data.transaction.started) {
       await updateDoc(chatDocRef, {
         "lastMessage.read_receipt": {
           delivery_status: "seen",
@@ -71,8 +79,9 @@ export const startTransaction = async (
           card: {
             title: "start_transaction",
             data: {
-              rate: data.transaction.cardDetails.rate,
-              price: data.transaction.cardDetails.price,
+              rate: data?.transaction.cardDetails.rate,
+              price: data?.transaction.cardDetails.price,
+              status: "waiting_for_user",
             },
           },
           timeStamp: msg.timeStamp,
@@ -133,6 +142,177 @@ export const startTransaction = async (
     console.log("SEND_RATE", error);
     return {
       message: "Internal error. Rate not sent",
+      success: false,
+    };
+  }
+};
+
+export const finishTransactionAction = async (
+  id: string,
+  referenceId: string,
+  resp: string,
+  update?: boolean,
+  tId?: string
+) => {
+  try {
+    const user = await checkServerAdmin();
+
+    if (!user?.isAdmin)
+      return {
+        message: "Not Allowed. User is not an admin",
+        success: false,
+      };
+
+    if (!resp || !referenceId)
+      return {
+        success: false,
+        message: "Error. Insufficient parameters",
+      };
+
+    const chatDocRef = doc(db, "Messages", id as string);
+    const transactionDocRef = collection(db, "Transactions");
+
+    const time = timeStamper();
+
+    if (resp === "confirm") {
+      const docSnapshot = await getDoc(chatDocRef);
+      const chatData = {
+        ...docSnapshot.data(),
+        id: id,
+      } as Conversation;
+
+      await updateDoc(chatDocRef, {
+        "lastMessage.read_receipt": {
+          delivery_status: "seen",
+          status: true,
+        },
+        updated_at: time,
+        "data.status": "done",
+        "data.completed": true,
+      }).catch((e) => {
+        console.log("UPDATE_CHAT_ERROR", e);
+      });
+
+      if (update) {
+        const transactionRef = doc(db, "Transactions", tId as string);
+
+        await updateDoc(transactionRef, {
+          "data.status": "done",
+          "payment.reference": referenceId,
+        });
+      } else {
+        await addDoc(transactionDocRef, {
+          data: { ...chatData.transaction },
+          userId: chatData.user.uid,
+          payment: {
+            reference: referenceId,
+            method: "transfer",
+          },
+          chatId: chatData.id,
+          created_at: time,
+          updated_at: time,
+        });
+      }
+
+      return {
+        success: true,
+        message: "Transaction completed",
+      };
+    } else {
+      const docSnapshot = await getDoc(chatDocRef);
+      const data = docSnapshot.data() as Conversation;
+
+      await updateDoc(chatDocRef, {
+        "lastMessage.read_receipt": {
+          delivery_status: "seen",
+          status: true,
+        },
+        updated_at: time,
+        "transaction.status": "cancelled",
+        "transaction.completed": false,
+      });
+
+      await addDoc(transactionDocRef, {
+        data: {
+          ...data.transaction,
+          status: "cancelled",
+        },
+        userId: data.user.uid,
+        payment: {
+          reference: referenceId,
+          method: "transfer",
+        },
+        chatId: data.id,
+        created_at: time,
+        updated_at: time,
+      } as TransactionRec);
+
+      return {
+        success: true,
+        message: "Transaction cancelled",
+      };
+    }
+  } catch (error) {
+    return {
+      message: "Internal server error.",
+      success: false,
+    };
+  }
+};
+
+export const closeChat = async (id: string) => {
+  try {
+    const chatDocRef = doc(db, "Messages", id as string);
+    const time = timeStamper();
+
+    await updateDoc(chatDocRef, {
+      "lastMessage.read_receipt": {
+        delivery_status: "seen",
+        status: true,
+      },
+      updated_at: time,
+      chatStatus: "closed",
+    });
+
+    return {
+      message: "Chat closed.",
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "Internal error",
+      success: false,
+    };
+  }
+};
+
+export const cancelTransaction = async (chatId: string, tId: string) => {
+  try {
+    const transactionRef = doc(db, "Transactions", tId as string);
+
+    const { success } = await closeChat(chatId);
+
+    if (!success) {
+      return {
+        message: "Error closing chat",
+        success: false,
+      };
+    }
+
+    await updateDoc(transactionRef, {
+      isApproved: false,
+      "data.status": "cancelled",
+    });
+
+    return {
+      message: "Transaction Cancelled",
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "Internal error",
       success: false,
     };
   }

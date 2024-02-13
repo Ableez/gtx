@@ -15,6 +15,7 @@ import AccountComp from "./account-dialog";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
 import ECodeComp from "./eCode";
 import ConfirmTransaction from "./ConfirmTransaction";
+import { formatTime } from "@/lib/utils/formatTime";
 
 type Props = {
   data: Conversation;
@@ -47,7 +48,7 @@ const RenderMessages = memo(function RenderMessages({
       return (
         <div
           key={idx}
-          className={`max-w-[250px] md:max-w-[500px] transition-all duration-500 px-2 ${
+          className={`max-w-[290px] md:max-w-[500px] transition-all duration-500 px-2 ${
             message.recipient === "admin"
               ? "justify-self-end"
               : "justify-self-start"
@@ -57,15 +58,26 @@ const RenderMessages = memo(function RenderMessages({
             className={`${
               message.recipient === "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
             } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
           >
-            <div
-              className={`md:font-medium font-normal leading-6 text-sm antialiased`}
-            >
-              {message.content.text}
-              <br />
+            <div className="flex align-baseline place-items-end gap-4">
+              <p
+                className={`md:font-medium font-normal leading-6 text-sm antialiased`}
+              >
+                {message.content.text}
+                <br />
+              </p>
+              <p className="text-[10px] font-light leading-3">
+                {formatTime(
+                  new Date(
+                    (message?.timeStamp?.seconds ?? 0) * 1000 +
+                      (message?.timeStamp?.nanoseconds ?? 0) / 1e6
+                  ).toISOString()
+                )}
+              </p>
             </div>
+
             {message.recipient === "admin" && (
               <div
                 className={`${
@@ -73,40 +85,7 @@ const RenderMessages = memo(function RenderMessages({
                     ? "text-neutral-200"
                     : "text-neutral-400"
                 } w-fit float-right flex align-middle place-items-center justify-end justify-self-end gap-1 mt-1`}
-              >
-                <p className="text-[10px] font-light leading-3">9:12PM</p>
-                {message.read_receipt.delivery_status === "not_sent" ? (
-                  <ClockIcon width={12} />
-                ) : message.read_receipt.delivery_status === "sent" ? (
-                  <CheckIcon width={12} />
-                ) : message.read_receipt.delivery_status === "delivered" ? (
-                  <div className="flex align-middle place-items-center">
-                    <CheckIcon
-                      className="font-bold"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                    <CheckIcon
-                      className="font-bold -mx-1.5"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                  </div>
-                ) : message.read_receipt.delivery_status === "seen" ? (
-                  <div className="flex align-middle place-items-center">
-                    <CheckIcon
-                      className="dark:text-blue-500 text-blue-600 font-bold"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                    <CheckIcon
-                      className="dark:text-blue-500 text-blue-600 font-bold -mx-1.5"
-                      width={12}
-                      strokeWidth={3}
-                    />
-                  </div>
-                ) : null}
-              </div>
+              ></div>
             )}
           </div>
         </div>
@@ -128,7 +107,7 @@ const RenderMessages = memo(function RenderMessages({
               className={`${
                 message.recipient === "admin"
                   ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2`}
             >
               <Card className="border-none shadow-none">
@@ -190,7 +169,7 @@ const RenderMessages = memo(function RenderMessages({
               className={`${
                 message.recipient === "admin"
                   ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2`}
             >
               <Card className="border shadow-md dark:bg-black rounded-tr-[3px]">
@@ -200,15 +179,30 @@ const RenderMessages = memo(function RenderMessages({
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex pb-2 align-middle place-items-center justify-start gap-3">
-                    <Image
-                      alt="Card logo"
-                      width={100}
-                      height={100}
-                      src={"/logoplace.svg"}
-                      className="w-8 p-1 bg-primary rounded-3xl"
-                    />
-                    <h4 className="md:text-xl text-base font-bold">
+                  <div className="flex pb-2 align-middle place-items-center justify-start gap-3 ">
+                    <div className="relative">
+                      <Image
+                        alt="Card logo"
+                        width={120}
+                        height={120}
+                        src={message?.card?.data?.image || "/logoplace.svg"}
+                        className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl "
+                      />
+                      <div className="absolute bottom-0 right-0">
+                        <Image
+                          alt="Subcategory logo"
+                          width={30}
+                          height={30}
+                          src={
+                            message?.card?.data?.subcategory?.image ||
+                            "/logoplace.svg"
+                          }
+                          className="w-4 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl"
+                        />
+                      </div>
+                    </div>
+
+                    <h4 className="md:text-base text-base font-bold">
                       {message?.card?.data?.vendor} Card
                     </h4>
                   </div>
@@ -220,7 +214,8 @@ const RenderMessages = memo(function RenderMessages({
                           Subcategory
                         </dt>
                         <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                          {message?.card?.data?.subcategory || "Please wait..."}
+                          {message?.card?.data?.subcategory.value ||
+                            "Please wait..."}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -243,16 +238,16 @@ const RenderMessages = memo(function RenderMessages({
               className={`${
                 message.recipient === "admin"
                   ? "border text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2`}
             >
               <Card className="border-none shadow-none">
                 <CardHeader>
-                  <CardTitle className="text-xl">E-code</CardTitle>
+                  <CardTitle className="text-base">E-code</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex align-middle justify-center place-items-center">
-                    <div className="select-none py-1 px-2.5 hover:bg-neutral-100 duration-300 rounded-lg tracking-widest bg-neutral-200 text-neutral-600">
+                    <div className="select-none py-1 px-2.5 hover:bg-neutral-100 duration-300 rounded-lg tracking-widest bg-neutral-100 text-neutral-600">
                       {!hideCode
                         ? message.card.data?.value.split("")
                         : "●●●● ●●●● ●●●● ●●●●"}
@@ -289,15 +284,15 @@ const RenderMessages = memo(function RenderMessages({
               className={`${
                 message.recipient === "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
             >
               <Card className="border-none shadow-none rounded-tl-[3px]">
                 <CardHeader>
-                  <CardTitle className="text-xl">Card Rate</CardTitle>
+                  <CardTitle className="text-base">Card Rate</CardTitle>
                 </CardHeader>
                 <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
-                  <div className="select-none text-xl font-semibold">
+                  <div className="select-none text-base font-semibold">
                     ₦{message.card.data?.value}
                   </div>
                   <div className="select-none text-neutral-600">
@@ -313,16 +308,16 @@ const RenderMessages = memo(function RenderMessages({
               className={`${
                 message.recipient === "admin"
                   ? "text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                  : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
               } flex align-middle place-items-end justify-between gap-2 border`}
             >
               <Card
                 className={` ${
                   message.card.data.status === "rejected_by_user"
-                    ? "bg-red-100 border-2 border-red-400"
-                    : (message.card.data.status = "accepted_by_user"
-                        ? "bg-emerald-400"
-                        : "bg-neutral-200")
+                    ? "bg-red-100 border-2 border-red-100"
+                    : message.card.data.status === "accepted_by_user"
+                    ? "bg-emerald-100"
+                    : ""
                 } border-none shadow-none rounded-tl-[3px]`}
               >
                 <CardHeader>
@@ -330,27 +325,25 @@ const RenderMessages = memo(function RenderMessages({
                     className={`${
                       message.card.data.status === "rejected_by_user"
                         ? "text-rose-600"
-                        : (message.card.data.status = "accepted_by_user"
-                          ? "text-emerald-600"
-                            : "")
-                    } text-xl`}
+                        : message.card.data.status === "accepted_by_user"
+                        ? "text-emerald-600"
+                        : ""
+                    } text-base`}
                   >
                     {message.card.data.status === "rejected_by_user"
                       ? "Rejected"
-                      : (message.card.data.status = "accepted_by_user"
-                          ? "Accepted"
-                          : "Confirm")}
+                      : message.card.data.status === "accepted_by_user"
+                      ? "Accepted"
+                      : "Confirm"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
                   {message.card.data.status === "rejected_by_user" ? (
                     <p>You rejected this transaction</p>
+                  ) : message.card.data.status === "accepted_by_user" ? (
+                    <p>Transaction is Confirmed</p>
                   ) : (
-                    (message.card.data.status = "accepted_by_user" ? (
-                      <p>Transaction is Confirmed</p>
-                    ) : (
-                      <p>Please confirm details to complete the transaction</p>
-                    ))
+                    <p>Please confirm details to complete the transaction</p>
                   )}
 
                   {message.card.data.status !== "rejected_by_user" &&
@@ -387,7 +380,7 @@ const RenderMessages = memo(function RenderMessages({
             className={`${
               message.recipient === "admin"
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
             } grid align-middle place-items-center justify-between px-2 gap-2 py-1.5`}
           >
             <div className="rounded-2xl overflow-clip">
@@ -397,7 +390,7 @@ const RenderMessages = memo(function RenderMessages({
                   alt={message.content.media.metadata?.media_name as string}
                   width={220}
                   height={220}
-                  className="w-full bg-neutral-200 dark:bg-neutral-700"
+                  className="w-full bg-neutral-100 dark:bg-neutral-800"
                 />
               ) : (
                 <div className="flex align-middle place-items-center justify-center w-full h-full">
@@ -424,7 +417,7 @@ const RenderMessages = memo(function RenderMessages({
       <div className="grid gap-2 py-3">
         {renderUI}
         <div
-          className="mb-12 transition-all duration-500"
+          className="h-[100px] transition-all duration-500 p-4"
           ref={scrollToBottom}
         ></div>
       </div>

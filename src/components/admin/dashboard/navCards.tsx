@@ -6,9 +6,10 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { ConversationCollections } from "../../../../chat";
 
 type Props = {
-  chatList: ChatObject;
+  chatNumbers: number;
 };
 
 const navBoxes = [
@@ -42,11 +43,7 @@ const navBoxes = [
   },
 ];
 
-const NavCards = ({ chatList }: Props) => {
-  const unreadMessagesNumber = chatList?.filter(
-    (chat) => !chat?.data?.lastMessage?.read
-  ).length;
-
+const NavCards = ({ chatNumbers }: Props) => {
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-4">
       {navBoxes.map((box, idx) => {
@@ -54,7 +51,7 @@ const NavCards = ({ chatList }: Props) => {
           <Link
             href={box.link}
             key={idx}
-            className="bg-white dark:bg-neutral-800 rounded-3xl shadow-lg shadow-purple-100 dark:shadow-purple-950/10 py-6 hover:border-purple-200 dark:hover:border-purple-600/30 hover:shadow-inner border-2 border-transparent duration-300"
+            className="bg-white dark:bg-neutral-800 rounded-3xl shadow-lg shadow-purple-100 dark:shadow-purple-950/10 py-6 hover:border-purple-200 dark:hover:border-purple-600/30 hover:shadow-inner border duration-300"
           >
             <div className="grid align-middle place-items-center justify-center">
               <div
@@ -71,9 +68,9 @@ const NavCards = ({ chatList }: Props) => {
                 }  p-3.5 shadow-md rounded-xl relative`}
               >
                 {box.icon}
-                {box.name === "Messages" && unreadMessagesNumber > 0 && (
+                {box.name === "Messages" && chatNumbers > 0 && (
                   <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-bold text-white">
-                    <h4>{unreadMessagesNumber}</h4>
+                    <h4>{chatNumbers}</h4>
                   </div>
                 )}
               </div>

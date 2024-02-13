@@ -109,8 +109,8 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
             true
           );
 
-          if (sentMessage?.error) {
-            setError(sentMessage?.error);
+          if (!sentMessage?.success) {
+            setError(sentMessage?.message);
             setLoading(false);
             return;
           }

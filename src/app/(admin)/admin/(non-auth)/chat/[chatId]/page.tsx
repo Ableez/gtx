@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Conversation, Message } from "../../../../../../../chat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 
-const UserChatWrapper = dynamic(
+const AdminChatWrapper = dynamic(
   () => import("@/components/admin/chat/AdminChatWrapper"),
   {
     ssr: false,
@@ -67,10 +67,10 @@ const AdminChatScreen = ({ params }: Props) => {
           };
 
           setMessages(newChat as Conversation);
-
           if (scrollToBottom.current) {
             scrollToBottom.current.scrollIntoView({
               behavior: "smooth",
+              block: "center",
             });
           }
         }
@@ -112,7 +112,7 @@ const AdminChatScreen = ({ params }: Props) => {
 
   return (
     <>
-      <UserChatWrapper
+      <AdminChatWrapper
         card={messages?.transaction.cardDetails}
         user={user}
         id={params.chatId}

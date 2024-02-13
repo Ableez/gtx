@@ -2,9 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { useFormState, useFormStatus } from "react-dom";
-import { signInCredentials } from "@/lib/utils/actions/authActions";
+import { useFormStatus } from "react-dom";
 import Loading from "@/app/loading";
+import { auth } from "@/lib/utils/firebase";
+import {
+  browserLocalPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import Cookies from "js-cookie";
+import { FirebaseError } from "firebase/app";
+import { redirect, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
 
 type Props = {
   url: string | null;
@@ -13,13 +23,6 @@ type Props = {
 const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
   const { pending, data } = useFormStatus();
 
-  useEffect(() => {
-    if (pending) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [pending, setLoading]);
   return (
     <Button
       aria-disabled={pending}
@@ -34,26 +37,98 @@ const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
 
 const LoginForm = (props: Props) => {
   const [loading, setLoading] = useState(false);
-  const loginAction = signInCredentials.bind(null, props?.url);
   const [error, setError] = useState<string>("");
-  // const [state, formAction] = useFormState(loginAction, {
-  //   message: "",
-  // });
+  const router = useRouter();
+  const { pending, data } = useFormStatus();
 
   useEffect(() => {
     if (error) {
       setTimeout(() => {
         setError("");
-      }, 3000);
+      }, 5000);
     }
   }, [error]);
 
+  const login = async (e: FormData) => {
+    try {
+      setLoading(true);
+      const email = e.get("email");
+      const password = e.get("password");
+
+      if (!email || !password) {
+        return {
+          message: "All fields are required",
+          success: false,
+        };
+      }
+      await setPersistence(auth, browserLocalPersistence).then(() => {
+        return signInWithEmailAndPassword(
+          auth,
+          email.toString(),
+          password.toString()
+        ).then((user) => {
+          Cookies.set("user", JSON.stringify(user.user.toJSON()));
+          router.push(props.url || "/sell");
+        });
+      });
+    } catch (error) {
+      const err = error as FirebaseError;
+      console.log(error);
+      toast("Login failed", {
+        description:
+          err?.code === "auth/invalid-login-credentials"
+            ? err.message
+                .replace("Firebase: ", "")
+                .replace(`(${err.code}).`, "")
+            : err?.code === "auth/user-not-found"
+            ? err.message
+                .replace("Firebase: ", "")
+                .replace(`(${err.code}).`, "")
+            : err?.code === "auth/wrong-password"
+            ? err.message
+                .replace("Firebase: ", "")
+                .replace(`(${err.code}).`, "")
+            : err.code === "auth/network-request-failed"
+            ? err.message
+                .replace("Firebase: ", "")
+                .replace(`(${err.code}).`, "")
+            : err.code === "auth/too-many-requests"
+            ? err.message
+                .replace("Firebase: ", "")
+                .replace(`(${err.code}).`, "")
+            : "Something went wrong. Try again",
+        dismissible: true,
+        duration: 3500,
+      });
+      return {
+        message:
+          err?.code === "auth/invalid-login-credentials"
+            ? err.message
+            : err?.code === "auth/user-not-found"
+            ? err.message
+            : err?.code === "auth/wrong-password"
+            ? err.message
+            : err.code === "auth/network-request-failed"
+            ? err.message
+            : err.code === "auth/too-many-requests"
+            ? err.message
+            : "Something went wrong. Try again",
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
+      {loading && <Loading />}
       <form
         action={async (e) => {
-          loginAction(e).then((res) => {
-            console.log(res);
+          // loginAction(e).then((res) => {
+          //   setError(res?.message as string);
+          // });
+
+          login(e).then((res) => {
             setError(res?.message as string);
           });
         }}
@@ -89,12 +164,12 @@ const LoginForm = (props: Props) => {
               Password
             </Label>
             <div className="text-sm">
-              <a
-                href="#"
+              <Link
+                href="/iforgot"
                 className="font-semibold text-primary hover:text-primary"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
           <div className="mt-2">
@@ -111,13 +186,6 @@ const LoginForm = (props: Props) => {
           </div>
         </div>
         <SubmitButton setLoading={setLoading} />
-        <p
-          className={`text-[10px] overflow-clip leading-5 border-neutral-800 animate-out font-medium text-red-500 text-center duration-150 ${
-            error ? "opacity-100 h-5 leading-5" : "opacity-100 h-0 leading-10"
-          }`}
-        >
-          {error && error}
-        </p>
       </form>
     </div>
   );

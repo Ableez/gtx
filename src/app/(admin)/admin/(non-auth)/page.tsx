@@ -20,11 +20,12 @@ import {
   collection,
   doc,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
 } from "firebase/firestore";
 import Link from "next/link";
-import React, { BaseSyntheticEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ConversationCollections } from "../../../../../chat";
 import { ImageIcon } from "@radix-ui/react-icons";
 import QuickView from "@/components/admin/chat/QuickView";
@@ -34,12 +35,16 @@ type Props = {};
 
 const AdminPage = function (props: Props) {
   const [chatList, setChatList] = useState<ConversationCollections>();
+  const [chatNumbers, setChatNumbers] = useState<number>();
 
   useEffect(() => {
     const fetch = async () => {
       try {
         if (auth.currentUser) {
-          const q = query(collection(db, "Messages"));
+          const q = query(
+            collection(db, "Messages"),
+            orderBy("lastMessage.read_receipt.time", "desc")
+          );
           const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const chatData = querySnapshot.docs.map((doc) => {
               if (doc.exists()) {
@@ -49,19 +54,16 @@ const AdminPage = function (props: Props) {
               }
             });
 
-            const sortedChats = chatData.sort((a, b) => {
-              const timeA =
-                a?.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                a?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
+            const sortedChats = chatData;
 
-              const timeB =
-                b?.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                b?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
-              return timeB - timeA;
-            });
+            const chatNumber = sortedChats.filter(
+              (chat) => !chat?.data?.lastMessage?.read_receipt.status
+            ).length;
+
+            setChatNumbers(chatNumber);
 
             // Limit the result to 5 objects
-            const limitedChats = sortedChats.slice(0, 3);
+            const limitedChats = sortedChats.slice(0, 4);
 
             setChatList(limitedChats as ConversationCollections);
           });
@@ -76,9 +78,9 @@ const AdminPage = function (props: Props) {
   }, []);
 
   return (
-    <div className="pb-4">
+    <div className="pb-4 max-w-screen-md mx-auto">
       {/* Cards Navigation */}
-      <NavCards chatList={chatList} />
+      <NavCards chatNumbers={chatNumbers as number} />
       {/* Chat Quick View */}
       <QuickView chatList={chatList} />
       <PostReview />

@@ -11,9 +11,8 @@ const Loader = (props: Props) => {
       height="25"
       viewBox="0 0 15 15"
       className={`animate-spin ${
-        !props.color && "dark:text-white text-neutral-800"
+        !props.color && "dark:text-white text-black"
       } will-change-transform`}
-      style={{ color: props.color }}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

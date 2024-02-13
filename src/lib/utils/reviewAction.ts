@@ -26,8 +26,6 @@ export const reviewAction = async (stars: number, formData: FormData) => {
   const user = JSON.parse(userFrCookie?.value || "user");
   const review = formData.get("review");
 
-  console.log("FORMDATA", review, stars);
-
   try {
     const reviewRef = collection(db, "Feedbacks");
     const reviewData = {
@@ -37,6 +35,7 @@ export const reviewAction = async (stars: number, formData: FormData) => {
         photoUrl:
           user?.photoUrl ||
           photoUrls[Math.floor(Math.random() * photoUrls.length)],
+        id: user?.uid || null,
       },
       content: {
         stars: stars,

@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import GetStarted from "./ui/get-started";
 
 type Props = {};
 const Cwu = (props: Props) => {
@@ -22,13 +23,8 @@ const Cwu = (props: Props) => {
           />
         </div>
       </div>
-      <div>
-        <Link
-          className="cursor-pointer mt-12 py-3 px-4 rounded-full font-medium text-lg flex align-middle justify-center gap-3 hover:gap-5 duration-300 bg-primary w-2/3 md:w-1/3 mx-auto ring-4 ring-transparent  hover:ring-pink-300 text-white"
-          href={"/sell"}
-        >
-          Get Started <ArrowRightIcon width={20} />
-        </Link>
+      <div className="w-full grid place-items-center p-6">
+        <GetStarted />
       </div>
     </div>
   );

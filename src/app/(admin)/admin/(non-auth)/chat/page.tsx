@@ -5,6 +5,7 @@ import {
   collection,
   doc,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
 } from "firebase/firestore";
@@ -13,6 +14,7 @@ import { ConversationCollections, LastMessage } from "../../../../../../chat";
 import { ImageIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import Image from "next/image";
+import { formatTime } from "@/lib/utils/formatTime";
 
 type Props = {};
 
@@ -36,7 +38,10 @@ const AdminChat = (props: Props) => {
     const fetch = async () => {
       try {
         if (auth.currentUser) {
-          const q = query(collection(db, "Messages"));
+          const q = query(
+            collection(db, "Messages"),
+            orderBy("lastMessage.read_receipt.time", "desc")
+          );
           const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const chatData = querySnapshot.docs.map((doc) => {
               if (doc.exists()) {
@@ -51,18 +56,7 @@ const AdminChat = (props: Props) => {
             } else {
               setEmpty(false);
             }
-            const sortedChats = chatData.sort((a, b) => {
-              const timeA =
-                a?.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                a?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
-
-              const timeB =
-                b?.data?.lastMessage?.timeStamp?.seconds * 1000 +
-                b?.data?.lastMessage?.timeStamp?.nanoseconds / 1e6;
-              return timeB - timeA;
-            });
-
-            // Limit the result to 5 objects
+            const sortedChats = chatData;
 
             setChatList(sortedChats as ConversationCollections);
           });
@@ -80,11 +74,11 @@ const AdminChat = (props: Props) => {
     return (
       <div
         key={idx}
-        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-md min-w-fit hover:bg-neutral-200"
+        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200"
       >
         <Link
           href={`/admin/chat/${chat?.id}`}
-          className="grid grid-flow-col align-middle place-items-top gap-3 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
+          className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
           onClick={() => markRead(chat.data.lastMessage, chat.id)}
         >
           <div className="flex align-middle place-items-center justify-between gap-3 w-fit">
@@ -125,14 +119,12 @@ const AdminChat = (props: Props) => {
           </div>
 
           <p className="text-[10px] text-neutral-500 justify-self-end float-right">
-            {/* {formatTime(
-                  new Date(
-                    (chat?.data?.lastMessage?.timeStamp?.seconds ?? 0) * 1000 +
-                      (chat?.data?.lastMessage?.timeStamp?.nanoseconds ?? 0) /
-                        1e6
-                  ).toISOString()
-                )} */}
-            9:18 AM
+            {formatTime(
+              new Date(
+                (chat?.data?.updated_at.seconds ?? 0) * 1000 +
+                  (chat?.data?.updated_at.nanoseconds ?? 0) / 1e6
+              ).toISOString()
+            )}
           </p>
         </Link>
       </div>
@@ -140,7 +132,7 @@ const AdminChat = (props: Props) => {
   });
 
   return (
-    <div>
+    <div className="mx-auto w-full">
       {empty ? <p className="py-6 text-center">No chats yet</p> : renderChats}
     </div>
   );

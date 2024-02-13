@@ -96,6 +96,7 @@ export const sendConfirmTransactionToAdmin = async (
         },
         updated_at: time,
         "transaction.status": "processing",
+        "transaction.accepted": true,
       });
 
       return {

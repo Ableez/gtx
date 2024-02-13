@@ -4,8 +4,6 @@ import { giftcards } from "../data/giftcards";
 import { db } from "./firebase";
 import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
-import { redirect } from "next/navigation";
-import { Conversation } from "../../../chat";
 import { GiftCard } from "../../../types";
 import { User } from "firebase/auth";
 
@@ -51,14 +49,14 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
     };
   }
 
-  const subcategoryData = data.subCategory.find(
+  const subcategoryData = data.subcategory.find(
     (c) => c.value === subcategoryValue
   );
 
   const cardInfo = {
     cardTitle: data.name,
     price: `$${price}`,
-    subcategory: `${subcategoryData?.title}`,
+    subcategory: subcategoryData,
   };
 
   try {
@@ -69,9 +67,11 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
 
     const messagesRef = collection(db, "Messages");
     const createdChat = await addDoc(messagesRef, {
+      chatStatus: "open",
       transaction: {
         started: false,
         cardDetails: {
+          ...data,
           id: data.id,
           name: data.name,
           vendor: data.name,
@@ -93,6 +93,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
             title: "card_detail",
             data: {
               id: data.id,
+              image: data.image,
               name: data.name,
               vendor: data.name,
               subcategory: cardInfo.subcategory,
@@ -122,7 +123,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
         id: msg.id,
         sender: "user",
         content: {
-          text: `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory} gift card`,
+          text: `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card`,
           media: false,
         },
         read_receipt: {
@@ -135,7 +136,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
         username: user?.displayName,
         uid: user?.uid,
         email: user?.email,
-        photoUrl: user?.photoURL,
+        photoUrl: user?.photoURL || "",
       },
       created_at: msg.timeStamp,
       updated_at: msg.timeStamp,
@@ -154,7 +155,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
     return {
       link: "",
       logged: true,
-      error: error,
+      error: "Internal error",
       proceed: false,
     };
   }

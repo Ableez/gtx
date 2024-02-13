@@ -10,6 +10,8 @@ import Link from "next/link";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { ImageIcon } from "@radix-ui/react-icons";
+import { formatTime } from "@/lib/utils/formatTime";
+import Image from "next/image";
 
 type Props = {
   chatList: ConversationCollections | undefined;
@@ -17,7 +19,7 @@ type Props = {
 
 const QuickView = ({ chatList }: Props) => {
   const markRead = async (chat: LastMessage, id: string) => {
-    const chatRef = doc(db, "Messages", chat?.id);
+    const chatRef = doc(db, "Messages", id);
     const chatData = {
       "lastMessage.read_receipt": {
         ...chat.read_receipt,
@@ -32,7 +34,7 @@ const QuickView = ({ chatList }: Props) => {
     return (
       <div
         key={idx}
-        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-md min-w-fit hover:bg-neutral-200"
+        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-screen-md min-w-fit hover:bg-neutral-200 dark:hover:bg-neutral-700 mx-auto"
       >
         <Link
           href={`/admin/chat/${chat?.id}`}
@@ -40,14 +42,20 @@ const QuickView = ({ chatList }: Props) => {
           onClick={() => markRead(chat.data.lastMessage, chat.id)}
         >
           <div className="flex align-middle place-items-center justify-between gap-3 w-fit">
-            <div className="p-5 h-8 w-8 bg-gradient-to-tr rounded-full from-zinc-300 self-center to-stone-400 active:to-zinc-300 active:from-stone-500 shadow-primary" />
+            <Image
+              src={chat.data.user.photoUrl || "/logoplace.svg"}
+              width={45}
+              height={45}
+              alt={""}
+              className="rounded-full aspect-square object-cover"
+            />
             <div className="">
               <h4
                 className={`${
                   chat?.data?.lastMessage?.read_receipt.status
                     ? ""
                     : "font-semibold text-secondary"
-                } truncate max-w-[13rem]`}
+                } truncate md:max-w-[25rem] max-w-[13rem]`}
               >
                 {chat?.data?.lastMessage?.content.media ? (
                   <div className="flex align-middle place-items-center justify-start gap-1">
@@ -67,14 +75,12 @@ const QuickView = ({ chatList }: Props) => {
           </div>
 
           <p className="text-[10px] text-neutral-500 justify-self-end float-right">
-            {/* {formatTime(
-                  new Date(
-                    (chat?.data?.lastMessage?.timeStamp?.seconds ?? 0) * 1000 +
-                      (chat?.data?.lastMessage?.timeStamp?.nanoseconds ?? 0) /
-                        1e6
-                  ).toISOString()
-                )} */}
-            9:18 AM
+            {formatTime(
+              new Date(
+                (chat?.data?.updated_at.seconds ?? 0) * 1000 +
+                  (chat?.data?.updated_at.nanoseconds ?? 0) / 1e6
+              ).toISOString()
+            )}
           </p>
         </Link>
       </div>
@@ -82,9 +88,9 @@ const QuickView = ({ chatList }: Props) => {
   });
 
   return (
-    <div className="my-8 bg-white dark:bg-neutral-800 pb-2 rounded-2xl z-40">
-      <div className="dark:text-neutral-400 border-b my-1 dark:border-b-neutral-700 flex align-middle place-items-center justify-between p-2">
-        <h4 className="font-semibold text-neutral-500">Latest</h4>
+    <div className="my-8 bg-white border dark:bg-neutral-800 rounded-2xl z-40">
+      <div className="dark:text-neutral-400 border-b dark:border-b-neutral-700 overflow-clip flex align-middle place-items-center justify-between p-2">
+        <h4 className="font-semibold text-neutral-500 px-6">Latest Messages</h4>
         <Link
           href={"/admin/chat"}
           className="py-2 px-6 rounded-md text-[12px] text-secondary font-bold hover:underline"
@@ -94,7 +100,13 @@ const QuickView = ({ chatList }: Props) => {
       </div>
 
       <div className="divide-y dark:divide-neutral-700 h-auto text-neutral-800">
-        {renderChats}
+        {renderChats && renderChats?.length > 0 ? (
+          renderChats
+        ) : (
+          <div className="p-6 text-center text-neutral-400 dark:text-neutral-600">
+            No Chats yet
+          </div>
+        )}
       </div>
     </div>
   );

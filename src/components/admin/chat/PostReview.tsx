@@ -89,7 +89,7 @@ const PostReview = (props: Props) => {
       <div className="">
         <p className="text-xs mb-3">Have a review from a customer?</p>
         <Dialog>
-          <DialogTrigger className="bg-primary px-6 py-2 w-full rounded-xl text-white font-semibold">
+          <DialogTrigger className="bg-primary px-6 py-2 w-fit rounded-xl text-white font-semibold">
             Post review
           </DialogTrigger>
           <DialogContent className="z-[99999999] w-[96vw] rounded-xl">

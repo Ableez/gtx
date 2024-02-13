@@ -12,8 +12,6 @@ export const checkIsAdmin = async () => {
 
     const getUser = await getDoc(doc(db, "Users", user?.uid as string));
 
-    console.log("CHECK_ADMIN: ", getUser.data());
-
     const checkUser = getUser.data() as {
       imageUrl: string | null;
       username: string;

@@ -25,7 +25,7 @@ const tabs = [
   },
 ];
 
-function Navbar({}: Props) {
+const Navbar = () => {
   const pathName = usePathname();
 
   const navTabs = tabs.map((tab, idx) => {
@@ -43,8 +43,9 @@ function Navbar({}: Props) {
       </Link>
     );
   });
+
   return (
-    <nav className="bg-white bg-opacity-90 dark:bg-opacity-95 backdrop-blur-md py-2 dark:bg-neutral-800  left-0 right-0 z-50 sticky top-0">
+    <nav className="bg-white bg-opacity-90 dark:bg-opacity-95 backdrop-blur-md dark:bg-neutral-800 py-6 left-0 right-0 z-50 sticky top-0">
       <div className="mx-auto max-w-screen-lg flex flex-wrap justify-between items-center">
         <div className=" flex justify-start items-center">
           <button className="p-2 mr-2 text-neutral-600 rounded-lg cursor-pointer md:hidden hover:text-neutral-900 hover:bg-neutral-100 focus:bg-neutral-100 dark:focus:bg-neutral-700 focus:ring-2 focus:ring-neutral-100 dark:focus:ring-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-white">
@@ -105,6 +106,6 @@ function Navbar({}: Props) {
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

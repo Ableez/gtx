@@ -3,7 +3,7 @@
 import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/utils/firebase";
-import { formatTime } from "@/lib/utils/formatTime";
+import { formatDate, formatTime } from "@/lib/utils/formatTime";
 import {
   ArrowLeftIcon,
   ChevronDownIcon,
@@ -17,6 +17,7 @@ import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { ReportData } from "../../../../../../../types";
 
 type Props = {
   params: {
@@ -40,7 +41,6 @@ const AdminReportView = ({ params }: Props) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as ReportData;
           setReportData(data);
-          console.log("Document data:", data);
         } else {
           console.log("No such document!");
         }
@@ -54,6 +54,8 @@ const AdminReportView = ({ params }: Props) => {
     fetchReportData();
   }, [reportId]);
 
+  console.log("REPORT_DATA", reportData);
+
   return (
     <>
       {loading ? (
@@ -62,24 +64,16 @@ const AdminReportView = ({ params }: Props) => {
         <>
           {reportData ? (
             <>
-              <div className="container grid gap-6 pb-8">
-                <nav className="flex gap-2 align-middle place-items-center justify-between">
-                  <Button
-                    onClick={() => router.back()}
-                    variant={"ghost"}
-                    className="shadow-none border w-fit"
-                  >
-                    <ArrowLeftIcon width={20} color="#222" />
-                  </Button>
-                  <div className="capitalize p-1 text-xs bg-purple-200 px-2 rounded-full">
-                    {reportData?.type}
-                  </div>
-                </nav>
-                <div>
-                  <h4 className="font-bold text-lg first-letter:capitalize py-1">
+              <div className="max-w-screen-md mx-auto space-y-6 my-10 px-4">
+                <nav className="flex gap-2 align-middle place-items-center justify-between border-b dark:border-neutral-700 pb-2">
+                  <h4 className="font-semibold text-base first-letter:capitalize py-1">
                     {reportData?.details.subject}
                   </h4>
-                </div>
+                  <div className="capitalize p-1 text-xs bg-purple-200 dark:bg-purple-900  px-2 rounded-full">
+                    {reportData?.cause}
+                  </div>
+                </nav>
+
                 <div className="flex align-middle place-items-center gap-3">
                   <div className="p-5 bg-gradient-to-tr rounded-full from-zinc-300  to-stone-500 active:to-zinc-300 active:from-stone-500 shadow-primary"></div>
                   <div className="flex-col align-middle place-items-center justify-start">
@@ -87,8 +81,8 @@ const AdminReportView = ({ params }: Props) => {
                       {reportData?.user.username}
                     </h4>
                     <span className="text-[12px] text-neutral-400">
-                      Sent in{" "}
-                      {formatTime(
+                      Recieved at{" "}
+                      {formatDate(
                         new Date(
                           (reportData?.date?.seconds ?? 0) * 1000 +
                             (reportData?.date?.nanoseconds ?? 0) / 1e6
@@ -97,27 +91,27 @@ const AdminReportView = ({ params }: Props) => {
                     </span>
                   </div>
                 </div>
-                <div>
-                  <p className="leading-6 text-neutral-600 p-3 bg-orange-200 text-xs rounded-sm border border-orange-800/30">
-                    {reportData?.details?.body}
-                  </p>
+
+                <div className="bg-orange-100 dark:bg-orange-400 dark:bg-opacity-10 px-4 md:px-6 py-3 border border-orange-400 border-opacity-20 rounded-md text-xs leading-6 flex-wrap">
+                  {reportData?.details?.body}
                 </div>
-                {reportData?.cause === "transaction" && (
+
+                {reportData?.cause == "transactional" && (
                   <div>
-                    <dl className="grid space-y-3">
+                    <div className="grid space-y-3 mb-4">
                       <div className="flex align-middle place-items-center justify-between">
-                        <dt className="font-medium">Source</dt>
-                        <dd className="capitalize p-1 text-xs bg-purple-200 px-2 rounded-full">
-                          {reportData?.cause}
-                        </dd>
+                        <div className="font-medium">Source</div>
+                        <div className="capitalize p-1 text-xs bg-rose-200 dark:bg-rose-900  px-2 rounded-full">
+                          {reportData?.type}
+                        </div>
                       </div>
 
                       <Link
-                        href={`/chat/${reportData?.data?.transactionId || ""}`}
-                        className="flex align-middle place-items-center justify-between w-full p-4 bg-white border-y border-purple-100 hover:shadow-sm group text-purple-900 hover:px-5 duration-300"
+                        href={`/admin/transactions/${reportData?.data?.id}`}
+                        className="border border-transparent hover:border-purple-400 flex align-middle place-items-center justify-between w-full dark: mx-auto p-4 border-purple-100 dark:border-opacity-40 hover:shadow-sm group text-purple-900"
                       >
-                        <div className="flex align-middle place-items-center justify-between gap-4">
-                          <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-purple-400 bg-purple-100">
+                        <div className="flex align-middle place-items-center justify-between gap-4 dark:text-neutral-300">
+                          <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-purple-400 bg-purple-100 dark:bg-purple-950 dark:bg-opacity-40 dark:border-purple-700 dark:text-purple-500">
                             <CurrencyDollarIcon width={22} />
                           </div>
                           View Transaction
@@ -128,7 +122,7 @@ const AdminReportView = ({ params }: Props) => {
                           className="group-hover:ml-2 duration-300 ease-in"
                         />
                       </Link>
-                    </dl>
+                    </div>
                   </div>
                 )}
               </div>

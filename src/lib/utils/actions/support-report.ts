@@ -1,6 +1,6 @@
 "use server";
 
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { cookies } from "next/headers";
 import { User } from "firebase/auth";
@@ -12,15 +12,29 @@ export const sendReport = async (e: FormData) => {
     email: string;
     phoneNumber: string;
     message: string;
+    transactionId?: string;
   };
 
   const cachedUser = cookies().get("user")?.value;
   const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
   try {
+    const transactionRef = doc(db, "Transactions", obj.transactionId as string);
+    const getTransaction = await await getDoc(transactionRef);
+
+    if (!getTransaction.exists()) {
+      return {
+        message:
+          "Transaction not found. You can not report a non-existent transaction.",
+        success: false,
+      };
+    }
+
+    const transaction = getTransaction.data();
+
     const ref = collection(db, "Reports");
     await addDoc(ref, {
-      type: obj.reason === "transaction" ? "report" : "feedback",
+      type: obj.reason === "transactional" ? "report" : "feedback",
       cause: obj.reason,
       details: {
         subject: `A ${obj.reason} report`,
@@ -33,6 +47,7 @@ export const sendReport = async (e: FormData) => {
         email: user?.email || obj.email || "Anonymous",
       },
       read: false,
+      data: obj.transactionId ? { ...transaction, id: getTransaction.id } : {},
     });
 
     return {
@@ -42,7 +57,7 @@ export const sendReport = async (e: FormData) => {
   } catch (error) {
     console.log(error);
     return {
-      message: "Not sent!",
+      message: "Its not you, its us. Please try again.",
       success: false,
     };
   }

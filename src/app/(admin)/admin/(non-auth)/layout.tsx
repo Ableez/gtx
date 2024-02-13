@@ -1,8 +1,9 @@
 "use client";
 
 import AdminNavbar from "@/components/admin/Navbar";
+import CloseChatDialog from "@/components/admin/chat/CloseChatDialog";
 import { usePathname } from "next/navigation";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 type Props = {
   children: ReactNode;
@@ -10,6 +11,7 @@ type Props = {
 
 const ADMINNONAUTHLAYOUT = (props: Props) => {
   const pathname = usePathname();
+  const [confirmClose, setConfirmClose] = useState(false);
 
   const regex = /admin\/chat\/.*/;
   const isChatPage = regex.test(pathname);
@@ -17,8 +19,13 @@ const ADMINNONAUTHLAYOUT = (props: Props) => {
   return (
     <div>
       {/* {!isChatPage ? <AdminNavbar /> : null} */}
-      <AdminNavbar />
+      <AdminNavbar setConfirmClose={setConfirmClose} />
       {props.children}
+
+      <CloseChatDialog
+        confirmClose={confirmClose}
+        setConfirmClose={setConfirmClose}
+      />
     </div>
   );
 };

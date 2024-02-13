@@ -16,6 +16,7 @@ const AuthProvider = (props: Props) => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         setUser(authUser);
+        console.log("USER_IS_SIGNED_IN");
       } else {
         setUser({});
       }

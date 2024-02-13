@@ -47,7 +47,7 @@ const AdminLayoutProtect = (props: Props) => {
   if (isLoading) return <Loader />;
 
   if (user || pathName === "/admin/login" || pathName === "/admin/register") {
-    return <>{props.children}</>;
+    return <div className="max-w-screen-lg mx-auto">{props.children}</div>;
   }
 };
 
