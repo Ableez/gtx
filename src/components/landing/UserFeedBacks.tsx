@@ -13,6 +13,7 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
+import { Feedback } from "../../../types";
 type Props = {};
 
 interface StarsProps {
@@ -23,9 +24,13 @@ interface StarsProps {
 const feedbacksdat = [
   {
     approved: true,
+    date: {
+      nanoseconds: 239094834,
+      seconds: 2938345945,
+    },
     user: {
       username: "Adeseware",
-      profileUrl:
+      photoUrl:
         "https://images.unsplash.com/photo-1634896941598-b6b500a502a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8M2QlMjBhdmF0YXJzfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60",
     },
     content: {
@@ -36,9 +41,13 @@ const feedbacksdat = [
   },
   {
     approved: true,
+    date: {
+      nanoseconds: 239094834,
+      seconds: 2938345945,
+    },
     user: {
       username: "Bernard",
-      profileUrl:
+      photoUrl:
         "https://images.unsplash.com/photo-1634193295627-1cdddf751ebf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=600&q=60",
     },
     content: {
@@ -49,9 +58,13 @@ const feedbacksdat = [
   },
   {
     approved: true,
+    date: {
+      nanoseconds: 239094834,
+      seconds: 2938345945,
+    },
     user: {
       username: "Chisom",
-      profileUrl:
+      photoUrl:
         "https://images.unsplash.com/photo-1638803040283-7a5ffd48dad5?ixlib=rb-4.0.3&xid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE1fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60",
     },
     content: {
@@ -62,9 +75,13 @@ const feedbacksdat = [
   },
   {
     approved: true,
+    date: {
+      nanoseconds: 239094834,
+      seconds: 2938345945,
+    },
     user: {
       username: "Darek",
-      profileUrl:
+      photoUrl:
         "https://images.unsplash.com/photo-1634195130430-2be61200b66a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60",
     },
     content: {

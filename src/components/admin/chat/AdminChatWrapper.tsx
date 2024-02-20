@@ -5,7 +5,7 @@ import { User } from "firebase/auth";
 import { SunIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Conversation, Message } from "../../../../chat";
+import { CardDetails, Conversation, Message } from "../../../../chat";
 import AdminRenderMessages from "./AdminRenderMessages";
 import AdminAttachFile from "./AdminAttachFile";
 import { Card } from "@/components/ui/card";
@@ -34,16 +34,7 @@ type Props = {
   scrollToBottom: React.RefObject<HTMLDivElement>;
   setNewMessage: React.Dispatch<React.SetStateAction<Message | undefined>>;
   id: string;
-  card:
-    | {
-        id: string;
-        name: string;
-        vendor: string;
-        subcategory: string;
-        price: number;
-        ecode?: number | undefined;
-      }
-    | undefined;
+  card: CardDetails
 };
 
 const AdminChatWrapper = ({

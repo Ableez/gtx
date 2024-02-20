@@ -4695,7 +4695,7 @@ const cards = [
         markup: 5,
         items: [
           {
-      nd      Local_Product_Value_Min: 10,
+      Local_Product_Value_Min: 10,
             Local_Product_Value_Max: 10,
             Cross_Rate: 0.872,
             KUDA_IDENTIFIER: "KUD-GFTC-USA-022",

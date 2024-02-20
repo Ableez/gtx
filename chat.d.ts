@@ -3,39 +3,39 @@
 import { v4 as uuid } from "uuid";
 import { Subcategory } from "./types";
 
-interface Timestamp {
+type Timestamp = {
   seconds: number;
   nanoseconds: number;
-}
+};
 
-enum MessageInterfaceinterface {
+enum MessageTypetype {
   TEXT = "text",
   MEDIA = "media",
 }
 
-interface MediaMeta {
+export type MediaMeta = {
   media_size: string;
   media_name: string;
-  media_interface: stri;
-}
+  media_type: string;
+};
 
-interface MediaContent {
+export type MediaContent = {
   caption?: string;
   url: string;
   metadata: MediaMeta;
-}
+};
 
-interface Sender {
+export type Sender = {
   uid: string;
   username: string;
-}
+};
 
-interface ReadReceipt {
+export type ReadReceipt = {
   time: Timestamp;
   delivery_status: string;
   status: boolean;
-}
-interface Message {
+};
+export type Message = {
   id: string;
   type: string;
   edited_at: null | any;
@@ -59,24 +59,25 @@ interface Message {
   deleted_at: null | any;
   sender: Sender;
   read_receipt: ReadReceipt;
-}
+};
 
-interface Transaction {
+export type CardDetails = {
+  subcategory: Subcategory;
+  popular: boolean;
+  category: string;
+  vendor: string;
+  title: string;
+  price: string;
+  id: string;
+  image: string;
+  name: string;
+  ecode: string;
+  rate: string;
+};
+export type Transaction = {
   id: string;
   started: boolean;
-  cardDetails: {
-    subcategory: Subcategory;
-    popular: boolean;
-    category: string;
-    vendor: string;
-    title: string;
-    price: string;
-    id: string;
-    image: string;
-    name: string;
-    ecode: string;
-    rate: string;
-  };
+  cardDetails: CardDetails;
   accountDetails: {
     accountName: string;
     accountNumber: number;
@@ -86,9 +87,9 @@ interface Transaction {
   accepted: false;
   completed: false;
   status: "pending" | "done" | "cancelled" | "rejected" | "processing";
-}
+};
 
-export interface TransactionRec {
+export type TransactionRec = {
   id: string;
   data: Transaction;
   chatId: string;
@@ -99,9 +100,9 @@ export interface TransactionRec {
   };
   created_at: { seconds: number; nanoseconds: number };
   updated_at: { seconds: number; nanoseconds: number };
-}
+};
 
-interface LastMessage {
+export type LastMessage = {
   id: string;
   read_receipt: ReadReceipt;
   sender: string;
@@ -109,8 +110,8 @@ interface LastMessage {
     text: string;
     media: boolean;
   };
-}
-interface Conversation {
+};
+export type Conversation = {
   id: string;
   transaction: Transaction;
   messages: Message[];
@@ -124,7 +125,7 @@ interface Conversation {
   chatStatus: "closed" | "open";
   created_at: Timestamp;
   updated_at: Timestamp;
-}
+};
 
 export type ConversationCollections = {
   id: string;

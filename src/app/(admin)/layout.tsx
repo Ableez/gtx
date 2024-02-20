@@ -1,4 +1,3 @@
-"use client"
 import AdminLayoutProtect from "@/lib/context/AdminRedirect";
 import React, { ReactNode } from "react";
 

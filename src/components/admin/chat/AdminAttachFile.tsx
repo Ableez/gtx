@@ -3,7 +3,6 @@
 import {
   CreditCardIcon,
   DocumentTextIcon,
-  LockClosedIcon,
   PaperAirplaneIcon,
   PaperClipIcon,
   PhotoIcon,
@@ -11,12 +10,8 @@ import {
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import { formatFileSize } from "@/lib/utils/formartFileSize";
-import Image from "next/image";
-import { useFormStatus } from "react-dom";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "@/lib/utils/firebase";
-import { CurrencyDollarIcon, SunIcon } from "@heroicons/react/24/outline";
-import { Conversation } from "../../../../chat";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { CardDetails, Conversation } from "../../../../chat";
 import {
   Drawer,
   DrawerClose,
@@ -24,9 +19,11 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Progress } from "@/components/ui/progress";
-import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import SetRateComp from "./setRateDialog";
 import StartAdminTransaction from "./StartTransaction";
+import { Crop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+import CropImage from "./CropImage";
 
 type Props = {
   message?: Conversation;
@@ -38,17 +35,14 @@ type Props = {
 const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
   const [error, setError] = useState("");
   const [caption, setCaption] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("/logoplace.svg");
-  const { pending } = useFormStatus();
-  const [progress, setProgress] = useState(0);
-  const [sent, setSent] = useState(false);
   const [openRate, setOpenRate] = useState(false);
-  const [openAccount, setOpenAccount] = useState(false);
   const [openStartTransaction, setOpenStartTransaction] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [crop, setCrop] = useState<Crop>();
+  const [openEdit, setOpenEdit] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,82 +50,14 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
     }, 5500);
   }, [error]);
 
-  const sendImageAction = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    formData.append("id", id);
-    setLoading(true);
-    if (image && image.size > 5000000) {
-      setError("Image size must be less than 5MB");
-      setLoading(false);
-      return;
-    }
+  // image crop feature,
 
-    if (image) {
-      setProgress(1);
+  const onCropChange = (crop: Crop) => {
+    setCrop(crop);
+  };
 
-      const storageRef = ref(
-        storage,
-        `/cardImages/www.greatexchange.co---${id}---${image.name}`
-      );
-
-      setProgress(1);
-
-      const uploadTask = uploadBytesResumable(storageRef, image);
-
-      uploadTask.on(
-        "state_changed",
-        (snap) => {
-          const progress = (snap.bytesTransferred / snap.totalBytes) * 100;
-          setProgress(progress);
-        },
-        (err) => {
-          setError(err.message);
-        },
-        async () => {
-          const mediaurl = await getDownloadURL(uploadTask.snapshot.ref);
-
-          const sentMessage = await sendAdminMessage(
-            { timeStamp: new Date() },
-            id,
-            message?.user as {
-              username: string;
-              uid: string;
-              email: string;
-              photoUrl: string;
-            },
-            formData,
-            {
-              caption: caption,
-              url: mediaurl,
-              metadata: {
-                media_name: uploadTask.snapshot.metadata.name,
-                media_size: uploadTask.snapshot.metadata.size,
-                media_type: uploadTask.snapshot.metadata.contentType,
-              },
-            },
-            true
-          );
-
-          if (!sentMessage?.success) {
-            setError(sentMessage?.message);
-            setLoading(false);
-            return;
-          }
-
-          if (sentMessage?.success) {
-            setProgress(0);
-            setImage(null);
-            setCaption("");
-            setError("");
-            setSent(true);
-            setOpenDrawer(false);
-            setLoading(false);
-            scrollToBottom.current?.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-      );
-    }
+  const onCropComplete = (croppedArea: Crop, croppedAreaPixels: Crop) => {
+    // Here you can do something with the cropped image area
   };
 
   return (
@@ -141,19 +67,15 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
           type="button"
           className={`focus:outline-none border-secondary rounded-xl duration-300 w-full h-full py-1 grid col-span-1 place-items-center align-middle relative`}
         >
-          {pdfFile || image ? (
-            <div className="bg-red-400 rounded-full p-1.5 absolute top-0 left-0" />
-          ) : null}
           <PaperClipIcon width={22} />
         </DrawerTrigger>
         <DrawerContent className="z-[99999] max-w-xl mx-auto">
           <div className="max-w-md w-full mx-auto">
-            {image || pdfFile ? (
+            {pdfFile ? (
               <div className="p-4">
                 <button
                   title="Cancel"
                   onClick={() => {
-                    setImage(null);
                     setPdfFile(null);
                     setCaption("");
                   }}
@@ -162,7 +84,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                   <XMarkIcon width={22} className="" />
                 </button>
                 <div>
-                  {pdfFile ? (
+                  {pdfFile && (
                     <div className="grid p-6 align-middle place-items-center gap-1.5">
                       <DocumentTextIcon
                         width={80}
@@ -175,41 +97,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                         {formatFileSize(pdfFile.size)}
                       </p>
                     </div>
-                  ) : image ? (
-                    <div
-                      className={` grid p-4 align-middle place-items-center gap-1.5 overflow-clip`}
-                    >
-                      {loading && (
-                        <div className="absolute top-1/2 -translate-y-1/2 left-0 h-full w-full bg-white bg-opacity-40 grid place-items-center">
-                          <SunIcon width={22} className="animate-spin " />
-                        </div>
-                      )}
-                      <Image
-                        alt=""
-                        src={imageUrl}
-                        width={500}
-                        height={500}
-                        className={`${
-                          image.type.split("/")[1] === "png"
-                            ? "bg-neutral-900 p-3"
-                            : ""
-                        } rounded-xl max-h-[60vh] h-auto object-contain`}
-                      />
-                      <div className="text-neutral-400 flex align-baseline place-items-center">
-                        <p
-                          className="md:max-w-[300px] max-w-[200px]
-                     truncate"
-                        >
-                          {image?.name}
-                        </p>
-                        {/* <p>{image.type.split("/")[1]}</p> */}
-                      </div>
-
-                      <p className="text-neutral-600">
-                        {formatFileSize(image?.size as number)}
-                      </p>
-                    </div>
-                  ) : null}
+                  )}
                   <div className="mb-3 w-[50%] mx-auto flex align-middle place-items-center gap-2">
                     {progress > 0 && <Progress value={progress} />}
                   </div>
@@ -220,10 +108,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
                   >
                     {error}
                   </div>
-                  <form
-                    onSubmit={sendImageAction}
-                    className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-lg max-w-md mx-auto"
-                  >
+                  <form className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-lg max-w-md mx-auto">
                     <input
                       id="message"
                       name="message"
@@ -251,28 +136,15 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
               </div>
             ) : (
               <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
-                <label
-                  htmlFor="gallery"
+                <DrawerClose
                   className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl "
+                  onClick={() => {
+                    setOpenEdit(true);
+                  }}
                 >
-                  <input
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      setImage(file as File);
-                      if (file) {
-                        const url = URL.createObjectURL(file);
-                        setImageUrl(url);
-                      }
-                    }}
-                    type="file"
-                    name="gallery"
-                    id="gallery"
-                    className="hidden"
-                  />
                   <PhotoIcon width={30} />
                   <p className="text-xs">Gallery</p>
-                </label>
+                </DrawerClose>
 
                 <DrawerClose
                   className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
@@ -308,7 +180,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
         id={id}
         openRate={openRate}
         setOpenRate={setOpenRate}
-        card={message?.transaction.cardDetails}
+        card={message?.transaction.cardDetails as CardDetails}
       />
       <StartAdminTransaction
         openStartTransaction={openStartTransaction}
@@ -316,6 +188,13 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
         card={message}
         scrollToBottom={scrollToBottom}
         id={id}
+      />
+      <CropImage
+        id={id}
+        message={message as Conversation}
+        openEdit={openEdit}
+        setOpenEdit={setOpenEdit}
+        scrollToBottom={scrollToBottom}
       />
     </>
   );

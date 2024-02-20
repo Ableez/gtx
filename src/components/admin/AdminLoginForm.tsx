@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Button } from "./ui/button";
-import { useFormStatus } from "react-dom";
-import Loading from "@/app/loading";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { auth, db } from "@/lib/utils/firebase";
+import Cookies from "js-cookie";
 import {
   browserLocalPersistence,
   setPersistence,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
-import Cookies from "js-cookie";
-import { FirebaseError } from "firebase/app";
-import { redirect, useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { checkIsAdmin } from "@/lib/utils/adminActions/checkAdmin";
+import { FirebaseError } from "firebase/app";
+import { toast } from "sonner";
+import Loading from "@/app/loading";
+import { Label } from "../ui/label";
+import { useFormStatus } from "react-dom";
+import { postToast } from "../postToast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { doc, getDoc } from "firebase/firestore";
-
-type Props = {
-  url: string | null;
-};
+import { User } from "../../../types";
 
 const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
   const { pending, data } = useFormStatus();
@@ -37,19 +39,12 @@ const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
   );
 };
 
-const LoginForm = (props: Props) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [view, setView] = useState(false);
-  const router = useRouter();
+type Props = {};
 
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-    }
-  }, [error]);
+const AdminLoginForm = (props: Props) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [view, setView] = useState(false);
 
   const login = async (e: FormData) => {
     try {
@@ -63,69 +58,71 @@ const LoginForm = (props: Props) => {
           success: false,
         };
       }
+
       await setPersistence(auth, browserLocalPersistence).then(async () => {
-        await signInWithEmailAndPassword(
+        return signInWithEmailAndPassword(
           auth,
           email.toString(),
           password.toString()
-        ).then((user) => {
-          Cookies.set("user", JSON.stringify(user.user.toJSON()));
-          router.push(props.url || "/sell");
+        ).then(async (user) => {
+          const userRef = doc(db, "Users", user.user.uid);
+          const checkedUser = (await getDoc(userRef)).data() as User;
+
+          if (!checkedUser) {
+            await signOut(auth);
+            router.replace("/admin/login");
+            return;
+          }
+
+          if (checkedUser && checkedUser.role !== "admin") {
+            await signOut(auth);
+            router.replace("/admin/login");
+            return {
+              message: "Unauthorized, you are not an admin.",
+              success: false,
+            };
+          }
+
+          if (checkedUser.role === "admin") {
+            Cookies.set("user", JSON.stringify(user.user.toJSON()));
+            router.push("/admin");
+          }
         });
       });
     } catch (error) {
       const err = error as FirebaseError;
-      console.log(error);
-      toast("Login failed", {
-        description:
-          err?.code === "auth/invalid-login-credentials"
-            ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
-            : err?.code === "auth/user-not-found"
-            ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
-            : err?.code === "auth/wrong-password"
-            ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
-            : err.code === "auth/network-request-failed"
-            ? "You seem to be offline. check your internet connection."
-            : err.code === "auth/too-many-requests"
-            ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
-            : "Something went wrong. Try again",
-        dismissible: true,
-        duration: 3500,
-      });
       return {
         message:
           err?.code === "auth/invalid-login-credentials"
-            ? err.message
+            ? "Wrong password or email"
             : err?.code === "auth/user-not-found"
-            ? err.message
+            ? "User does not exists"
             : err?.code === "auth/wrong-password"
-            ? err.message
+            ? "Wrong password or email."
             : err.code === "auth/network-request-failed"
-            ? "You seem to be offline. check your internet connection."
+            ? "Poor connection. Network request failed."
             : err.code === "auth/too-many-requests"
-            ? err.message
+            ? "Too many login attempts. Try again in 60s."
             : "Something went wrong. Try again",
+        success: false,
       };
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div>
       {loading && <Loading />}
       <form
         action={async (e) => {
           login(e).then((res) => {
-            setError(res?.message as string);
+            if (res?.message) {
+              postToast("Error", { description: res?.message });
+            }
+
+            if (res?.message === "Too many login attempts") {
+              alert("Too many login attempts. Try again after 60s.");
+            }
           });
         }}
         className="space-y-6"
@@ -146,7 +143,7 @@ const LoginForm = (props: Props) => {
               type="email"
               autoComplete="email"
               required
-              className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+              className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset dark:focus:ring-primary sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -169,7 +166,7 @@ const LoginForm = (props: Props) => {
             </div>
           </div>
           <div className="mt-2">
-            <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-2">
+            <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-within:ring-1 focus-within:ring-primary disabled:cursor-not-allowed disabled:opacity-50 pr-2">
               <Input
                 disabled={loading}
                 aria-disabled={loading}
@@ -198,4 +195,4 @@ const LoginForm = (props: Props) => {
   );
 };
 
-export default LoginForm;
+export default AdminLoginForm;

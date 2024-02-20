@@ -1,15 +1,13 @@
 // "use server"
 
-import { User } from "firebase/auth";
+import { User, UserCredential } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
 import { db } from "../firebase";
+import { postToast } from "@/components/postToast";
 
-export const checkIsAdmin = async () => {
+export const checkIsAdmin = async (user: User) => {
   try {
-    const cachedUser = Cookies.get("user");
-    const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
-
     const getUser = await getDoc(doc(db, "Users", user?.uid as string));
 
     const checkUser = getUser.data() as {
@@ -21,12 +19,18 @@ export const checkIsAdmin = async () => {
     };
 
     if (!user || !getUser.exists()) {
+      postToast("Login", {
+        description: "You are not signed in!",
+      });
       return {
         isAdmin: false,
         message: "User does not exists",
         user: null,
       };
     } else if (checkUser.role !== "admin") {
+      postToast("Unauthorized", {
+        description: "You are not an admin!",
+      });
       return {
         isAdmin: false,
         message: "User is not an admin",
@@ -41,5 +45,10 @@ export const checkIsAdmin = async () => {
     }
   } catch (error) {
     console.error("CHECK_ADMIN", error);
+    return {
+      isAdmin: false,
+      message: "Internal error occured!",
+      user: null,
+    };
   }
 };

@@ -39,6 +39,7 @@
     "@supabase/supabase-js": "^2.38.5",
     "@types/firebase": "^3.2.1",
     "@types/js-cookie": "^3.0.6",
+    "@types/react-image-crop": "^8.1.6",
     "appwrite": "^13.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -54,10 +55,14 @@
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
     "react": "^18",
+    "react-crop-image": "^1.0.0",
     "react-dom": "^18",
+    "react-easy-crop": "^5.0.5",
     "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.49.2",
+    "react-image-crop": "^11.0.5",
     "react-webcam": "^7.2.0",
+    "sharp": "^0.33.2",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "sonner": "^1.4.0",
@@ -86,7 +91,7 @@
     "postcss-nesting": "^12.0.2",
     "tailwindcss": "^3.3.0",
     "ts-jest": "^29.1.1",
-    "typescript": "^5"
+    "typescript": "^5.3.3"
   },
   "jest": {
     "preset": "ts-jest",

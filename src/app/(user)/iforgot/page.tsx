@@ -32,7 +32,6 @@ const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
       disabled={pending}
       className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300 mt-4"
     >
-      {pending && <Loading />}
       Reset
     </Button>
   );
@@ -79,6 +78,8 @@ const IforgotReset = (props: Props) => {
 
   return (
     <div className="flex h-screen flex-1 flex-col justify-start p-2 py-12 lg:px-8">
+      {loading && <Loading />}
+
       <Link href={"/"} className="sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
           <Image

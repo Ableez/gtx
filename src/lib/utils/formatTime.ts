@@ -8,9 +8,9 @@ export const formatTime = (dateString: string): string => {
   } else {
     // Use a locale-axware method for formatting time
     return `${messageDate.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
     })}`;
   }
 };

@@ -53,7 +53,7 @@ export default function SellNavbar() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
           <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-            {user?.displayName || "Anonymous"}
+            {user?.displayName || "NOT SIGNED IN"}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {user?.uid && (

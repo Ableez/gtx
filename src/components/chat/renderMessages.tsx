@@ -16,6 +16,7 @@ import { EyeClosedIcon } from "@radix-ui/react-icons";
 import ECodeComp from "./eCode";
 import ConfirmTransaction from "./ConfirmTransaction";
 import { formatTime } from "@/lib/utils/formatTime";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
   data: Conversation;
@@ -293,10 +294,13 @@ const RenderMessages = memo(function RenderMessages({
                 </CardHeader>
                 <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
                   <div className="select-none text-base font-semibold">
-                    ₦{message.card.data?.value}
+                    ₦{formatCurrency(message.card.data?.value)}
                   </div>
                   <div className="select-none text-neutral-600">
-                    for {card?.price}
+                    for{" "}
+                    {card?.price
+                      ? formatCurrency(card?.price.toString())
+                      : "--"}
                   </div>
                 </CardContent>
               </Card>

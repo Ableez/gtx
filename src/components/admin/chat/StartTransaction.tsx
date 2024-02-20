@@ -13,10 +13,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Conversation } from "../../../../chat";
+import { CardDetails, Conversation } from "../../../../chat";
 import Image from "next/image";
 import SetRateComp from "./setRateDialog";
 import { startTransaction } from "@/lib/utils/adminActions/startTransaction";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
+import Loading from "@/app/loading";
 
 type Props = {
   id: string;
@@ -76,6 +78,11 @@ const StartAdminTransaction = ({
 
     return false;
   };
+
+  if (!card) {
+    return <Loading />;
+  }
+
   return (
     <>
       <Dialog
@@ -121,11 +128,14 @@ const StartAdminTransaction = ({
                     <dd className="flex align-middle items-center place-items-center justify-between">
                       <div className="mt-1 text-base font-semibold leading-6 text-black dark:text-white sm:col-span-2 sm:mt-0">
                         <span>&#x20A6;</span>
-                        {card?.transaction.cardDetails.rate || "0.00"}{" "}
+                        {formatCurrency(
+                          card?.transaction?.cardDetails?.rate as string
+                        ) || "---.--"}{" "}
                         <span className="text-xs font-normal text-neutral-700 dark:text-neutral-400">
                           for{" "}
-                          {card?.transaction.cardDetails.price ||
-                            "Please wait..."}
+                          {formatCurrency(
+                            card?.transaction?.cardDetails?.price as string
+                          ) || "Please wait..."}
                         </span>
                       </div>
                       <div>
@@ -180,7 +190,7 @@ const StartAdminTransaction = ({
                     className="animate-spin duration-1000 text-white"
                   />
                 )}
-                {started() ? "Waiting for customer" : "Confirm"}
+                {started() ? "Waiting for customer" : "Send confirmation"}
               </Button>
             </form>
           </div>
@@ -196,7 +206,7 @@ const StartAdminTransaction = ({
         id={id}
         openRate={openRate}
         setOpenRate={setOpenRate}
-        card={card?.transaction?.cardDetails}
+        card={card?.transaction?.cardDetails as CardDetails}
       />
     </>
   );

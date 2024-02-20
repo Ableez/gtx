@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { postToast } from "@/components/postToast";
 
 type Props = {
   id: string;
@@ -62,12 +63,21 @@ const FinishTransaction = ({
         setCancel(false);
         setFinishTransaction(false);
         setResp(res.message);
+        postToast("Successfull", {
+          description: "Transaction completed",
+        });
       }
 
       if (!res.success) {
         setResp(res.message);
+        postToast("Error!", {
+          description: res.message,
+        });
       }
     } catch (error) {
+      postToast("Error!", {
+        description: "Something went wrong",
+      });
       console.log(error);
     } finally {
       setLoading(false);

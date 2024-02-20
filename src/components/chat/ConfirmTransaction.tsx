@@ -105,9 +105,9 @@ const ConfirmTransaction = ({
               </h4>
             </div>
             <div className="border-t border-neutral-200 dark:border-neutral-700">
-              <dl className="divide-y divide-neutral-200 dark:divide-neutral-700">
-                <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
+              <dl className="divide-y divide-neutral-300 dark:divide-neutral-600">
+                <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
                     Subcategory
                   </dt>
                   <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
@@ -115,26 +115,31 @@ const ConfirmTransaction = ({
                       "Please wait..."}
                   </dd>
                 </div>
-                <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
+                <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
                     You will be receiving
                   </dt>
                   <dd className="flex align-middle items-center place-items-center justify-between">
                     <div className="mt-1 text-base font-semibold leading-6 text-black dark:text-white sm:col-span-2 sm:mt-0">
                       <span>&#x20A6;</span>
-                      {formatCurrency(data?.transaction.cardDetails.rate) ||
-                        "Please wait..."}{" "}
-                      <span className="text-xs font-normal text-neutral-700 dark:text-neutral-400">
-                        for{" "}
-                        {formatCurrency(data?.transaction.cardDetails.price) ||
-                          "Please wait..."}
-                      </span>
+                      {data.transaction.cardDetails.rate && (
+                        <>
+                          {formatCurrency(data.transaction.cardDetails.rate) ||
+                            "Please wait..."}{" "}
+                          <span className="text-xs font-normal text-neutral-700 dark:text-neutral-400">
+                            for{" "}
+                            {formatCurrency(
+                              data.transaction.cardDetails.price
+                            ) || "Please wait..."}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </dd>
                 </div>
 
-                <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-medium leading-6 text-neutral-900 dark:text-white">
+                <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
                     Account details
                   </dt>
                   <dd className="grid align-middle">

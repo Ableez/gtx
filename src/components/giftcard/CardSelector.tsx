@@ -28,6 +28,8 @@ import {
   DrawerTitle,
 } from "../ui/drawer";
 import Loader from "../Loader";
+import { toast } from "sonner";
+import Loading from "@/app/loading";
 
 type Props = {
   id: string;
@@ -40,7 +42,6 @@ const CardSelector = ({ id }: Props) => {
   const [error, setError] = useState<string>("");
   const { pending } = useFormStatus();
   const [isLogged, setLogged] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -103,7 +104,15 @@ const CardSelector = ({ id }: Props) => {
       );
 
       if (!res?.logged) {
-        setOpen(true);
+        toast("Error!", {
+          description: "You need to login to continue",
+          dismissible: true,
+          duration: 4500,
+          action: {
+            label: "Login",
+            onClick: () => router.push("/login"),
+          },
+        });
         setLoading(false);
       }
       setError(res?.error as string);
@@ -112,7 +121,11 @@ const CardSelector = ({ id }: Props) => {
         router.push(`/chat/${res.link}`);
       }
     } catch (error) {
-      console.log("START_CHAT_ACTION => ", error);
+      toast("Error!", {
+        description: "An error occured!. Try again",
+        dismissible: true,
+        duration: 3500,
+      });
     } finally {
       setLoading(false);
     }
@@ -120,45 +133,10 @@ const CardSelector = ({ id }: Props) => {
 
   return (
     <div className="duration-300">
-      {loading && (
-        <div className="h-screen w-screen bg-white dark:bg-[#0000005f] bg-opacity-10 backdrop-blur-sm fixed top-0 left-0 z-[99999] grid place-items-center align-middle">
-          <Loader />
-        </div>
-      )}
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <DrawerContent className="border-none ring-0 max-w-xl mx-auto">
-          <DrawerHeader>
-            <DrawerTitle className="pb-2">Not Logged in!</DrawerTitle>
-            <DrawerDescription>
-              <p className="font-semibold">
-                You can only sell a gift card when you are logged in.
-              </p>
-              <p className="text-[12px] text-center italic w-fit px-3 mx-auto rounded-xl bg-purple-200 text-purple-900 font-medium mt-6">
-                Use{" "}
-                <Button
-                  variant={"link"}
-                  className="px-0 text-green-500 font-semibold italic"
-                  onClick={() => selectsWhatsapp()}
-                >
-                  WhatsApp
-                </Button>{" "}
-                instead to transact without an account.
-              </p>
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter className="gap-2">
-            <Link
-              href={"/login"}
-              className="bg-primary p-3 text-white font-semibold rounded-xl w-fit mx-auto px-6"
-            >
-              Okay Login
-            </Link>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {loading && <Loading />}
 
       <div className="grid place-items-center justify-center gap-6">
-        <h4 className="text-center">{data.name} Giftcard</h4>
+        <h5 className="text-center text-base">{data.name} Giftcard</h5>
         <Image
           src={data.image || "/logoplace.svg"}
           width={65}
@@ -237,49 +215,6 @@ const CardSelector = ({ id }: Props) => {
             />
           </div>
         </div>
-        {/* {isLogged && (
-          <>
-            <div>
-              <div className="grid grid-cols-2 align-middle place-items-center gap-4 w-full">
-                <div className="space-y-6 w-full">
-                  <div className="flex items-center gap-x-3">
-                    <input
-                      id="whatsapp"
-                      type="radio"
-                      name="channel" // Use the same name for both radio buttons
-                      value="whatsapp"
-                      className="peer hidden"
-                    />
-                    <Label
-                      htmlFor="whatsapp"
-                      className="block text-sm font-medium leading-6 text-neutral-900 cursor-pointer p-6 ring-1 rounded-lg ring-neutral-300 w-full text-center hover:bg-green-100 duration-200 md:shadow-inner hover:ring-green-300 peer-checked:ring-green-400 peer-checked:bg-green-200"
-                    >
-                      WhatsApp
-                    </Label>
-                  </div>
-                </div>
-                <div className={`space-y-6 w-full`}>
-                  <div className="flex items-center gap-x-3">
-                    <input
-                      id="livechat"
-                      type="radio"
-                      name="channel"
-                      value="livechat"
-                      className="peer hidden"
-                      disabled={isLogged ? false : true}
-                    />
-                    <Label
-                      htmlFor="livechat"
-                      className="block text-sm font-medium leading-6 text-neutral-900 cursor-pointer p-6 ring-1 rounded-lg ring-neutral-300 w-full text-center hover:bg-pink-100 duration-200 md:shadow-inner hover:ring-pink-300 peer-checked:ring-pink-400 peer-checked:bg-pink-200 active:bg-pink-300"
-                    >
-                      Live chat
-                    </Label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )} */}
 
         <div className="w-full grid place-items-center">
           <Button
@@ -315,36 +250,35 @@ const CardSelector = ({ id }: Props) => {
           </Button>
         </div>
       </form>
-      <Button
-        variant={"ghost"}
-        disabled={
-          pending || !price || !subcategoryValue || price < 3 || loading
-        }
-        aria-disabled={
-          pending || !price || !subcategoryValue || price < 3 || loading
-        }
-        onClick={() => {
-          if (!price || !subcategoryValue) {
-            setError("All fields are required");
-          } else {
-            selectsWhatsapp();
-          }
-        }}
-        className="mx-auto text-xs underline w-full text-neutral-500 duration-300"
-      >
-        Or Continue to WhatsApp
-      </Button>
-      <p
-        className={`text-[10px] overflow-clip leading-5 border-neutral-800 mt-2 animate-out font-medium text-red-500 text-center duration-150 ${
-          error ? "opacity-100 h-5 leading-5" : "opacity-100 h-0 leading-10"
-        }`}
-      >
-        {error && error}
+      <p className="text-center text-neutral-500 dark:text-neutral-300 font-normal my-2">
+        or
       </p>
+      <div className="w-full grid place-items-center">
+        <Button
+          variant={"ghost"}
+          disabled={
+            pending || !price || !subcategoryValue || price < 3 || loading
+          }
+          aria-disabled={
+            pending || !price || !subcategoryValue || price < 3 || loading
+          }
+          onClick={() => {
+            if (!price || !subcategoryValue) {
+              setError("All fields are required");
+            } else {
+              selectsWhatsapp();
+            }
+          }}
+          className="mx-auto text-xs duration-300 border w-fit"
+        >
+          Continue to WhatsApp
+        </Button>
+      </div>
+
       <p
-        className={`text-[10px] text-center italic w-fit px-3 mx-auto rounded-xl bg-purple-200 text-purple-900 font-medium mt-6`}
+        className={`text-[10px] text-center italic w-fit px-3 mx-auto rounded-xl bg-purple-200 dark:bg-purple-800 dark:bg-opacity-20 dark:text-white text-purple-900 font-medium mt-6`}
       >
-        For faster checkout, Please sign in to use our in-app{" "}
+        Please sign in to use our in-app{" "}
         <span className="font-extrabold">chat feature</span>.
       </p>
     </div>

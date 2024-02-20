@@ -113,7 +113,7 @@ const TransactionDetail = ({ params }: Props) => {
                   {transaction?.data.cardDetails.vendor} Card
                 </h6>
                 <h6 className="text-[10px] ">
-                  {transaction?.data.cardDetails.subcategory}
+                  {transaction?.data.cardDetails.subcategory.value}
                 </h6>
                 <h6 className="font-bold text-base">
                   ₦
@@ -140,7 +140,7 @@ const TransactionDetail = ({ params }: Props) => {
             {/* Seperator /> */}
             <div className="  px-4">
               <span className=" text-[12px] ">
-                {transaction?.data.cardDetails.subcategory}
+                {transaction?.data.cardDetails.subcategory.value}
               </span>
               <h6 className="font-semibold">
                 {transaction?.data.cardDetails.price}

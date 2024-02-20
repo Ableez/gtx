@@ -2,6 +2,7 @@
 import { User, onAuthStateChanged } from "firebase/auth";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
+import Cookies from "js-cookie";
 
 type Props = {
   children: ReactNode;
@@ -16,13 +17,13 @@ const AuthProvider = (props: Props) => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         setUser(authUser);
-        console.log("USER_IS_SIGNED_IN");
+        Cookies.set("user", JSON.stringify(authUser));
       } else {
         setUser({});
+        Cookies.remove("user");
       }
     });
 
-    // Cleanup
     return () => unsubscribe();
   }, []);
   return (

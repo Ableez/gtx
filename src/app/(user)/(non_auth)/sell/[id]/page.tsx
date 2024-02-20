@@ -1,16 +1,14 @@
+"use client";
+
 import CardSelector from "@/components/giftcard/CardSelector";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { postToast } from "@/components/postToast";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import React from "react";
+import { redirect, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/utils/firebase";
+import { toast } from "sonner";
 
 type Props = {
   params: {
@@ -18,13 +16,31 @@ type Props = {
   };
 };
 
-type Params = {
-  price: number;
-  subcategory: string;
-};
-
 const GiftCardPage = ({ params }: Props) => {
-  const user = cookies().get("user");
+  const [mount, setMount] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!mount) {
+      setMount(true);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user && mount) {
+        return toast("Not signed in!", {
+          description: "You can only sell a gift card when you are logged in",
+          action: {
+            label: "Login",
+            onClick: () => {
+              router.push("/login");
+            },
+          },
+          duration: 8000,
+        });
+      }
+    });
+  }, [mount, router]);
+
   return (
     <>
       <div className="container font-bold text-lg relative max-w-screen-sm pb-6">
@@ -34,30 +50,15 @@ const GiftCardPage = ({ params }: Props) => {
         >
           <ArrowLeftIcon width={20} />
         </Link>
-        <Drawer open={!user} dismissible={true}>
-          <DrawerContent className="border-none ring-0 max-w-xl mx-auto">
-            <DrawerHeader>
-              <DrawerTitle className="pb-2 ">Not Logged in!</DrawerTitle>
-              <DrawerDescription>
-                You can only sell a gift card when you are logged in
-              </DrawerDescription>
-            </DrawerHeader>
-            <DrawerFooter className="gap-2">
-              <Link
-                href={"/login"}
-                className="bg-primary p-3 text-white font-semibold rounded-xl w-fit mx-auto px-6"
-              >
-                Okay Login
-              </Link>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
 
         <CardSelector id={params.id} />
 
         <div className="mt-10 text-center font-light text-[0.6em]">
           Please read our{" "}
-          <Link href={"/"} className=" text-secondary">
+          <Link
+            href={"/terms"}
+            className=" text-secondary font-semibold underline"
+          >
             terms and conditions
           </Link>
         </div>

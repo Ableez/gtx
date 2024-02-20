@@ -166,7 +166,7 @@ export const finishTransactionAction = async (
     if (!resp || !referenceId)
       return {
         success: false,
-        message: "Error. Insufficient parameters",
+        message: "Insufficient parameters",
       };
 
     const chatDocRef = doc(db, "Messages", id as string);
@@ -187,8 +187,7 @@ export const finishTransactionAction = async (
           status: true,
         },
         updated_at: time,
-        "data.status": "done",
-        "data.completed": true,
+        "transaction.status": "done",
       }).catch((e) => {
         console.log("UPDATE_CHAT_ERROR", e);
       });
@@ -202,7 +201,7 @@ export const finishTransactionAction = async (
         });
       } else {
         await addDoc(transactionDocRef, {
-          data: { ...chatData.transaction },
+          data: { ...chatData.transaction, status: "done", completed: true },
           userId: chatData.user.uid,
           payment: {
             reference: referenceId,

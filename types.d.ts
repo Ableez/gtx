@@ -100,3 +100,13 @@ export type ReviewData = {
   content: ReviewContent;
   link?: string; // Optional link
 };
+
+export type Feedback = {
+  approved: boolean;
+  content: { review: string; stars: number };
+  date: Timestamp;
+  user: {
+    photoUrl: string;
+    username: string;
+  };
+};

@@ -2,7 +2,7 @@ import { CheckIcon, ClockIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { memo, useEffect, useState } from "react";
-import { Conversation, Message } from "../../../../chat";
+import { CardDetails, Conversation, Message } from "../../../../chat";
 import {
   Card,
   CardContent,
@@ -16,21 +16,13 @@ import SetRateComp from "./setRateDialog";
 import StartAdminTransaction from "./StartTransaction";
 import { formatTime } from "@/lib/utils/formatTime";
 import FinishTransaction from "./FinishTransaction";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
   data: Conversation;
   scrollToBottom: React.MutableRefObject<HTMLDivElement | null>;
   id: string;
-  card:
-    | {
-        id: string;
-        name: string;
-        vendor: string;
-        subcategory: string;
-        price: number;
-        ecode?: number | undefined;
-      }
-    | undefined;
+  card: CardDetails;
 };
 
 const AdminRenderMessages = memo(function AdminRenderMessages({
@@ -74,14 +66,14 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                 : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-700"
             } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
           >
-            <div className="flex align-baseline place-items-end gap-4">
+            <div className="w-full text-right pr-2 flex align-baseline  gap-0.5 justify-end place-items-baseline">
               <p
                 className={`md:font-medium font-normal leading-6 text-sm antialiased`}
               >
                 {message.content.text}
                 <br />
               </p>
-              <p className="text-[10px] font-light leading-3">
+              <p className="text-[9px] font-light leading-3 text-neutral-200  w-12">
                 {formatTime(
                   new Date(
                     (message?.timeStamp?.seconds ?? 0) * 1000 +
@@ -206,7 +198,8 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                           Subcategory
                         </dt>
                         <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-white sm:col-span-2 sm:mt-0">
-                          {message.card.data.subcategory.value || "Please wait..."}
+                          {message.card.data.subcategory.value ||
+                            "Please wait..."}
                         </dd>
                       </div>
                       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -273,10 +266,13 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                 </CardHeader>
                 <CardContent className="max-w-[250px] min-w-[200px] grid gap-1">
                   <div className="select-none text-base font-semibold">
-                    ₦{message.card.data?.value}
+                    ₦{formatCurrency(message.card.data?.value)}
                   </div>
                   <div className="select-none text-neutral-600">
-                    for {card?.price}
+                    for{" "}
+                    {card?.price
+                      ? formatCurrency(card?.price.toString())
+                      : "--"}
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -341,7 +337,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                     ? "Waiting for user to confirm"
                     : null}
 
-                  {data.chatStatus === "open" ? (
+                  {!data.transaction.completed ? (
                     <div className="mt-2">
                       {!data.transaction.accepted &&
                       message.card.data.status === "rejected_by_user" ? (
@@ -371,8 +367,9 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                       ) : null}
                     </div>
                   ) : (
-                    <div className="italic text-xs text-opacity-60 text-black mt-2">
-                      Transaction has been closed
+                    <div className="italic text-xs text-opacity-60 text-black mt-2 flex align-middle place-items-center justify-start gap-1">
+                      <CheckIcon strokeWidth={2} width={14} /> Transaction
+                      completed
                     </div>
                   )}
                 </CardContent>
@@ -396,17 +393,17 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
           <div
             className={`${
               message.recipient !== "admin"
-                ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+                ? "bg-fuchsia-200 text-black rounded-l-md rounded-br-md rounded-tr-[3px]"
                 : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200 dark:bg-neutral-800"
-            } grid align-middle place-items-center justify-between px-2 gap-2 py-1.5`}
+            } grid align-middle place-items-center justify-between px-1 gap-2 py-1`}
           >
-            <div className="rounded-2xl overflow-clip">
+            <div className="rounded-md overflow-clip shadow-sm">
               {message.content.media.url ? (
                 <Image
                   src={message.content.media.url || "/logoplace.svg"}
                   alt={message.content.media.metadata?.media_name as string}
-                  width={220}
-                  height={220}
+                  width={240}
+                  height={240}
                   className="w-full bg-neutral-200 dark:bg-neutral-800"
                 />
               ) : (
@@ -418,10 +415,22 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
                 </div>
               )}
             </div>
-            <div
-              className={`md:font-medium font-normal leading-6 text-sm antialiased text-right w-full`}
-            >
-              {message.content.media.caption}
+            <div className="w-full text-right pr-2 pb-1 flex align-baseline  gap-0.5 justify-end place-items-baseline">
+              {message.content.media.caption && (
+                <div
+                  className={`md:font-medium font-normal leading-6 text-sm antialiased w-full`}
+                >
+                  {message.content.media.caption}
+                </div>
+              )}
+              <p className="text-[9px] font-light leading-3 text-neutral-500 dark:text-neutral-400 w-12">
+                {formatTime(
+                  new Date(
+                    (message?.timeStamp?.seconds ?? 0) * 1000 +
+                      (message?.timeStamp?.nanoseconds ?? 0) / 1e6
+                  ).toISOString()
+                )}
+              </p>
             </div>
           </div>
         </div>

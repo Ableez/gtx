@@ -10,20 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { setCardRate } from "@/lib/utils/adminActions/setRate";
+import { CardDetails } from "../../../../chat";
 
 type Props = {
   id: string;
   openRate: boolean;
-  card:
-    | {
-        id: string;
-        name: string;
-        vendor: string;
-        subcategory: string;
-        price: number;
-        ecode?: number | undefined;
-      }
-    | undefined;
+  card: CardDetails;
   setOpenRate: React.Dispatch<React.SetStateAction<boolean>>;
   scrollToBottom: React.RefObject<HTMLDivElement>;
   edit?: boolean;

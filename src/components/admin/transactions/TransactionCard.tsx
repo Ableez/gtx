@@ -2,6 +2,7 @@ import React from "react";
 import { TransactionRec } from "../../../../chat";
 import Link from "next/link";
 import Image from "next/image";
+import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
   transaction: TransactionRec;
@@ -29,7 +30,7 @@ const TransactionCard = ({ idx, transaction }: Props) => {
         <h4 className="">
           {transaction.data.cardDetails.vendor}
           <span className="font-semibold text-neutral-500 dark:text-neutral-400">
-            - {transaction.data.cardDetails.price}
+            - {formatCurrency(transaction.data.cardDetails.price)}
           </span>
         </h4>
         <p className="text-[12px] font-light text-neutral-400">

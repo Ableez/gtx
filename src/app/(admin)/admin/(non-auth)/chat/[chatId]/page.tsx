@@ -8,15 +8,9 @@ import { redirect, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Conversation, Message } from "../../../../../../../chat";
+import { CardDetails, Conversation, Message } from "../../../../../../../chat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
-
-const AdminChatWrapper = dynamic(
-  () => import("@/components/admin/chat/AdminChatWrapper"),
-  {
-    ssr: false,
-  }
-);
+import AdminChatWrapper from "@/components/admin/chat/AdminChatWrapper";
 
 type Props = {
   params: {
@@ -113,7 +107,7 @@ const AdminChatScreen = ({ params }: Props) => {
   return (
     <>
       <AdminChatWrapper
-        card={messages?.transaction.cardDetails}
+        card={messages?.transaction.cardDetails as CardDetails}
         user={user}
         id={params.chatId}
         allMessages={messages}
