@@ -58,11 +58,12 @@ const SellPage = (props: Props) => {
                 className="p-3 bg-white dark:bg-[#2c2c2c] rounded-2xl shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] grid place-items-center gap-4 active:border-slate-300 dark:active:border-slate-600  active:bg-slate-50 border duration-100 border-neutral-200 hover:border-neutral-300 dark:border-neutral-700"
               >
                 <Image
-                  src={giftCard.image || "/logoplace.svg"}
+                  src={giftCard.image}
                   width={58}
                   height={58}
                   alt="Vender Logo"
                   className="text-xs"
+                  priority={true}
                 />
                 <h4 className="text-xs text-neutral-800 dark:text-white text-center">
                   {giftCard.name}

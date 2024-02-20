@@ -138,10 +138,11 @@ const CardSelector = ({ id }: Props) => {
       <div className="grid place-items-center justify-center gap-6">
         <h5 className="text-center text-base">{data.name} Giftcard</h5>
         <Image
-          src={data.image || "/logoplace.svg"}
+          src={data.image}
           width={65}
           height={65}
           alt="Vender Logo"
+          priority={true}
           className="text-xs"
         />
       </div>
