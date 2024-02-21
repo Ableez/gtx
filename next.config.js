@@ -28,6 +28,12 @@ const nextConfig = {
         pathname: "**",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "greatexc-r2d9rlxct-ableez.vercel.app",
+        pathname: "**",
+        port: "",
+      },
     ],
   },
   webpack: (config, { isServer }) => {
