@@ -3,54 +3,35 @@ import SearchBar from "@/components/sellPage/SearchBar";
 import React, { useState } from "react";
 import { giftcards } from "@/lib/data/giftcards";
 import CardDisplay from "@/components/sellPage/CardDisplay";
+import { Pagination } from "@/lib/utils/paginate";
+import { GiftCard } from "../../../../../types";
+import Paginate from "@/components/sellPage/Paginate";
 
-type Props = {};
-
-const tabs: { title: string; link: string }[] = [
-  {
-    title: "Most Popular",
-    link: "mostpopular",
-  },
-  {
-    title: "All",
-    link: "all",
-  },
-];
-
-const SellPage = (props: Props) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const SellPage = () => {
   const [tabTitle, setTabTitle] = useState("mostpopular");
+  const cards = new Pagination(giftcards, 20, 1);
 
-  const toShow = giftcards.filter((t) => {
-    if (searchTerm.length === 0) {
-      return tabTitle === "mostpopular" ? t.popular : t;
-    } else {
-      return t;
+  const currCards = () => {
+    if (tabTitle === "mostpopular") {
+      return giftcards.filter((card) => card.popular);
     }
-  });
 
-  const filteredCards = toShow.filter((t) => {
-    return t.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase());
-  });
+    return cards.getCurrentPageData();
+  };
 
   return (
     <div className="pb-8">
-      <SearchBar
-        tabTitle={tabTitle}
-        setTabTitle={setTabTitle}
-        tabs={tabs}
-        val={searchTerm}
-        change={setSearchTerm}
-      />
-      {filteredCards.length > 0 ? (
-        <CardDisplay filteredCards={filteredCards} />
+      <SearchBar setTabTitle={setTabTitle} tabTitle={tabTitle} />
+
+      {currCards().length > 0 ? (
+        <CardDisplay filteredCards={currCards() as GiftCard[]} />
       ) : (
-        <div className="text-xl text-center p-8 my-16 font-semibold text-neutral-400">
-          You caught us on that one. We dont know that one!
+        <div className="text-xl text-center p-8 my-16 font-semibold text-neutral-300">
+          Errrm, seems like we dont know that one!
         </div>
       )}
-
-      <div className="bg-neutral-100 dark:bg-neutral-800 w-full px-8 py-8 place-items-center grid text-sm text-left">
+      {tabTitle !== "mostpopular" && <Paginate />}
+      <div className="bg-neutral-100 dark:bg-neutral-800 w-full px-8 py-10 place-items-center grid text-sm text-left border-t">
         <div className="max-w-screen-lg mx-auto">
           <h4 className="font-bold text-neutral-500 w-full">
             Beware of gift card scams. Do not share your code.

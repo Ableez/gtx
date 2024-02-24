@@ -74,7 +74,7 @@ const AttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
 
       const storageRef = ref(
         storage,
-        `/cardImages/www.greatexchange.co---${id}---${image.name}`
+        `/cardImages/greatexchange---${id}---${image.name}`
       );
 
       setProgress(1);

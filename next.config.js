@@ -7,12 +7,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "firebasestorage.googleapis.com",
         pathname: "**",
-        pathname: "**",
         port: "",
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        protocol: "http",
+        hostname: "localhost",
         pathname: "**",
         port: "",
       },
@@ -25,6 +24,18 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "d38v990enafbk6.cloudfront.net",
+        pathname: "**",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "greatexc-r2d9rlxct-ableez.vercel.app",
+        pathname: "**",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
         pathname: "**",
         port: "",
       },

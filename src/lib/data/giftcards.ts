@@ -1,9 +1,11 @@
+const PUBLIC_URL = "/cards";
+
 export const giftcards = [
   {
     id: "6th_Street",
     popular: false,
     name: "6th Street",
-    image: "https://d38v990enafbk6.cloudfront.net/6th_street.png",
+    image: `${PUBLIC_URL}/6th_Street.jpg`,
     title: "6th Street Card",
     category: "Fashion",
     subcategory: [
@@ -19,7 +21,7 @@ export const giftcards = [
     id: "Adam_N Eve",
     popular: false,
     name: "Adam N Eve",
-    image: "https://d38v990enafbk6.cloudfront.net/Adam_n_eve.png",
+    image: `${PUBLIC_URL}/Adam_n_eve.jpg`,
     title: "Adam N Eve Card",
     category: "Home Decor",
     subcategory: [
@@ -35,7 +37,7 @@ export const giftcards = [
     id: "Adidas",
     popular: true,
     name: "Adidas",
-    image: "https://d38v990enafbk6.cloudfront.net/Adidas.png",
+    image: `${PUBLIC_URL}/Adidas.jpg`,
     title: "Adidas Card",
     category: "Fashion",
     subcategory: [
@@ -81,7 +83,7 @@ export const giftcards = [
     id: "Air_Canada",
     popular: false,
     name: "Air Canada",
-    image: "https://d38v990enafbk6.cloudfront.net/Air_Canada.png",
+    image: `${PUBLIC_URL}/Air_Canada.jpg`,
     title: "Air Canada Card",
     category: "Travels",
     subcategory: [
@@ -97,7 +99,7 @@ export const giftcards = [
     id: "Amazon",
     popular: false,
     name: "Amazon",
-    image: "https://d38v990enafbk6.cloudfront.net/Amazon.png",
+    image: `${PUBLIC_URL}/Amazon.jpg`,
     title: "Amazon Card",
     category: "Shopping",
     subcategory: [
@@ -155,8 +157,7 @@ export const giftcards = [
     id: "American_Eagle Outfitters",
     popular: false,
     name: "American Eagle Outfitters",
-    image:
-      "https://d38v990enafbk6.cloudfront.net/American_Eagle_outfitters.png",
+    image: "/cards/American_Eagle_outfitters.jpg",
     title: "American Eagle Outfitters Card",
     category: "Fashion",
     subcategory: [
@@ -178,7 +179,7 @@ export const giftcards = [
     id: "Apple",
     popular: true,
     name: "Apple",
-    image: "https://d38v990enafbk6.cloudfront.net/Apple.png",
+    image: `${PUBLIC_URL}/Apple.jpg`,
     title: "Apple Card",
     category: "Apple Gift Card",
     subcategory: [
@@ -200,7 +201,7 @@ export const giftcards = [
     id: "Applebees",
     popular: false,
     name: "Applebees",
-    image: "https://d38v990enafbk6.cloudfront.net/Applebees.png",
+    image: `${PUBLIC_URL}/Applebees.jpg`,
     title: "Applebees Card",
     category: "Restaurant",
     subcategory: [
@@ -216,7 +217,7 @@ export const giftcards = [
     id: "Ardene",
     popular: false,
     name: "Ardene",
-    image: "https://d38v990enafbk6.cloudfront.net/Ardene.png",
+    image: `${PUBLIC_URL}/Ardene.jpg`,
     title: "Ardene Card",
     category: "Fashion",
     subcategory: [
@@ -232,7 +233,7 @@ export const giftcards = [
     id: "Argos",
     popular: false,
     name: "Argos",
-    image: "https://d38v990enafbk6.cloudfront.net/Argos.png",
+    image: `${PUBLIC_URL}/Argos.jpg`,
     title: "Argos Card",
     category: "Shopping",
     subcategory: [
@@ -248,7 +249,7 @@ export const giftcards = [
     id: "Asos",
     popular: false,
     name: "Asos",
-    image: "https://d38v990enafbk6.cloudfront.net/Asos.png",
+    image: `${PUBLIC_URL}/Asos.jpg`,
     title: "Asos Card",
     category: "Fashion",
     subcategory: [
@@ -264,7 +265,7 @@ export const giftcards = [
     id: "Banana_Republic",
     popular: false,
     name: "Banana Republic",
-    image: "https://d38v990enafbk6.cloudfront.net/banana_republic.png",
+    image: `${PUBLIC_URL}/Banana_Republic.jpg`,
     title: "Banana Republic Card",
     category: "Fashion",
     subcategory: [
@@ -280,7 +281,7 @@ export const giftcards = [
     id: "Best_Buy",
     popular: false,
     name: "Best Buy",
-    image: "https://d38v990enafbk6.cloudfront.net/Best_buy.png",
+    image: `${PUBLIC_URL}/Best_buy.jpg`,
     title: "Best Buy Card",
     category: "Electronics",
     subcategory: [
@@ -296,7 +297,7 @@ export const giftcards = [
     id: "Bier_Markt",
     popular: false,
     name: "Bier Markt",
-    image: "https://d38v990enafbk6.cloudfront.net/Biermarkt.png",
+    image: `${PUBLIC_URL}/Biermarkt.jpg`,
     title: "Bier Markt Card",
     category: "Restaurant",
     subcategory: [
@@ -312,7 +313,7 @@ export const giftcards = [
     id: "Blizzard_Balance",
     popular: false,
     name: "Blizzard Balance",
-    image: "https://d38v990enafbk6.cloudfront.net/Blizzard.png",
+    image: `${PUBLIC_URL}/Blizzard.jpg`,
     title: "Blizzard Balance Card",
     category: "Gaming",
     subcategory: [
@@ -328,7 +329,7 @@ export const giftcards = [
     id: "BNatural_MedSpa",
     popular: false,
     name: "BNatural MedSpa",
-    image: "https://d38v990enafbk6.cloudfront.net/BNatural_MedSpa.png",
+    image: `${PUBLIC_URL}/BNatural_MedSpa.jpg`,
     title: "BNatural MedSpa Card",
     category: "Beauty",
     subcategory: [
@@ -344,7 +345,7 @@ export const giftcards = [
     id: "Buffalo_Wild Wings",
     popular: false,
     name: "Buffalo Wild Wings",
-    image: "https://d38v990enafbk6.cloudfront.net/Buffalo_Wild_Wings.png",
+    image: `${PUBLIC_URL}/Buffalo_Wild_Wings.jpg`,
     title: "Buffalo Wild Wings Card",
     category: "Restaurant",
     subcategory: [
@@ -360,7 +361,7 @@ export const giftcards = [
     id: "Burger_King",
     popular: false,
     name: "Burger King",
-    image: "https://d38v990enafbk6.cloudfront.net/Burger_King.png",
+    image: `${PUBLIC_URL}/Burger_King.jpg`,
     title: "Burger King Card",
     category: "Restaurant",
     subcategory: [
@@ -376,7 +377,7 @@ export const giftcards = [
     id: "Carrefour",
     popular: false,
     name: "Carrefour",
-    image: "https://d38v990enafbk6.cloudfront.net/Carrefour.png",
+    image: `${PUBLIC_URL}/Carrefour.jpg`,
     title: "Carrefour Card",
     category: "Shopping",
     subcategory: [
@@ -395,10 +396,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Casper_& Gambini's",
+    id: "Casper_& Gambinis",
     popular: false,
     name: "Casper & Gambini's",
-    image: "https://d38v990enafbk6.cloudfront.net/Casper_and_Gambinis.png",
+    image: `${PUBLIC_URL}/Casper_Gambinis.jpg`,
     title: "Casper & Gambini's Card",
     category: "Restaurant",
     subcategory: [
@@ -414,7 +415,7 @@ export const giftcards = [
     id: "Chipotle",
     popular: false,
     name: "Chipotle",
-    image: "https://d38v990enafbk6.cloudfront.net/Chipotle.png",
+    image: `${PUBLIC_URL}/Chipotle.jpg`,
     title: "Chipotle Card",
     category: "Restaurant",
     subcategory: [
@@ -430,7 +431,7 @@ export const giftcards = [
     id: "Clarks",
     popular: false,
     name: "Clarks",
-    image: "https://d38v990enafbk6.cloudfront.net/Clarks.png",
+    image: `${PUBLIC_URL}/Clarks.jpg`,
     title: "Clarks Card",
     category: "Fashion",
     subcategory: [
@@ -446,7 +447,7 @@ export const giftcards = [
     id: "Conquer_Online",
     popular: false,
     name: "Conquer Online",
-    image: "https://d38v990enafbk6.cloudfront.net/Conquer-Online.png",
+    image: `${PUBLIC_URL}/Conquer_Online.jpg`,
     title: "Conquer Online Card",
     category: "Gaming",
     subcategory: [
@@ -459,10 +460,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Crate_& Barrel",
+    id: "Crate_and_Barrel",
     popular: false,
     name: "Crate & Barrel",
-    image: "https://d38v990enafbk6.cloudfront.net/Crate_and_Barrel.png",
+    image: `${PUBLIC_URL}/Crate_Barrel.jpg`,
     title: "Crate & Barrel Card",
     category: "Home Decor",
     subcategory: [
@@ -478,7 +479,7 @@ export const giftcards = [
     id: "Currys",
     popular: false,
     name: "Currys",
-    image: "https://d38v990enafbk6.cloudfront.net/Currys.png",
+    image: `${PUBLIC_URL}/Currys.jpg`,
     title: "Currys Card",
     category: "Electronics",
     subcategory: [
@@ -494,7 +495,7 @@ export const giftcards = [
     id: "David_Wej",
     popular: false,
     name: "David Wej",
-    image: "https://d38v990enafbk6.cloudfront.net/David_Wej.png",
+    image: `${PUBLIC_URL}/David_Wej.jpg`,
     title: "David Wej Card",
     category: "Fashion",
     subcategory: [
@@ -510,7 +511,7 @@ export const giftcards = [
     id: "Domino's",
     popular: false,
     name: "Domino's",
-    image: "https://d38v990enafbk6.cloudfront.net/Dominos.png",
+    image: `${PUBLIC_URL}/Dominos.jpg`,
     title: "Domino's Card",
     category: "Restaurant",
     subcategory: [
@@ -526,7 +527,7 @@ export const giftcards = [
     id: "DoorDash",
     popular: false,
     name: "DoorDash",
-    image: "https://d38v990enafbk6.cloudfront.net/Doordash.png",
+    image: `${PUBLIC_URL}/DoorDash.jpg`,
     title: "DoorDash Card",
     category: "Food Delivery",
     subcategory: [
@@ -548,7 +549,7 @@ export const giftcards = [
     id: "DSW",
     popular: false,
     name: "DSW",
-    image: "https://d38v990enafbk6.cloudfront.net/DSW.png",
+    image: `${PUBLIC_URL}/DSW.jpg`,
     title: "DSW Card",
     category: "Fashion",
     subcategory: [
@@ -561,10 +562,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Dunkin'_Donuts",
+    id: "Dunkin_Donuts",
     popular: false,
     name: "Dunkin' Donuts",
-    image: "https://d38v990enafbk6.cloudfront.net/Dunkin_Donuts.png",
+    image: `${PUBLIC_URL}/Dunkin_Donuts.jpg`,
     title: "Dunkin' Donuts Card",
     category: "Restaurant",
     subcategory: [
@@ -580,7 +581,7 @@ export const giftcards = [
     id: "eBay",
     popular: false,
     name: "eBay",
-    image: "https://d38v990enafbk6.cloudfront.net/Ebay.png",
+    image: `${PUBLIC_URL}/Ebay.jpg`,
     title: "eBay Card",
     category: "Shopping",
     subcategory: [
@@ -596,7 +597,7 @@ export const giftcards = [
     id: "Emax",
     popular: false,
     name: "Emax",
-    image: "https://d38v990enafbk6.cloudfront.net/Emax.png",
+    image: `${PUBLIC_URL}/Emax.jpg`,
     title: "Emax Card",
     category: "Electronics",
     subcategory: [
@@ -612,7 +613,7 @@ export const giftcards = [
     id: "Filmhouse_Cinemas",
     popular: false,
     name: "Filmhouse Cinemas",
-    image: "https://d38v990enafbk6.cloudfront.net/Filmhouse.png",
+    image: `${PUBLIC_URL}/Filmhouse.jpg`,
     title: "Filmhouse Cinemas Card",
     category: "Film & TV",
     subcategory: [
@@ -628,7 +629,7 @@ export const giftcards = [
     id: "Forever_21",
     popular: false,
     name: "Forever 21",
-    image: "https://d38v990enafbk6.cloudfront.net/Forever_21.png",
+    image: `${PUBLIC_URL}/Forever_21.jpg`,
     title: "Forever 21 Card",
     category: "Fashion",
     subcategory: [
@@ -644,7 +645,7 @@ export const giftcards = [
     id: "Fortnite",
     popular: false,
     name: "Fortnite",
-    image: "https://d38v990enafbk6.cloudfront.net/Fortnite.png",
+    image: `${PUBLIC_URL}/Fortnite.jpg`,
     title: "Fortnite Card",
     category: "Gaming",
     subcategory: [
@@ -660,7 +661,7 @@ export const giftcards = [
     id: "FreeFire",
     popular: false,
     name: "FreeFire",
-    image: "https://d38v990enafbk6.cloudfront.net/Firefire.png",
+    image: `${PUBLIC_URL}/FreeFire.jpg`,
     title: "FreeFire Card",
     category: "Gaming",
     subcategory: [
@@ -676,7 +677,7 @@ export const giftcards = [
     id: "Gamestop",
     popular: false,
     name: "Gamestop",
-    image: "https://d38v990enafbk6.cloudfront.net/Gamestop.png",
+    image: `${PUBLIC_URL}/Gamestop.jpg`,
     title: "Gamestop Card",
     category: "Gaming",
     subcategory: [
@@ -692,7 +693,7 @@ export const giftcards = [
     id: "Gap",
     popular: false,
     name: "Gap",
-    image: "https://d38v990enafbk6.cloudfront.net/GAP.png",
+    image: `${PUBLIC_URL}/GAP.jpg`,
     title: "Gap Card",
     category: "Fashion",
     subcategory: [
@@ -714,7 +715,7 @@ export const giftcards = [
     id: "Google_Play",
     popular: true,
     name: "Google Play",
-    image: "https://d38v990enafbk6.cloudfront.net/Playstore.png",
+    image: `${PUBLIC_URL}/Google_Play.jpg`,
     title: "Google Play Card",
     category: "App Store",
     subcategory: [
@@ -736,7 +737,7 @@ export const giftcards = [
     id: "Grocery_Bazaar",
     popular: false,
     name: "Grocery Bazaar",
-    image: "https://d38v990enafbk6.cloudfront.net/Grocery_bazaar.png",
+    image: `${PUBLIC_URL}/Grocery_Bazaar.jpg`,
     title: "Grocery Bazaar Card",
     category: "Shopping",
     subcategory: [
@@ -752,7 +753,7 @@ export const giftcards = [
     id: "GrubHub",
     popular: false,
     name: "GrubHub",
-    image: "https://d38v990enafbk6.cloudfront.net/Grubhub.png",
+    image: `${PUBLIC_URL}/GrubHub.jpg`,
     title: "GrubHub Card",
     category: "Food Delivery",
     subcategory: [
@@ -768,7 +769,7 @@ export const giftcards = [
     id: "H&M",
     popular: false,
     name: "H&M",
-    image: "https://d38v990enafbk6.cloudfront.net/H_and_M.png",
+    image: `${PUBLIC_URL}/H_and_M.jpg`,
     title: "H&M Card",
     category: "Fashion",
     subcategory: [
@@ -784,7 +785,7 @@ export const giftcards = [
     id: "Hairitage_Hub",
     popular: false,
     name: "Hairitage Hub",
-    image: "https://d38v990enafbk6.cloudfront.net/Hairitage_Hub.png",
+    image: `${PUBLIC_URL}/Hairitage_Hub.jpg`,
     title: "Hairitage Hub Card",
     category: "Beauty",
     subcategory: [
@@ -800,7 +801,7 @@ export const giftcards = [
     id: "Harvey_Nicols",
     popular: false,
     name: "Harvey Nicols",
-    image: "https://d38v990enafbk6.cloudfront.net/Harvey-Nichols.png",
+    image: `${PUBLIC_URL}/Harvey_Nicols.jpg`,
     title: "Harvey Nicols Card",
     category: "Shopping",
     subcategory: [
@@ -816,7 +817,7 @@ export const giftcards = [
     id: "HealthPlus",
     popular: false,
     name: "HealthPlus",
-    image: "https://d38v990enafbk6.cloudfront.net/Healthplus.png",
+    image: `${PUBLIC_URL}/HealthPlus.jpg`,
     title: "HealthPlus Card",
     category: "Beauty",
     subcategory: [
@@ -832,7 +833,7 @@ export const giftcards = [
     id: "Home_Depot",
     popular: false,
     name: "Home Depot",
-    image: "https://d38v990enafbk6.cloudfront.net/Home_Depot.png",
+    image: `${PUBLIC_URL}/Home_Depot.jpg`,
     title: "Home Depot Card",
     category: "Home Decor",
     subcategory: [
@@ -848,7 +849,7 @@ export const giftcards = [
     id: "Hotelgift",
     popular: false,
     name: "Hotelgift",
-    image: "https://d38v990enafbk6.cloudfront.net/Hotelgift.png",
+    image: `${PUBLIC_URL}/Hotelgift.jpg`,
     title: "Hotelgift Card",
     category: "Hotels",
     subcategory: [
@@ -876,7 +877,7 @@ export const giftcards = [
     id: "Hotels.com",
     popular: false,
     name: "Hotels.com",
-    image: "https://d38v990enafbk6.cloudfront.net/Hotels.com.png",
+    image: `${PUBLIC_URL}/Hotels.png`,
     title: "Hotels.com Card",
     category: "Hotels",
     subcategory: [
@@ -898,7 +899,7 @@ export const giftcards = [
     id: "Hulu_Plus",
     popular: false,
     name: "Hulu Plus",
-    image: "https://d38v990enafbk6.cloudfront.net/Hulu.png",
+    image: `${PUBLIC_URL}/Hulu.jpg`,
     title: "Hulu Plus Card",
     category: "Film & TV",
     subcategory: [
@@ -914,7 +915,7 @@ export const giftcards = [
     id: "IKEA",
     popular: false,
     name: "IKEA",
-    image: "https://d38v990enafbk6.cloudfront.net/IKEA.png",
+    image: `${PUBLIC_URL}/IKEA.jpg`,
     title: "IKEA Card",
     category: "Home Decor",
     subcategory: [
@@ -948,7 +949,7 @@ export const giftcards = [
     id: "IMVU",
     popular: false,
     name: "IMVU",
-    image: "https://d38v990enafbk6.cloudfront.net/IMVU.png",
+    image: `${PUBLIC_URL}/IMVU.jpg`,
     title: "IMVU Card",
     category: "Gaming",
     subcategory: [
@@ -964,7 +965,7 @@ export const giftcards = [
     id: "iTunes",
     popular: true,
     name: "iTunes",
-    image: "https://d38v990enafbk6.cloudfront.net/Itunes.png",
+    image: `${PUBLIC_URL}/iTunes.jpg`,
     title: "iTunes Card",
     category: "App Store",
     subcategory: [
@@ -986,7 +987,7 @@ export const giftcards = [
     id: "Jagex_RuneScape",
     popular: false,
     name: "Jagex RuneScape",
-    image: "https://d38v990enafbk6.cloudfront.net/Jagex-RuneScape.png",
+    image: `${PUBLIC_URL}/Jagex_RuneScape.jpg`,
     title: "Jagex RuneScape Card",
     category: "Gaming",
     subcategory: [
@@ -999,10 +1000,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Kohl's",
+    id: "Kohls",
     popular: false,
     name: "Kohl's",
-    image: "https://d38v990enafbk6.cloudfront.net/Kohls.png",
+    image: `${PUBLIC_URL}/Kohls.jpg`,
     title: "Kohl's Card",
     category: "Shopping",
     subcategory: [
@@ -1018,7 +1019,7 @@ export const giftcards = [
     id: "Macys",
     popular: false,
     name: "Macys",
-    image: "https://d38v990enafbk6.cloudfront.net/Macys.png",
+    image: `${PUBLIC_URL}/Macys.jpg`,
     title: "Macys Card",
     category: "Shopping",
     subcategory: [
@@ -1031,10 +1032,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Marks_and Spencer",
+    id: "Marks_and_Spencer",
     popular: false,
     name: "Marks and Spencer",
-    image: "https://d38v990enafbk6.cloudfront.net/Marks_and_spencer.png",
+    image: `${PUBLIC_URL}/Marks_and_Spencer.jpg`,
     title: "Marks and Spencer Card",
     category: "Shopping",
     subcategory: [
@@ -1050,7 +1051,7 @@ export const giftcards = [
     id: "Mastercard",
     popular: false,
     name: "Mastercard",
-    image: "https://d38v990enafbk6.cloudfront.net/Mastercard.png",
+    image: `${PUBLIC_URL}/Mastercard.jpg`,
     title: "Mastercard Card",
     category: "Shopping",
     subcategory: [
@@ -1066,7 +1067,7 @@ export const giftcards = [
     id: "MediaMarkt",
     popular: false,
     name: "MediaMarkt",
-    image: "https://d38v990enafbk6.cloudfront.net/Mediamarkt.png",
+    image: `${PUBLIC_URL}/MediaMarkt.jpg`,
     title: "MediaMarkt Card",
     category: "Electronics",
     subcategory: [
@@ -1082,7 +1083,7 @@ export const giftcards = [
     id: "Minecraft",
     popular: false,
     name: "Minecraft",
-    image: "https://d38v990enafbk6.cloudfront.net/MineCraft.png",
+    image: `${PUBLIC_URL}/Minecraft.jpg`,
     title: "Minecraft Card",
     category: "Gaming",
     subcategory: [
@@ -1098,7 +1099,7 @@ export const giftcards = [
     id: "Netflix",
     popular: false,
     name: "Netflix",
-    image: "https://d38v990enafbk6.cloudfront.net/Netflix.png",
+    image: `${PUBLIC_URL}/Netflix.jpg`,
     title: "Netflix Card",
     category: "Film & TV",
     subcategory: [
@@ -1120,7 +1121,7 @@ export const giftcards = [
     id: "New_Look",
     popular: false,
     name: "New Look",
-    image: "https://d38v990enafbk6.cloudfront.net/New_Look.png",
+    image: `${PUBLIC_URL}/New_Look.jpg`,
     title: "New Look Card",
     category: "Fashion",
     subcategory: [
@@ -1136,7 +1137,7 @@ export const giftcards = [
     id: "Nike",
     popular: true,
     name: "Nike",
-    image: "https://d38v990enafbk6.cloudfront.net/Nike.png",
+    image: `${PUBLIC_URL}/Nike.png`,
     title: "Nike Card",
     category: "Fashion",
     subcategory: [
@@ -1170,7 +1171,7 @@ export const giftcards = [
     id: "Nintendo",
     popular: false,
     name: "Nintendo",
-    image: "https://d38v990enafbk6.cloudfront.net/Nintendo.png",
+    image: `${PUBLIC_URL}/Nintendo.jpg`,
     title: "Nintendo Card",
     category: "Gaming",
     subcategory: [
@@ -1192,7 +1193,7 @@ export const giftcards = [
     id: "Noon",
     popular: false,
     name: "Noon",
-    image: "https://d38v990enafbk6.cloudfront.net/Noon.png",
+    image: `${PUBLIC_URL}/Noon.jpg`,
     title: "Noon Card",
     category: "Shopping",
     subcategory: [
@@ -1208,7 +1209,7 @@ export const giftcards = [
     id: "Nordstrom",
     popular: false,
     name: "Nordstrom",
-    image: "https://d38v990enafbk6.cloudfront.net/Nordstrom.png",
+    image: `${PUBLIC_URL}/Nordstrom.jpg`,
     title: "Nordstrom Card",
     category: "Fashion",
     subcategory: [
@@ -1224,7 +1225,7 @@ export const giftcards = [
     id: "OneandKo",
     popular: false,
     name: "OneandKo",
-    image: "https://d38v990enafbk6.cloudfront.net/OneandKo.png",
+    image: `${PUBLIC_URL}/OneandKo.jpg`,
     title: "OneandKo Card",
     category: "Beauty",
     subcategory: [
@@ -1240,7 +1241,7 @@ export const giftcards = [
     id: "Oriki",
     popular: false,
     name: "Oriki",
-    image: "https://d38v990enafbk6.cloudfront.net/Oriki.png",
+    image: `${PUBLIC_URL}/Oriki.jpg`,
     title: "Oriki Card",
     category: "Beauty",
     subcategory: [
@@ -1253,10 +1254,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Pizza_Hut Restaurants",
+    id: "Pizza_Hut_Restaurants",
     popular: false,
     name: "Pizza Hut Restaurants",
-    image: "https://d38v990enafbk6.cloudfront.net/Pizza_hut.png",
+    image: `${PUBLIC_URL}/Pizza_Hut_Restaurants.jpg`,
     title: "Pizza Hut Restaurants Card",
     category: "Restaurant",
     subcategory: [
@@ -1272,7 +1273,7 @@ export const giftcards = [
     id: "PlayStation",
     popular: false,
     name: "PlayStation",
-    image: "https://d38v990enafbk6.cloudfront.net/Playstation.png",
+    image: `${PUBLIC_URL}/PlayStation.jpg`,
     title: "PlayStation Card",
     category: "Gaming",
     subcategory: [
@@ -1300,7 +1301,7 @@ export const giftcards = [
     id: "Primark",
     popular: false,
     name: "Primark",
-    image: "https://d38v990enafbk6.cloudfront.net/Primark.png",
+    image: `${PUBLIC_URL}/Primark.jpg`,
     title: "Primark Card",
     category: "Fashion",
     subcategory: [
@@ -1316,7 +1317,7 @@ export const giftcards = [
     id: "PUBG",
     popular: false,
     name: "PUBG",
-    image: "https://d38v990enafbk6.cloudfront.net/PUBG.png",
+    image: `${PUBLIC_URL}/PUBG.jpg`,
     title: "PUBG Card",
     category: "Gaming",
     subcategory: [
@@ -1329,10 +1330,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "PUBG_New State",
+    id: "PUBG_New_State",
     popular: false,
     name: "PUBG New State",
-    image: "https://d38v990enafbk6.cloudfront.net/PUBGNEW.png",
+    image: `${PUBLIC_URL}/PUBG_New_State.jpg`,
     title: "PUBG New State Card",
     category: "Gaming",
     subcategory: [
@@ -1345,11 +1346,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Raffles_Hotels & Resorts",
+    id: "Raffles_Hotels_and_Resorts",
     popular: false,
     name: "Raffles Hotels & Resorts",
-    image:
-      "https://d38v990enafbk6.cloudfront.net/Raffles_hotels_and_resorts.png",
+    image: "/cards/Raffles_Hotels_and_Resorts.jpg",
     title: "Raffles Hotels & Resorts Card",
     category: "Hotels",
     subcategory: [
@@ -1365,7 +1365,7 @@ export const giftcards = [
     id: "Razer_Gold",
     popular: false,
     name: "Razer Gold",
-    image: "https://d38v990enafbk6.cloudfront.net/Razer-Gold.png",
+    image: `${PUBLIC_URL}/Razer_Gold.jpg`,
     title: "Razer Gold Card",
     category: "Gaming",
     subcategory: [
@@ -1381,7 +1381,7 @@ export const giftcards = [
     id: "Red_Lobster",
     popular: false,
     name: "Red Lobster",
-    image: "https://d38v990enafbk6.cloudfront.net/Red_lobster.png",
+    image: `${PUBLIC_URL}/Red_Lobster.jpg`,
     title: "Red Lobster Card",
     category: "Restaurant",
     subcategory: [
@@ -1403,7 +1403,7 @@ export const giftcards = [
     id: "River_Island",
     popular: false,
     name: "River Island",
-    image: "https://d38v990enafbk6.cloudfront.net/River-Island.png",
+    image: `${PUBLIC_URL}/River_Island.jpg`,
     title: "River Island Card",
     category: "Fashion",
     subcategory: [
@@ -1416,10 +1416,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Ruff_n' Tumble",
+    id: "Ruff_n_Tumble",
     popular: false,
     name: "Ruff n' Tumble",
-    image: "https://d38v990enafbk6.cloudfront.net/Ruff_n_tumble.png",
+    image: `${PUBLIC_URL}/Ruff_n_Tumble.jpg`,
     title: "Ruff n' Tumble Card",
     category: "Shopping",
     subcategory: [
@@ -1435,7 +1435,7 @@ export const giftcards = [
     id: "RuneScape",
     popular: false,
     name: "RuneScape",
-    image: "https://d38v990enafbk6.cloudfront.net/Runescape.png",
+    image: `${PUBLIC_URL}/RuneScape.jpg`,
     title: "RuneScape Card",
     category: "Gaming",
     subcategory: [
@@ -1451,7 +1451,7 @@ export const giftcards = [
     id: "Safeway",
     popular: false,
     name: "Safeway",
-    image: "https://d38v990enafbk6.cloudfront.net/Safeway.png",
+    image: `${PUBLIC_URL}/Safeway.jpg`,
     title: "Safeway Card",
     category: "Shopping",
     subcategory: [
@@ -1467,7 +1467,7 @@ export const giftcards = [
     id: "Sainsburys",
     popular: false,
     name: "Sainsburys",
-    image: "https://d38v990enafbk6.cloudfront.net/Sainsbury.png",
+    image: `${PUBLIC_URL}/Sainsburys.jpg`,
     title: "Sainsburys Card",
     category: "Shopping",
     subcategory: [
@@ -1483,7 +1483,7 @@ export const giftcards = [
     id: "Samsung",
     popular: false,
     name: "Samsung",
-    image: "https://d38v990enafbk6.cloudfront.net/Samsung.png",
+    image: `${PUBLIC_URL}/Samsung.jpg`,
     title: "Samsung Card",
     category: "Electronics",
     subcategory: [
@@ -1499,7 +1499,7 @@ export const giftcards = [
     id: "Selfridges",
     popular: false,
     name: "Selfridges",
-    image: "https://d38v990enafbk6.cloudfront.net/Selfridges.png",
+    image: `${PUBLIC_URL}/Selfridges.jpg`,
     title: "Selfridges Card",
     category: "Shopping",
     subcategory: [
@@ -1515,7 +1515,7 @@ export const giftcards = [
     id: "Sephora",
     popular: true,
     name: "Sephora",
-    image: "https://d38v990enafbk6.cloudfront.net/Sephora.png",
+    image: `${PUBLIC_URL}/Sephora.jpg`,
     title: "Sephora Card",
     category: "Beauty",
     subcategory: [
@@ -1537,7 +1537,7 @@ export const giftcards = [
     id: "Spotify",
     popular: false,
     name: "Spotify",
-    image: "https://d38v990enafbk6.cloudfront.net/Spotify.png",
+    image: `${PUBLIC_URL}/Spotify.jpg`,
     title: "Spotify Card",
     category: "Music",
     subcategory: [
@@ -1559,7 +1559,7 @@ export const giftcards = [
     id: "Starbucks",
     popular: false,
     name: "Starbucks",
-    image: "https://d38v990enafbk6.cloudfront.net/Starbucks.png",
+    image: `${PUBLIC_URL}/Starbucks.jpg`,
     title: "Starbucks Card",
     category: "Restaurant",
     subcategory: [
@@ -1581,7 +1581,7 @@ export const giftcards = [
     id: "Steam",
     popular: true,
     name: "Steam",
-    image: "https://d38v990enafbk6.cloudfront.net/Steam.png",
+    image: `${PUBLIC_URL}/Steam.jpg`,
     title: "Steam Card",
     category: "Gaming",
     subcategory: [
@@ -1597,7 +1597,7 @@ export const giftcards = [
     id: "Suregifts_Generic",
     popular: false,
     name: "Suregifts Generic",
-    image: "https://d38v990enafbk6.cloudfront.net/Suregifts.png",
+    image: `${PUBLIC_URL}/Suregifts_Generic.jpg`,
     title: "Suregifts Generic Card",
     category: "Shopping",
     subcategory: [
@@ -1613,7 +1613,7 @@ export const giftcards = [
     id: "Swarovski",
     popular: false,
     name: "Swarovski",
-    image: "https://d38v990enafbk6.cloudfront.net/Swarovski.png",
+    image: `${PUBLIC_URL}/Swarovski.jpg`,
     title: "Swarovski Card",
     category: "Fashion",
     subcategory: [
@@ -1644,10 +1644,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "T.J._Maxx",
+    id: "TJ_Maxx",
     popular: false,
     name: "T.J. Maxx",
-    image: "https://d38v990enafbk6.cloudfront.net/TJ-Maxx.png",
+    image: `${PUBLIC_URL}/TJ_Maxx.jpg`,
     title: "T.J. Maxx Card",
     category: "Shopping",
     subcategory: [
@@ -1663,7 +1663,7 @@ export const giftcards = [
     id: "Target",
     popular: false,
     name: "Target",
-    image: "https://d38v990enafbk6.cloudfront.net/Target.png",
+    image: `${PUBLIC_URL}/Target.jpg`,
     title: "Target Card",
     category: "Shopping",
     subcategory: [
@@ -1679,7 +1679,7 @@ export const giftcards = [
     id: "The5kShop",
     popular: false,
     name: "The5kShop",
-    image: "https://d38v990enafbk6.cloudfront.net/The_5kshop.png",
+    image: `${PUBLIC_URL}/The5kShop.jpg`,
     title: "The5kShop Card",
     category: "Fashion",
     subcategory: [
@@ -1695,7 +1695,7 @@ export const giftcards = [
     id: "TK_Maxx",
     popular: false,
     name: "TK Maxx",
-    image: "https://d38v990enafbk6.cloudfront.net/TK_Maxx.png",
+    image: `${PUBLIC_URL}/TK_Maxx.jpg`,
     title: "TK Maxx Card",
     category: "Shopping",
     subcategory: [
@@ -1708,10 +1708,10 @@ export const giftcards = [
     ],
   },
   {
-    id: "Twice_As Nice",
+    id: "Twice_As_Nice",
     popular: false,
     name: "Twice As Nice",
-    image: "https://d38v990enafbk6.cloudfront.net/Twice_as_nice.png",
+    image: `${PUBLIC_URL}/Twice_As_Nice.jpg`,
     title: "Twice As Nice Card",
     category: "Fashion",
     subcategory: [
@@ -1727,7 +1727,7 @@ export const giftcards = [
     id: "Typo",
     popular: false,
     name: "Typo",
-    image: "https://d38v990enafbk6.cloudfront.net/Typo.png",
+    image: `${PUBLIC_URL}/Typo.jpg`,
     title: "Typo Card",
     category: "Shopping",
     subcategory: [
@@ -1743,7 +1743,7 @@ export const giftcards = [
     id: "Uber",
     popular: false,
     name: "Uber",
-    image: "https://d38v990enafbk6.cloudfront.net/Uber.png",
+    image: `${PUBLIC_URL}/Uber.jpg`,
     title: "Uber Card",
     category: "Transport",
     subcategory: [
@@ -1771,7 +1771,7 @@ export const giftcards = [
     id: "Uber_Eats",
     popular: false,
     name: "Uber Eats",
-    image: "https://d38v990enafbk6.cloudfront.net/Uber_eats.png",
+    image: `${PUBLIC_URL}/Uber_Eats.jpg`,
     title: "Uber Eats Card",
     category: "Food Delivery",
     subcategory: [
@@ -1799,7 +1799,7 @@ export const giftcards = [
     id: "Ubuy",
     popular: false,
     name: "Ubuy",
-    image: "https://d38v990enafbk6.cloudfront.net/UBuy.png",
+    image: `${PUBLIC_URL}/Ubuy.jpg`,
     title: "Ubuy Card",
     category: "Shopping",
     subcategory: [
@@ -1815,7 +1815,7 @@ export const giftcards = [
     id: "Visa",
     popular: false,
     name: "Visa",
-    image: "https://d38v990enafbk6.cloudfront.net/Visa.png",
+    image: `${PUBLIC_URL}/Visa.jpg`,
     title: "Visa Card",
     category: "Shopping",
     subcategory: [
@@ -1831,7 +1831,7 @@ export const giftcards = [
     id: "Walmart",
     popular: true,
     name: "Walmart",
-    image: "https://d38v990enafbk6.cloudfront.net/walmart.png",
+    image: `${PUBLIC_URL}/Walmart.jpg`,
     title: "Walmart Card",
     category: "Shopping",
     subcategory: [
@@ -1853,7 +1853,7 @@ export const giftcards = [
     id: "Xbox",
     popular: false,
     name: "Xbox",
-    image: "https://d38v990enafbk6.cloudfront.net/Xbox_Live.png",
+    image: `${PUBLIC_URL}/Xbox.jpg`,
     title: "Xbox Card",
     category: "Gaming",
     subcategory: [
@@ -1875,7 +1875,7 @@ export const giftcards = [
     id: "Xbox_Live",
     popular: false,
     name: "Xbox Live",
-    image: "https://d38v990enafbk6.cloudfront.net/Xbox_Live.png",
+    image: `${PUBLIC_URL}/Xbox_Live.jpg`,
     title: "Xbox Live Card",
     category: "Gaming",
     subcategory: [
@@ -1891,7 +1891,7 @@ export const giftcards = [
     id: "Xbox_Live Gold",
     popular: false,
     name: "Xbox Live Gold",
-    image: "https://d38v990enafbk6.cloudfront.net/Xbox_Live.png",
+    image: `${PUBLIC_URL}/Xbox_Live_Gold.jpg`,
     title: "Xbox Live Gold Card",
     category: "Gaming",
     subcategory: [
@@ -1907,7 +1907,7 @@ export const giftcards = [
     id: "Zalando",
     popular: false,
     name: "Zalando",
-    image: "https://d38v990enafbk6.cloudfront.net/Zalando.png",
+    image: `${PUBLIC_URL}/Zalando.jpg`,
     title: "Zalando Card",
     category: "Fashion",
     subcategory: [
@@ -1935,14 +1935,14 @@ export const giftcards = [
     id: "Zappos",
     popular: false,
     name: "Zappos",
-    image: "https://d38v990enafbk6.cloudfront.net/Zappos.com.png",
+    image: `${PUBLIC_URL}/Zappos.jpg`,
     title: "Zappos Card",
     category: "Fashion",
     subcategory: [
       {
         value: "Zappos.com USA",
         currency: "USD",
-        image: "https://d38v990enafbk6.cloudfront.net/USA.png",
+        image: "https://d38v990enafbk6.cloudfront.net/Zappos.png",
         country: "United States of America",
       },
     ],

@@ -1,22 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { GiftCard } from "../../../types";
 
 type Props = {
-  filteredCards: {
-    id: string;
-    popular: boolean;
-    name: string;
-    image: string;
-    title: string;
-    category: string;
-    subcategory: {
-      value: string;
-      currency: string;
-      image: string;
-      country: string;
-    }[];
-  }[];
+  filteredCards: GiftCard[];
 };
 
 const CardDisplay = ({ filteredCards }: Props) => {

@@ -394,7 +394,7 @@ const RenderMessages = memo(function RenderMessages({
                   alt={message.content.media.metadata?.media_name as string}
                   width={220}
                   height={220}
-                  className="w-full bg-neutral-100 dark:bg-neutral-800"
+                  className="w-full bg-slate-200 dark:bg-neutral-800"
                 />
               ) : (
                 <div className="flex align-middle place-items-center justify-center w-full h-full">
