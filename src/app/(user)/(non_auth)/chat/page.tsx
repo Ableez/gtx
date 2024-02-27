@@ -28,6 +28,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type Props = {};
@@ -58,6 +59,7 @@ type Chat = {
 const UserChats = (props: Props) => {
   const [chatList, setChatList] = useState<Array<Chat>>([]);
   const [error, setError] = useState<string>();
+  const router = useRouter();
 
   useEffect(() => {
     const fetch = async () => {
@@ -155,8 +157,9 @@ const UserChats = (props: Props) => {
     <div className="container">
       <div className="flex align-middle place-items-center justify-between">
         <Button
-          variant={"outline"}
-          className="flex align-middle place-items-center justify-between gap-2 w-fit py-2"
+          variant={"ghost"}
+          className="flex align-middle place-items-center justify-between gap-2 border shadow-sm w-fit py-2 n"
+          onClick={() => router.back()}
         >
           <ArrowLeftIcon width={18} />
           <h4 className="font-bold text-base">Chats</h4>

@@ -1,43 +1,33 @@
 import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination as PaginateClass } from "@/lib/utils/paginate";
+import { Button } from "../ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
-type Props = {};
+type Props = {
+  cards: PaginateClass;
+};
 
-const Paginate = (props: Props) => {
+const Paginate = ({ cards }: Props) => {
   return (
     <div>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <Button
+        variant={"ghost"}
+        className="border"
+        onClick={() => {
+          cards.previousPage();
+        }}
+      >
+        <ChevronLeftIcon width={18} />
+      </Button>
+      <Button
+        variant={"ghost"}
+        className="border"
+        onClick={() => {
+          cards.nextPage();
+        }}
+      >
+        <ChevronRightIcon width={18} />
+      </Button>
     </div>
   );
 };

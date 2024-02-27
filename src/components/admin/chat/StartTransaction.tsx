@@ -162,18 +162,18 @@ const StartAdminTransaction = ({
               </div>
             </div>
             {resp && <p className="text-xs text-rose-500">{resp}</p>}
-            <div>
+            <ol type="1">
               {!card?.transaction?.accountDetails?.accountNumber && (
-                <p className="font-medium text-[10px] text-center text-rose-500">
+                <li className="font-medium text-[10px] text-rose-500">
                   Request for bank details to continue
-                </p>
+                </li>
               )}
               {!card?.transaction?.cardDetails?.rate && (
-                <p className="font-medium text-[10px] text-center text-red-500">
+                <li className="font-medium text-[10px] text-red-500">
                   You have not set the $ rate
-                </p>
+                </li>
               )}
-            </div>
+            </ol>
             <form onSubmit={(e) => start(e)}>
               <Button
                 disabled={

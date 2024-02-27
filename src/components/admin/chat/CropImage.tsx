@@ -9,14 +9,15 @@ import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import { storage } from "@/lib/utils/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import Image from "next/image";
-import React, { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Conversation } from "../../../../chat";
 import { postToast } from "@/components/postToast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import ImageCropper from "./ImageCropper";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import Loading from "@/app/loading";
+import { PaperAirplaneIcon, SunIcon } from "@heroicons/react/24/outline";
+import { sendUserMessage } from "@/lib/utils/actions/userChat";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   id: string;
@@ -24,6 +25,7 @@ type Props = {
   setOpenEdit: React.Dispatch<React.SetStateAction<boolean>>;
   message: Conversation;
   scrollToBottom: React.RefObject<HTMLDivElement>;
+  owns: string;
 };
 
 const ASPECT_RATIO = undefined;
@@ -35,6 +37,7 @@ const CropImage = ({
   id,
   message,
   scrollToBottom,
+  owns,
 }: Props) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -46,11 +49,12 @@ const CropImage = ({
   const [edit, setEdit] = useState(false);
 
   const sendImageAction = async (e: React.FormEvent) => {
+    setLoading(true);
+
     try {
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
       formData.append("id", id);
-      setLoading(true);
       if (image && image.size > 15000000) {
         postToast("Warning!", {
           description: "Image size is too big and might take a while to load.",
@@ -79,45 +83,85 @@ const CropImage = ({
           },
           async () => {
             const mediaurl = await getDownloadURL(uploadTask.snapshot.ref);
-
-            const sentMessage = await sendAdminMessage(
-              { timeStamp: new Date() },
-              id,
-              message?.user as {
-                username: string;
-                uid: string;
-                email: string;
-                photoUrl: string;
-              },
-              formData,
-              {
-                caption: caption,
-                url: mediaurl,
-                metadata: {
-                  media_name: uploadTask.snapshot.metadata.name,
-                  media_size: uploadTask.snapshot.metadata.size,
-                  media_type: uploadTask.snapshot.metadata.contentType,
+            if (owns === "admin") {
+              const sentMessage = await sendAdminMessage(
+                { timeStamp: new Date() },
+                id,
+                message?.user as {
+                  username: string;
+                  uid: string;
+                  email: string;
+                  photoUrl: string;
                 },
-              },
-              true
-            );
+                formData,
+                {
+                  caption: caption,
+                  url: mediaurl,
+                  metadata: {
+                    media_name: uploadTask.snapshot.metadata.name,
+                    media_size: uploadTask.snapshot.metadata.size,
+                    media_type: uploadTask.snapshot.metadata.contentType,
+                  },
+                },
+                true
+              );
 
-            if (!sentMessage?.success) {
-              postToast("Error", { description: sentMessage?.message });
-              setLoading(false);
+              if (!sentMessage?.success) {
+                postToast("Error", { description: sentMessage?.message });
+                setLoading(false);
+                return;
+              }
+
+              if (sentMessage?.success) {
+                setOpenEdit(false);
+                setProgress(0);
+                setCaption("");
+                setError("");
+                setLoading(false);
+                scrollToBottom.current?.scrollIntoView({ behavior: "smooth" });
+                setImage(null);
+                setImgSrc("");
+                postToast("Done", { description: "Image sent!" });
+              }
+            } else if (owns === "user") {
+              const sentMessage = await sendUserMessage(
+                { timeStamp: new Date() },
+                id,
+                formData,
+                {
+                  caption: caption,
+                  url: mediaurl,
+                  metadata: {
+                    media_name: uploadTask.snapshot.metadata.name,
+                    media_size: uploadTask.snapshot.metadata.size,
+                    media_type: uploadTask.snapshot.metadata.contentType,
+                  },
+                },
+                true
+              );
+
+              if (!sentMessage?.success) {
+                postToast("Error", { description: sentMessage?.message });
+                setLoading(false);
+                return;
+              }
+
+              if (sentMessage?.success) {
+                setOpenEdit(false);
+                setProgress(0);
+                setCaption("");
+                setError("");
+                setLoading(false);
+                scrollToBottom.current?.scrollIntoView({
+                  behavior: "smooth",
+                });
+                setImage(null);
+                setImgSrc("");
+                postToast("Done", { description: "Image sent!" });
+              }
+            } else {
+              postToast("Error", { description: "An error occured." });
               return;
-            }
-
-            if (sentMessage?.success) {
-              setOpenEdit(false);
-              setProgress(0);
-              setCaption("");
-              setError("");
-              setLoading(false);
-              scrollToBottom.current?.scrollIntoView({ behavior: "smooth" });
-              setImage(null);
-              setImgSrc("");
-              postToast("Done", { description: "Image sent!" });
             }
           }
         );
@@ -145,7 +189,6 @@ const CropImage = ({
 
   return (
     <>
-      {loading && <Loading />}
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
         <DialogContent className="w-[100vw] max-w-md rounded-2xl">
           <DialogHeader>
@@ -175,6 +218,7 @@ const CropImage = ({
               MIN_DIMENSION={MIN_DIMENSION}
               imgSrc={imgSrc}
               setImgSrc={setImgSrc}
+              loading={loading}
             />
           ) : (
             <div className="p-2 grid place-items-center">
@@ -231,14 +275,20 @@ const CropImage = ({
                   data-gramm_editor="false"
                   data-enable-grammarly="false"
                 />
-                <button
+                <Button
+                  size={"icon"}
                   title="Send Message"
+                  variant={"secondary"}
                   disabled={loading || edit}
                   type="submit"
-                  className="focus:outline-none col-span-2 border-secondary duration-300 w-full h-full py-1 grid place-items-center align-middle bg-secondary text-white rounded-r-lg p-2 px-4 disabled:cursor-not-allowed disabled:bg-opacity-50"
+                  className="focus:outline-none col-span-2 duration-300 w-full h-full py-1 grid place-items-center align-middle rounded-r-lg p-2 px-4 disabled:cursor-not-allowed"
                 >
-                  <PaperAirplaneIcon width={25} />
-                </button>
+                  {loading ? (
+                    <SunIcon width={22} className="animate-spin" />
+                  ) : (
+                    <PaperAirplaneIcon width={25} />
+                  )}
+                </Button>
               </form>
             </div>
           )}

@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
-import { cookies } from "next/headers";
 import { Toaster } from "@/components/ui/sonner";
 // import { Toast } from "@/components/ui/toast";
 

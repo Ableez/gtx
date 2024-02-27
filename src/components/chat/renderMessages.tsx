@@ -187,7 +187,7 @@ const RenderMessages = memo(function RenderMessages({
                         width={120}
                         height={120}
                         src={message?.card?.data?.image || "/logoplace.svg"}
-                        className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl "
+                        className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl border-2"
                       />
                       <div className="absolute bottom-0 right-0">
                         <Image

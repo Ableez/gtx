@@ -26,6 +26,8 @@ import { doc, updateDoc } from "firebase/firestore";
 import Loading from "@/app/loading";
 import { toast } from "sonner";
 import { FirebaseError } from "firebase/app";
+import { postToast } from "@/components/postToast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {};
 
@@ -139,6 +141,10 @@ const UserProfile = (props: Props) => {
               },
             };
           });
+
+          postToast("Username updated!", {
+            description: "Your username has been updated!",
+          });
         }
 
         if (
@@ -160,6 +166,10 @@ const UserProfile = (props: Props) => {
               },
             };
           });
+
+          postToast("Email updated!", {
+            description: "Your email has been updated.",
+          });
         }
 
         if (
@@ -173,8 +183,6 @@ const UserProfile = (props: Props) => {
             setLoading(false);
             return;
           }
-
-          console.log("UPLOADING IMAGE");
 
           const uuid = v4();
 
@@ -192,8 +200,13 @@ const UserProfile = (props: Props) => {
             (snap) => {
               const progress = (snap.bytesTransferred / snap.totalBytes) * 100;
               setProgress(progress);
+              console.log("PROGRESS: ", progress);
             },
             (err) => {
+              console.log("ERROR UPDATING IMAGE :: ", err);
+              postToast("Not updated!", {
+                description: "Could not update image. Please try again.",
+              });
               setError(err.message);
             },
             async () => {
@@ -206,30 +219,28 @@ const UserProfile = (props: Props) => {
               await updateDoc(userRef, {
                 imageUrl: mediaurl,
               });
+
+              setImage(null);
+              postToast("Image updated!", {
+                description: "Your profile image has been updated",
+              });
             }
           );
         }
-        toast("Updated!", {
-          description: "User is updated successfully.",
-          dismissible: true,
-          duration: 3500,
-        });
       }
     } catch (error) {
       console.error("UPDATE_PROFILE", error);
       const err = error as FirebaseError;
 
-      toast("Update failed!", {
+      postToast("Update failed!", {
         description:
           err?.code === "auth/user-not-found"
             ? "Waoh! Seems like user is a ghost. They don't exists on out records."
             : err.code === "auth/network-request-failed"
             ? "Network request failed❌. Seems like village people at work🏗️."
             : err.code === "auth/too-many-requests"
-            ? "You don try this thing too much. Chill abeg. Try again in a minute or two"
+            ? "You don try this thing too much. Chill abeg. Try again in a minute or two."
             : "Something went wrong. Try again",
-        dismissible: true,
-        duration: 4500,
       });
     } finally {
       setProgress(0);
@@ -292,10 +303,14 @@ const UserProfile = (props: Props) => {
               alt="User Profile image"
               width={100}
               height={100}
-              className="rounded-full overflow-clip aspect-square object-cover"
+              className={`${
+                loading && "opacity-50"
+              } rounded-full overflow-clip aspect-square object-cover`}
             />
             <label
-              className="bg-neutral-200 bg-opacity-10 backdrop-blur-md absolute group-hover:bottom-0 duration-300 left-1/2 -translate-x-1/2 p-3 w-full text-center text-xs font-bold -bottom-full"
+              className={`bg-neutral-200 bg-opacity-10 backdrop-blur-md absolute group-hover:bottom-0 duration-300 left-1/2 -translate-x-1/2 p-3 w-full text-center text-xs font-bold -bottom-full ${
+                loading && "cursor-not-allowed"
+              }`}
               title="Edit profile image"
             >
               <PencilSquareIcon
@@ -304,7 +319,7 @@ const UserProfile = (props: Props) => {
                 className="mx-auto"
               />
               <input
-                disabled={!user?.photoURL}
+                disabled={!user?.photoURL || loading}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   setImage(file as File);
@@ -321,125 +336,142 @@ const UserProfile = (props: Props) => {
             </label>
           </div>
         </div>
-        <div>
-          <div
-            className={`${
-              form.username.editted &&
-              "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
-            } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:border-neutral-500 px-3 py-3.5`}
-          >
-            <input
-              defaultValue={user?.displayName as string}
-              value={form.username.value as string}
-              disabled={!user?.displayName}
-              onChange={(e) => {
-                setForm((prev) => {
-                  return {
-                    ...prev,
-                    username: { ...prev.username, value: e.target.value },
-                  };
-                });
-              }}
-              contentEditable
-              data-gramm="false"
-              data-gramm_editor="false"
-              data-enable-grammarly="false"
-              aria-label="username"
-              className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
-            />
-            {form.username.editted && (
-              <button
-                type="button"
-                title="Cancel"
-                onClick={() => {
-                  setForm((prev) => {
-                    return {
-                      ...prev,
-                      username: {
-                        editted: false,
-                        value: user?.displayName,
-                      },
-                    };
-                  });
-                }}
-              >
-                <XMarkIcon
-                  title="Edit username"
-                  className="text-purple-800"
-                  width={18}
-                  strokeWidth={2}
-                />
-              </button>
-            )}
-            {!user?.displayName && (
-              <SunIcon
-                title="Loading"
-                className="animate-spin text-neutral-400 dark:text-neutral-600"
-                width={18}
-                strokeWidth={2}
-              />
-            )}
-          </div>
 
-          <div
-            className={`${
-              form.email.editted &&
-              "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
-            } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:border-neutral-500 px-3 py-3.5`}
-          >
-            <input
-              defaultValue={user?.email as string}
-              value={form.email.value as string}
-              disabled={!user?.email}
-              onChange={(e) => {
-                setForm((prev) => {
-                  return {
-                    ...prev,
-                    email: { ...prev.email, value: e.target.value },
-                  };
-                });
-              }}
-              contentEditable
-              data-gramm="false"
-              data-gramm_editor="false"
-              data-enable-grammarly="false"
-              aria-label="email"
-              id={"profile-email"}
-              className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
-            />
-            {form.email.editted && (
-              <button
-                type="button"
-                title="Cancel"
-                onClick={() => {
-                  setForm((prev) => {
-                    return {
-                      ...prev,
-                      email: {
-                        editted: false,
-                        value: user?.email,
-                      },
-                    };
-                  });
-                }}
+        <div>
+          {user ? (
+            <>
+              <div
+                className={`${
+                  form.username.editted &&
+                  "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
+                } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:border-neutral-500 px-3 py-3.5`}
               >
-                <XMarkIcon
-                  title="Edit username"
-                  className="text-purple-800"
-                  width={18}
-                  strokeWidth={2}
+                <input
+                  defaultValue={user.displayName as string}
+                  value={form.username.value as string}
+                  disabled={!user?.displayName}
+                  onChange={(e) => {
+                    setForm((prev) => {
+                      return {
+                        ...prev,
+                        username: { ...prev.username, value: e.target.value },
+                      };
+                    });
+                  }}
+                  contentEditable
+                  data-gramm="false"
+                  data-gramm_editor="false"
+                  data-enable-grammarly="false"
+                  aria-label="username"
+                  className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
                 />
-              </button>
-            )}
-            {!user?.displayName && (
-              <SunIcon
-                title="Loading"
-                className="animate-spin text-neutral-400 dark:text-neutral-600"
-                width={18}
-                strokeWidth={2}
-              />
-            )}
-          </div>
+                {form.username.editted && (
+                  <button
+                    type="button"
+                    title="Cancel"
+                    onClick={() => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          username: {
+                            editted: false,
+                            value: user?.displayName,
+                          },
+                        };
+                      });
+                    }}
+                  >
+                    <XMarkIcon
+                      title="Edit username"
+                      className="text-purple-800"
+                      width={18}
+                      strokeWidth={2}
+                    />
+                  </button>
+                )}
+                {!user?.displayName && (
+                  <SunIcon
+                    title="Loading"
+                    className="animate-spin text-neutral-400 dark:text-neutral-600"
+                    width={18}
+                    strokeWidth={2}
+                  />
+                )}
+              </div>
+              <div
+                className={`${
+                  form.email.editted &&
+                  "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
+                } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:bor
+            der-neutral-500 px-3 py-3.5`}
+              >
+                <input
+                  defaultValue={user.email as string}
+                  value={form.email.value as string}
+                  disabled={!user?.email}
+                  onChange={(e) => {
+                    setForm((prev) => {
+                      return {
+                        ...prev,
+                        email: { ...prev.email, value: e.target.value },
+                      };
+                    });
+                  }}
+                  contentEditable
+                  data-gramm="false"
+                  data-gramm_editor="false"
+                  data-enable-grammarly="false"
+                  aria-label="email"
+                  id={"profile-email"}
+                  className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
+                />
+
+                {form.email.editted && (
+                  <button
+                    type="button"
+                    title="Cancel"
+                    onClick={() => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          email: {
+                            editted: false,
+                            value: user?.email,
+                          },
+                        };
+                      });
+                    }}
+                  >
+                    <XMarkIcon
+                      title="Edit username"
+                      className="text-purple-800"
+                      width={18}
+                      strokeWidth={2}
+                    />
+                  </button>
+                )}
+                {!user?.displayName && (
+                  <SunIcon
+                    title="Loading"
+                    className="animate-spin text-neutral-400 dark:text-neutral-600"
+                    width={18}
+                    strokeWidth={2}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-flow-row gap-4">
+              <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
+              <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
+            </div>
+          )}
+        </div>
+
+        <div className="mt-2 mb-1 max-w-[70px] ml-auto h-3 flex align-middle place-items-center justify-end">
+          {progress > 0 && (
+            <Progress className="duration-1000" value={progress} />
+          )}
         </div>
         <div className="flex justify-end mt-2">
           <Button
@@ -451,7 +483,7 @@ const UserProfile = (props: Props) => {
           >
             {loading ? (
               <>
-                <SunIcon className="animate-spin" width={18} strokeWidth={2} />
+                <SunIcon className="animate-spin" width={20} strokeWidth={2} />
                 <span>Updating</span>
               </>
             ) : (
@@ -461,7 +493,6 @@ const UserProfile = (props: Props) => {
         </div>
       </form>
       <div>
-        {/* <ToggleTheme /> */}
         <button
           onClick={() => {
             router.push("/chat");

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { CardDetails, Conversation, Message } from "../../../../../../../chat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import AdminChatWrapper from "@/components/admin/chat/AdminChatWrapper";
+import { postToast } from "@/components/postToast";
 
 type Props = {
   params: {
@@ -29,7 +30,8 @@ const AdminChatScreen = ({ params }: Props) => {
 
   useEffect(() => {
     if (!user) {
-      redirect("/sell");
+      postToast("Unauthorized", { description: "No user data not found!" });
+      router.replace("/admin");
     }
   });
 
@@ -39,7 +41,11 @@ const AdminChatScreen = ({ params }: Props) => {
       (doc) => {
         if (!doc.exists()) {
           setError("chat not found!");
-          router.replace("/sell");
+          postToast("Error!", {
+            description:
+              "Could fetch chat data. Confirm that the chat has not been deleted already.",
+          });
+          router.back();
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 

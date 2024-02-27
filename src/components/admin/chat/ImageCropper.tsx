@@ -2,7 +2,6 @@ import Image from "next/image";
 import React, { useRef, useState } from "react";
 import ReactCrop, {
   Crop,
-  PercentCrop,
   centerCrop,
   convertToPixelCrop,
   makeAspectCrop,
@@ -10,6 +9,7 @@ import ReactCrop, {
 import setCanvasPreview from "./canvasPreview";
 import { PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@radix-ui/react-icons";
+import Loading from "@/app/loading";
 
 type Props = {
   setImgSrc: React.Dispatch<React.SetStateAction<string>>;
@@ -20,6 +20,7 @@ type Props = {
   image: File | null | undefined;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   edit: boolean;
+  loading: boolean;
 };
 
 function dataURLToBlob(dataURL: string): Blob {
@@ -44,6 +45,7 @@ const ImageCropper = ({
   image,
   setEdit,
   edit,
+  loading,
 }: Props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -95,19 +97,20 @@ const ImageCropper = ({
   return (
     <div className=" w-fit mx-auto">
       <div className="relative w-fit ">
-        <div className="absolute top-2 right-2 z-50 bg-white bg-opacity-50 backdrop-blur-md rounded-sm">
+        <div className="absolute top-2 right-2 z-50 bg-white dark:bg-neutral-700 bg-opacity-50 backdrop-blur-md rounded-sm">
           {edit ? (
             <div className="flex align-middle place-items-center justify-between">
               <button
                 title="Cancel edit"
-                className="p-1.5 rounded-l-sm hover:bg-white"
+                className="p-1.5 rounded-l-sm hover:bg-white dark:hover:bg-neutral-600 hover:bg-opacity-50 dark:hover:bg-opacity-50"
                 onClick={() => setEdit(false)}
               >
                 <XMarkIcon width={16} />
               </button>
               <button
+                disabled={loading}
                 title="Finish edit"
-                className="p-1.5 rounded-r-sm hover:bg-white"
+                className="p-1.5 rounded-r-sm hover:bg-white dark:hover:bg-neutral-600 hover:bg-opacity-50 dark:hover:bg-opacity-50"
                 onClick={() => finishEdit()}
               >
                 <CheckIcon width={16} />
@@ -115,15 +118,17 @@ const ImageCropper = ({
             </div>
           ) : (
             <button
+              disabled={loading}
               title="Edit image"
-              className="p-1.5 rounded-sm hover:bg-white"
+              className="p-1.5 rounded-sm hover:bg-white dark:hover:bg-neutral-600 hover:bg-opacity-50 dark:hover:bg-opacity-50"
               onClick={() => setEdit(true)}
             >
               <PencilIcon width={16} />
             </button>
           )}
         </div>
-        <div className="w-fit ">
+        <div className="w-fit">
+          {loading && <Loading />}
           {edit ? (
             <ReactCrop
               crop={crop}

@@ -21,8 +21,11 @@ export class Pagination {
     return this.data.slice(begin, end);
   }
 
-  goToPage(page: number): void {
-    if (page > 0 && page < this.getTotalPages()) this.currentPage = page;
+  goToPage(page: number) {
+    if (page > 0 && page <= this.getTotalPages()) {
+      this.currentPage = page;
+      return this.getCurrentPageData();
+    }
   }
 
   nextPage(): void {
@@ -33,19 +36,3 @@ export class Pagination {
     if (this.currentPage > 1) this.currentPage--;
   }
 }
-
-// const dataArray: GiftCard[] = Array.from({ length: 300 }, (_, i) => {
-//   return i + 1;
-// });
-// const pagination = new Pagination(dataArray, 10, 1);
-
-// // Display current page data
-// // console.log("Page 1:", pagination.getCurrentPageData().length);
-
-// // // Go to next page and display data
-// // pagination.nextPage();
-// // console.log("Page 2:", pagination.getCurrentPageData());
-
-// // // Go to custom page and display data
-// pagination.goToPage(5);
-// console.log("Page 5:", pagination.getCurrentPageData());

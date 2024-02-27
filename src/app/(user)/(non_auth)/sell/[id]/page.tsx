@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import { toast } from "sonner";
+import { decodeUrlString } from "@/lib/utils";
 
 type Props = {
   params: {
@@ -19,6 +20,7 @@ type Props = {
 const GiftCardPage = ({ params }: Props) => {
   const [mount, setMount] = useState(false);
   const router = useRouter();
+  const card_id = decodeUrlString(params.id);
 
   useEffect(() => {
     if (!mount) {
@@ -51,7 +53,7 @@ const GiftCardPage = ({ params }: Props) => {
           <ArrowLeftIcon width={20} />
         </Link>
 
-        <CardSelector id={params.id} />
+        <CardSelector id={card_id} />
 
         <div className="mt-10 text-center font-light text-[0.6em]">
           Please read our{" "}

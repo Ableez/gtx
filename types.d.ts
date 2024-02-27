@@ -68,13 +68,13 @@ export type GiftcardNew = {
   }[];
 }[];
 
-interface AccountDetails {
+export type AccountDetails = {
   accountName: string;
   accountNumber: string;
   bankName: string;
-}
+};
 
-interface User {
+export type User = {
   imageUrl: string;
   savedPayments: boolean;
   role: string;
@@ -82,7 +82,7 @@ interface User {
   payment: AccountDetails[];
   id: string;
   username: string;
-}
+};
 
 export type ReviewContent = {
   stars: number;

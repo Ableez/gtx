@@ -1,36 +1,93 @@
 "use client";
 import SearchBar from "@/components/sellPage/SearchBar";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { giftcards } from "@/lib/data/giftcards";
 import CardDisplay from "@/components/sellPage/CardDisplay";
 import { Pagination } from "@/lib/utils/paginate";
 import { GiftCard } from "../../../../../types";
-import Paginate from "@/components/sellPage/Paginate";
+import Loader from "@/components/Loader";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
+
+// const savedPage = parseInt(localStorage.getItem("card_page") || "1");
+const savedPage = parseInt(Cookies.get("card_page") || "1");
 
 const SellPage = () => {
-  const [tabTitle, setTabTitle] = useState("mostpopular");
-  const cards = new Pagination(giftcards, 20, 1);
+  const container = useRef<HTMLDivElement>(null);
+  const [tabTitle, setTabTitle] = useState("all");
+  const [currPage, setCurrPage] = useState(savedPage);
+  const [currCards, setCurrCards] = useState<Pagination>(
+    new Pagination(giftcards, 20, currPage)
+  );
+  const [cardsToShow, setCardsToShow] = useState<GiftCard[] | undefined>(
+    currCards?.getCurrentPageData()
+  );
 
-  const currCards = () => {
+  useEffect(() => {
     if (tabTitle === "mostpopular") {
-      return giftcards.filter((card) => card.popular);
+      setCardsToShow(giftcards.filter((card) => card.popular));
+    } else {
+      setCardsToShow(currCards?.goToPage(currPage));
+      localStorage.setItem("card_page", currPage.toString());
+      Cookies.set("card_page", currPage.toString());
     }
-
-    return cards.getCurrentPageData();
-  };
+    container.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currCards, tabTitle, currPage]);
 
   return (
-    <div className="pb-8">
+    <div className="pb-8" ref={container}>
       <SearchBar setTabTitle={setTabTitle} tabTitle={tabTitle} />
 
-      {currCards().length > 0 ? (
-        <CardDisplay filteredCards={currCards() as GiftCard[]} />
-      ) : (
-        <div className="text-xl text-center p-8 my-16 font-semibold text-neutral-300">
-          Errrm, seems like we dont know that one!
+      {!currCards || !cardsToShow ? (
+        <div className="h-[50vh] grid place-items-center align-middle justify-center">
+          <div className="p-4 rounded-lg bg-white dark:bg-neutral-900 shadow-2xl dark:shadow-lg dark: shadow-pink-200 dark:shadow-[#43262f60] ">
+            <Loader />
+          </div>
         </div>
+      ) : (
+        <>
+          {cardsToShow.length > 0 ? (
+            <CardDisplay filteredCards={cardsToShow as GiftCard[]} />
+          ) : (
+            <div className="text-xl text-center p-8 my-16 font-semibold text-neutral-300">
+              Errrm, seems like we dont know that one!
+            </div>
+          )}
+          {tabTitle !== "mostpopular" && (
+            <div className=" flex align-middle place-items-center justify-center gap-4 w-fit mx-auto mb-4">
+              <Button
+                variant={"ghost"}
+                className="border"
+                size={"icon"}
+                title="Previous Page"
+                disabled={currPage === 1}
+                onClick={() => {
+                  setCurrPage(currPage - 1);
+                }}
+              >
+                <ChevronLeftIcon width={22} />
+              </Button>
+              <h4>
+                {currPage} / {currCards.getTotalPages()}
+              </h4>
+              <Button
+                variant={"ghost"}
+                className="border"
+                size={"icon"}
+                title="Next Page"
+                disabled={currPage === currCards.getTotalPages()}
+                onClick={() => {
+                  setCurrPage(currPage + 1);
+                }}
+              >
+                <ChevronRightIcon width={22} />
+              </Button>
+            </div>
+          )}
+        </>
       )}
-      {tabTitle !== "mostpopular" && <Paginate />}
+
       <div className="bg-neutral-100 dark:bg-neutral-800 w-full px-8 py-10 place-items-center grid text-sm text-left border-t">
         <div className="max-w-screen-lg mx-auto">
           <h4 className="font-bold text-neutral-500 w-full">

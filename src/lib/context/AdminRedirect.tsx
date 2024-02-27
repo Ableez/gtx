@@ -9,6 +9,7 @@ import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
 import Loading from "@/app/loading";
 import { postToast } from "@/components/postToast";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import Cookies from "js-cookie";
 
 type Props = {
   children: ReactNode;
@@ -24,10 +25,10 @@ const AdminLayoutProtect = (props: Props) => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       try {
         setIsLoading(true);
+        const userFromCache = Cookies.get("user");
 
-        if (!authUser) {
-          // router.replace("/admin/login");
-          postToast("Error", { description: "You might wanna login again!" });
+        if (!authUser && !userFromCache) {
+          router.replace("/admin/login");
           return;
         }
 

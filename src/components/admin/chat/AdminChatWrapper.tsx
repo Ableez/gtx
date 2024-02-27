@@ -23,6 +23,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { timeStamper } from "@/lib/utils/timeStamper";
 import CloseChatDialog from "./CloseChatDialog";
+import { postToast } from "@/components/postToast";
 
 type Props = {
   allMessages?: Conversation;
@@ -34,7 +35,7 @@ type Props = {
   scrollToBottom: React.RefObject<HTMLDivElement>;
   setNewMessage: React.Dispatch<React.SetStateAction<Message | undefined>>;
   id: string;
-  card: CardDetails
+  card: CardDetails;
 };
 
 const AdminChatWrapper = ({
@@ -66,10 +67,13 @@ const AdminChatWrapper = ({
 
     sendMessageAction(e).then(
       (res: { error: React.SetStateAction<string> }) => {
-        if (res?.error) setError(res?.error);
+        if (res?.error) {
+          postToast("Not sent!", {
+            description: "Previous message not sent. Please try again.",
+          });
+          setError(res?.error);
+        }
         setLoading(false);
-
-        
       }
     );
   };

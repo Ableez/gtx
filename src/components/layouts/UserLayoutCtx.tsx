@@ -11,24 +11,23 @@ interface UserLayoutCtxProps {
 }
 
 const UserLayoutCtx: React.FC<UserLayoutCtxProps> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
   const pathName = usePathname();
 
-  // cant remember reason for this. issue may occure as it has been disabled. but if any issue comes up with user button display on the sellNavbar Comp, this is a likely source
+  // After mounting, we can display navbar, due to it's dynamic content, and having to fetch user state and data
 
-  // const [mounted, setMounted] = useState(false);
-
-  // useEffect(() => {
-  //   if (!mounted) {
-  //     setMounted(true);
-  //   }
-  // }, [mounted]);
+  useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
+    }
+  }, [mounted]);
 
   const hideNavbarRegex = /^\/chat\//;
 
   return (
     <div className="max-w-screen-lg mx-auto">
       {!hideNavbarRegex.test(pathName) &&
-        (true ? (
+        (mounted ? (
           <SellNavbar />
         ) : (
           <div className="container py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4">
