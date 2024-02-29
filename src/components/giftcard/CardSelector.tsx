@@ -17,17 +17,7 @@ import { startChat } from "@/lib/utils/actions";
 import { giftcards } from "@/lib/data/giftcards";
 import { useFormStatus } from "react-dom";
 import Cookies from "js-cookie";
-import Link from "next/link";
-import { RedirectType, redirect, useRouter } from "next/navigation";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "../ui/drawer";
-import Loader from "../Loader";
+import {  useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/app/loading";
 

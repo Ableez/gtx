@@ -1,0 +1,84 @@
+[debug] [2024-02-29T13:43:25.688Z] ----------------------------------------------------------------------
+[debug] [2024-02-29T13:43:25.691Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\HP\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-02-29T13:43:25.692Z] CLI Version:   13.4.0
+[debug] [2024-02-29T13:43:25.692Z] Platform:      win32
+[debug] [2024-02-29T13:43:25.693Z] Node Version:  v18.18.0
+[debug] [2024-02-29T13:43:25.695Z] Time:          Thu Feb 29 2024 14:43:25 GMT+0100 (West Africa Standard Time)
+[debug] [2024-02-29T13:43:25.695Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-02-29T13:43:25.710Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-29T13:43:25.711Z] > authorizing via signed-in user (djayableez@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\HP\Documents\Repos\gtx
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-02-29T13:45:01.825Z] > refreshing access token with scopes: []
+[debug] [2024-02-29T13:45:01.830Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-29T13:45:01.830Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-29T13:45:04.061Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-02-29T13:45:04.062Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-29T13:45:04.119Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2024-02-29T13:45:06.248Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2024-02-29T13:45:06.249Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project greatexc (Greatexc) 
+[info] 
+=== Firestore Setup
+[debug] [2024-02-29T13:45:10.012Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/greatexc/services/firestore.googleapis.com [none]
+[debug] [2024-02-29T13:45:10.012Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/greatexc/services/firestore.googleapis.com x-goog-quota-user=projects/greatexc
+[debug] [2024-02-29T13:45:14.170Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/greatexc/services/firestore.googleapis.com 200
+[debug] [2024-02-29T13:45:14.170Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/greatexc/services/firestore.googleapis.com [omitted]
+[debug] [2024-02-29T13:45:14.172Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default) [none]
+[debug] [2024-02-29T13:45:15.778Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default) 200
+[debug] [2024-02-29T13:45:15.779Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default) {"name":"projects/greatexc/databases/(default)","uid":"847b991f-8fce-4631-bcad-a3a4576b0f18","createTime":"2023-11-06T22:30:48.474350Z","updateTime":"2023-11-06T22:30:48.474350Z","locationId":"europe-west2","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2024-02-29T12:45:22.743054Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"g","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","etag":"IPuptcTX0IQDMJHgwpm1zIQD"}
+[debug] [2024-02-29T13:45:15.782Z] database_type: FIRESTORE_NATIVE
+[debug] [2024-02-29T13:45:15.784Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-29T13:45:15.786Z] > authorizing via signed-in user (djayableez@gmail.com)
+[debug] [2024-02-29T13:45:15.787Z] [iam] checking project greatexc for permissions ["firebase.projects.get"]
+[debug] [2024-02-29T13:45:15.790Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions [none]
+[debug] [2024-02-29T13:45:15.791Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions x-goog-quota-user=projects/greatexc
+[debug] [2024-02-29T13:45:15.792Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-02-29T13:45:16.204Z] *** [apiv2] error from fetch(https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions, {"headers":{},"method":"POST","body":"{\"permissions\":[\"firebase.projects.get\"]}"}): FetchError: request to https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions failed, reason: getaddrinfo EAI_AGAIN cloudresourcemanager.googleapis.com
+[debug] [2024-02-29T13:45:16.205Z] [iam] error while checking permissions, command may fail: FirebaseError: Failed to make request to https://cloudresourcemanager.googleapis.com/v1/projects/greatexc:testIamPermissions
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2024-02-29T13:45:47.580Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/greatexc/releases pageSize=10&pageToken=
+[debug] [2024-02-29T13:45:51.926Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/greatexc/releases 200
+[debug] [2024-02-29T13:45:51.927Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/greatexc/releases {"releases":[{"name":"projects/greatexc/releases/cloud.firestore","rulesetName":"projects/greatexc/rulesets/08f17c59-970a-48d9-a60c-79e713f6aef0","createTime":"2023-11-06T22:31:03.847993Z","updateTime":"2023-11-06T23:01:24.354302Z"},{"name":"projects/greatexc/releases/firebase.storage/greatexc.appspot.com","rulesetName":"projects/greatexc/rulesets/a9648794-d325-4f7a-9629-f6cbc5830842","createTime":"2023-12-23T11:10:56.757680Z","updateTime":"2024-02-20T12:55:31.698641Z"}]}
+[debug] [2024-02-29T13:45:51.928Z] Found ruleset: projects/greatexc/rulesets/08f17c59-970a-48d9-a60c-79e713f6aef0
+[debug] [2024-02-29T13:45:51.929Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/greatexc/rulesets/08f17c59-970a-48d9-a60c-79e713f6aef0 [none]
+[debug] [2024-02-29T13:45:53.154Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/greatexc/rulesets/08f17c59-970a-48d9-a60c-79e713f6aef0 200
+[debug] [2024-02-29T13:45:53.155Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/greatexc/rulesets/08f17c59-970a-48d9-a60c-79e713f6aef0 [omitted]
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2024-02-29T13:45:55.288Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2024-02-29T13:45:55.292Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2024-02-29T13:45:57.028Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2024-02-29T13:45:57.029Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/greatexc/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[debug] [2024-02-29T13:45:57.031Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2024-02-29T13:45:57.032Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/greatexc/databases/(default)/collectionGroups/-/indexes {"indexes":[{"name":"projects/greatexc/databases/(default)/collectionGroups/Messages/indexes/CICAgNiav4AK","queryScope":"COLLECTION","fields":[{"fieldPath":"messages","order":"DESCENDING"},{"fieldPath":"updated_at","order":"DESCENDING"},{"fieldPath":"__name__","order":"DESCENDING"}],"state":"READY"},{"name":"projects/greatexc/databases/(default)/collectionGroups/Messages/indexes/CICAgNi47oMK","queryScope":"COLLECTION_GROUP","fields":[{"fieldPath":"lastMessage.read_receipt.time","order":"DESCENDING"},{"fieldPath":"updated_at","order":"DESCENDING"},{"fieldPath":"__name__","order":"DESCENDING"}],"state":"READY"}]}
+[info] 
+=== Hosting Setup
+[debug] [2024-02-29T13:45:57.050Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/greatexc [none]
+[debug] [2024-02-29T13:45:58.584Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/greatexc 200
+[debug] [2024-02-29T13:45:58.584Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/greatexc {"projectId":"greatexc","projectNumber":"365786320575","displayName":"Greatexc","name":"projects/greatexc","resources":{"hostingSite":"greatexc","realtimeDatabaseInstance":"greatexc-default-rtdb","storageBucket":"greatexc.appspot.com","locationId":"europe-west2"},"state":"ACTIVE","etag":"1_ab98eee5-24f4-46b2-a07a-350033801272"}

@@ -16,6 +16,7 @@ import ToggleTheme from "../toggleTheme";
 import Cookies from "js-cookie";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 export default function SellNavbar() {
   const cookieUser = Cookies.get("user");
@@ -43,7 +44,18 @@ export default function SellNavbar() {
         <DropdownMenuTrigger asChild>
           {user?.uid && user?.displayName?.charAt(0) ? (
             <div className="bg-neutral-200 dark:bg-neutral-600 w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
-              {user?.uid && user?.displayName?.charAt(0)}
+              {user.photoURL ? (
+                <Image
+                  src={user.photoURL || "/greatexc.svg"}
+                  width={50}
+                  height={50}
+                  alt={user.displayName}
+                  priority
+                  className="w-full rounded-full"
+                />
+              ) : (
+                user?.uid && user?.displayName?.charAt(0)
+              )}
             </div>
           ) : (
             <Button variant={"ghost"} className="rounded-full" size={"icon"}>

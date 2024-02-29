@@ -4,12 +4,10 @@ import CardSelector from "@/components/giftcard/CardSelector";
 import { postToast } from "@/components/postToast";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/utils/firebase";
-import { toast } from "sonner";
 import { decodeUrlString } from "@/lib/utils";
+import Cookies from "js-cookie";
 
 type Props = {
   params: {
@@ -27,20 +25,20 @@ const GiftCardPage = ({ params }: Props) => {
       setMount(true);
     }
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user && mount) {
-        return toast("Not signed in!", {
-          description: "You can only sell a gift card when you are logged in",
-          action: {
-            label: "Login",
-            onClick: () => {
-              router.push("/login");
-            },
+    const user = Cookies.get("user");
+
+    if (!user && mount) {
+      postToast("Not signed in!", {
+        description: "You can only sell a gift card when you are logged in",
+        action: {
+          label: "Login",
+          onClick: () => {
+            router.push("/login");
           },
-          duration: 8000,
-        });
-      }
-    });
+        },
+        duration: 8000,
+      });
+    }
   }, [mount, router]);
 
   return (

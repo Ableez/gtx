@@ -8,7 +8,7 @@ const AdminLogin = (props: Props) => {
   return (
     <>
       <div className="flex h-screen flex-1 flex-col justify-start p-4 py-12 lg:px-8">
-        <Link href={"/"} className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <Link href={"/"} className="sm:mx-auto sm:w-full sm:max-w-sm py-4">
           <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
             <Image
               width={38}
@@ -16,14 +16,11 @@ const AdminLogin = (props: Props) => {
               src={"/greatexc.svg"}
               alt="Great Exchange"
             />
-            <h4 className="text-xl font-bold">Admin</h4>
+            <h4 className="text-xl font-bold">Sign in</h4>
           </div>
         </Link>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm dark:bg-neutral-700 dark:bg-opacity-70 bg-white p-4 rounded-2xl">
-          <h2 className="mb-10 text-center text-xl font-bold leading-9 tracking-tight text-neutral-900 dark:text-white">
-            Sign in to your account
-          </h2>
           <AdminLoginForm />
         </div>
         <p className="mt-10 text-center text-sm text-neutral-500 dark:text-white">

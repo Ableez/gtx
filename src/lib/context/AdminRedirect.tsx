@@ -1,69 +1,57 @@
 "use client";
-
-import { ReactNode, useEffect, useState } from "react";
-import { auth, db } from "@/lib/utils/firebase";
-import { usePathname, useRouter } from "next/navigation";
-import Loader from "@/components/Loader";
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
+import React, { ReactNode, useEffect, useState } from "react";
 import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
-import Loading from "@/app/loading";
-import { postToast } from "@/components/postToast";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { SunIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   children: ReactNode;
 };
 
-const AdminLayoutProtect = (props: Props) => {
-  const [user, setUser] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const pathName = usePathname();
+const AdminRedirect = (props: Props) => {
+  const [user, setUser] = useState<
+    | {
+        isAdmin: boolean;
+        message: string;
+        user: any;
+      }
+    | undefined
+  >();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-      try {
-        setIsLoading(true);
-        const userFromCache = Cookies.get("user");
+    const check = async () => {
+      const user = await checkIsAdmin();
+      setUser(user);
+      setMounted(true);
+    };
 
-        if (!authUser && !userFromCache) {
-          router.replace("/admin/login");
-          return;
-        }
+    check();
+  }, [mounted]);
 
-        const admin = await checkIsAdmin(authUser as User);
-
-        if (!admin?.isAdmin) {
-          await signOut(auth);
-          setIsLoading(false);
-          router.replace("/admin/login");
-          return;
-        }
-
-        if (admin?.isAdmin) {
-          setUser(true);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
-  if (isLoading)
+  if (!mounted) {
     return (
-      <div>
-        <Loading />
+      <div className="flex gap-1 h-24 text-center text-xs place-items-center justify-center align-middle">
+        <SunIcon width={18} className="animate-spin text-pink-500" />
+        Please wait...
       </div>
     );
+  }
 
-  if (user || pathName === "/admin/login" || pathName === "/admin/register") {
-    return <div className="max-w-screen-lg mx-auto">{props.children}</div>;
+  if (!user) {
+    router.push("/admin/login");
+    return;
+  }
+
+  if (!user.isAdmin) {
+    router.push("/admin/login");
+    return;
+  }
+
+  if (user.isAdmin) {
+    return <>{props.children}</>;
   }
 };
 
-export default AdminLayoutProtect;
+export default AdminRedirect;

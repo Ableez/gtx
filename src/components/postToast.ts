@@ -1,5 +1,5 @@
 import { ExternalToast, toast } from "sonner";
 
 export const postToast = (header: string, data: ExternalToast) => {
-  toast(header, { ...data, duration: 3000 });
+  toast(header, { ...data, duration: data.duration || 3500 });
 };

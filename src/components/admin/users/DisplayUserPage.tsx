@@ -5,7 +5,7 @@ import { AccountDetails, User } from "../../../../types";
 import Loading from "@/app/loading";
 import { getUsers } from "@/lib/utils/fetchUsers";
 import DisplayUser from "./DisplayUser";
-import { Conversation, ConversationCollections, TransactionRec } from "../../../../chat";
+import { Conversation, TransactionRec } from "../../../../chat";
 
 export type NewType = {
   imageUrl: string;
@@ -29,6 +29,7 @@ const DisplayUserPage = () => {
       try {
         setLoading(true);
         const fetchedUsers = await getUsers();
+        console.log(fetchedUsers);
         setUsers(fetchedUsers as NewType[]);
       } catch (error) {
         setError("An error occured while fetching users");

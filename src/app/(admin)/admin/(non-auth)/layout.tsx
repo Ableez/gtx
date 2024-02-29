@@ -2,6 +2,7 @@
 
 import AdminNavbar from "@/components/admin/Navbar";
 import CloseChatDialog from "@/components/admin/chat/CloseChatDialog";
+import AdminRedirect from "@/lib/context/AdminRedirect";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useState } from "react";
 
@@ -9,7 +10,7 @@ type Props = {
   children: ReactNode;
 };
 
-const ADMINNONAUTHLAYOUT = (props: Props) => {
+const AdminNonAuthLayout = (props: Props) => {
   const pathname = usePathname();
   const [confirmClose, setConfirmClose] = useState(false);
 
@@ -17,17 +18,16 @@ const ADMINNONAUTHLAYOUT = (props: Props) => {
   const isChatPage = regex.test(pathname);
 
   return (
-    <div>
+    <AdminRedirect>
       {/* {!isChatPage ? <AdminNavbar /> : null} */}
       <AdminNavbar setConfirmClose={setConfirmClose} />
-      {props.children}
-
+      {props.children}{" "}
       <CloseChatDialog
         confirmClose={confirmClose}
         setConfirmClose={setConfirmClose}
       />
-    </div>
+    </AdminRedirect>
   );
 };
 
-export default ADMINNONAUTHLAYOUT;
+export default AdminNonAuthLayout;

@@ -1,50 +1,39 @@
-// "use server"
+"use server";
 
-import { User, UserCredential } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import Cookies from "js-cookie";
-import { db } from "../firebase";
-import { postToast } from "@/components/postToast";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { cookies } from "next/headers";
 
-export const checkIsAdmin = async (user: User) => {
+export const checkIsAdmin = async () => {
   try {
-    const getUser = await getDoc(doc(db, "Users", user?.uid as string));
-
-    const checkUser = getUser.data() as {
-      imageUrl: string | null;
-      username: string;
-      email: string;
-      role: string;
-      id: string;
-    };
-
-    if (!user || !getUser.exists()) {
-      postToast("Login", {
-        description: "You are not signed in!",
-      });
+    const u = cookies().get("user")?.value;
+    if (!u) {
       return {
         isAdmin: false,
-        message: "User does not exists",
+        message: "User does not exists in cookies",
         user: null,
       };
-    } else if (checkUser.role !== "admin") {
-      postToast("Unauthorized", {
-        description: "You are not an admin!",
-      });
-      return {
-        isAdmin: false,
-        message: "User is not an admin",
-        user: null,
-      };
-    } else if (checkUser.role === "admin") {
+    }
+
+    const user = JSON.parse(u) as UserRecord;
+
+    const checkUser = await fetch(
+      `${process.env.BASE_URL}/api/admin/validate?uid=${user.uid}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const response = await checkUser.json();
+
+    if (response.isAdmin) {
       return {
         isAdmin: true,
         message: "User is admin",
-        user: checkUser,
+        user: response.user,
       };
     }
   } catch (error) {
-    console.error("CHECK_ADMIN", error);
+    console.log("CHECK ADMIN: ", error);
     return {
       isAdmin: false,
       message: "Internal error occured!",

@@ -116,9 +116,9 @@ const UserProfile = (props: Props) => {
 
   const update = async () => {
     try {
-      setLoading(true);
       const user = auth.currentUser;
 
+      console.log(loading);
       if (user) {
         const userRef = doc(db, "Users", user.uid);
 
@@ -200,7 +200,6 @@ const UserProfile = (props: Props) => {
             (snap) => {
               const progress = (snap.bytesTransferred / snap.totalBytes) * 100;
               setProgress(progress);
-              console.log("PROGRESS: ", progress);
             },
             (err) => {
               console.log("ERROR UPDATING IMAGE :: ", err);
@@ -224,6 +223,7 @@ const UserProfile = (props: Props) => {
               postToast("Image updated!", {
                 description: "Your profile image has been updated",
               });
+              router.refresh();
             }
           );
         }
@@ -303,6 +303,7 @@ const UserProfile = (props: Props) => {
               alt="User Profile image"
               width={100}
               height={100}
+              priority
               className={`${
                 loading && "opacity-50"
               } rounded-full overflow-clip aspect-square object-cover`}
@@ -319,7 +320,7 @@ const UserProfile = (props: Props) => {
                 className="mx-auto"
               />
               <input
-                disabled={!user?.photoURL || loading}
+                disabled={loading}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   setImage(file as File);
@@ -476,6 +477,9 @@ const UserProfile = (props: Props) => {
         <div className="flex justify-end mt-2">
           <Button
             className="flex align-middle place-items-center gap-1"
+            // onClick={() => {
+            //   setLoading(true);
+            // }}
             disabled={
               (!form.username.editted && !form.email.editted && !image) ||
               loading
@@ -533,7 +537,7 @@ const UserProfile = (props: Props) => {
             await signOut(auth);
             Cookies.remove("user");
             Cookies.remove("isLoggedIn");
-            router.refresh();
+            router.push("/sell");
           }}
           className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5 text-rose-500"
         >

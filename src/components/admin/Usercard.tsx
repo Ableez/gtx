@@ -8,19 +8,11 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { Button } from "../ui/button";
-import {
-  ArrowRightIcon,
-  CurrencyDollarIcon,
-} from "@heroicons/react/24/outline";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { ChatBubbleIcon, ImageIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import TransactionCard from "./transactions/TransactionCard";
-import {
-  ConversationCollections,
-  LastMessage,
-  TransactionRec,
-} from "../../../chat";
-import ChatCard from "./chat/ChatCard";
+import { LastMessage, TransactionRec } from "../../../chat";
 import { NewType } from "./users/DisplayUserPage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
@@ -83,7 +75,6 @@ const Usercard = ({ user }: Props) => {
                 <div>
                   <h4 className="text-md font-bold mb-4">User Conversations</h4>
                   {user.chats.map((chat, idx: number) => {
-                    console.log(chat);
                     if (chat) {
                       return (
                         <div

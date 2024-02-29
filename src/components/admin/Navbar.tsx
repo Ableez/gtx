@@ -28,10 +28,12 @@ import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import { usePathname, useRouter } from "next/navigation";
-import { AuthContext } from "@/lib/context/AuthProvider";
 import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { useAdminUser } from "@/lib/utils/adminActions/useAdminUser";
+import admin from "@/lib/utils/firebase-admin";
 
 type Props = {
   setConfirmClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,6 +44,7 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const [pageTitle, setPageTitle] = useState("Dashboard");
+  const user = useAdminUser();
 
   useEffect(() => {
     if (pathName == "/admin") {
@@ -89,7 +92,7 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
             <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-              {auth.currentUser?.displayName || "Not Logged in"}
+              {user?.email || "Admin"}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {/\/admin\/chat\/(.*)$/.test(pathName) ? (
@@ -119,7 +122,6 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
                 </DropdownMenuGroup>
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>{" "}
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger className="py-3">
                       Theme
@@ -154,7 +156,6 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
                 <DropdownMenuItem
                   onClick={() => {
                     signOut(auth);
-                    Cookies.remove("uid");
                     Cookies.remove("role");
                     router.refresh();
                     router.replace("/admin/login");

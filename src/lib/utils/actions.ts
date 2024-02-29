@@ -1,5 +1,11 @@
 "use server";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { giftcards } from "../data/giftcards";
 import { db } from "./firebase";
 import { cookies } from "next/headers";
@@ -143,6 +149,15 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
     });
 
     const link = `${createdChat.id}`;
+
+    await updateDoc(doc(db, "Users", user.uid), {
+      cardChoices: arrayUnion({
+        id: data.id,
+        subcategory: cardInfo.subcategory,
+        price: cardInfo.price,
+      }),
+      conversations: arrayUnion(link),
+    });
 
     return {
       link,

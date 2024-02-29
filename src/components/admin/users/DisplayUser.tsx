@@ -1,8 +1,6 @@
 import Loading from "@/app/loading";
-import { User } from "../../../../types";
 import Usercard from "../Usercard";
 import { Accordion } from "@/components/ui/accordion";
-import { ConversationCollections, TransactionRec } from "../../../../chat";
 import { NewType } from "./DisplayUserPage";
 
 type DisplayUserProps = {
@@ -20,9 +18,13 @@ const DisplayUser = ({ users, loading, error }: DisplayUserProps) => {
     return <div>{error}</div>;
   }
 
-  const renderUsers = users.map((user) => (
-    <Usercard key={user.id} user={user} />
-  ));
+  const renderUsers = users.map((user) => {
+    if (user.role !== "admin") {
+      return <Usercard key={user.id} user={user} />;
+    } else {
+      return null;
+    }
+  });
 
   return (
     <div>

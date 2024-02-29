@@ -210,6 +210,10 @@ export const finishTransactionAction = async (
           chatId: chatData.id,
           created_at: time,
           updated_at: time,
+        }).then(async ({ id }) => {
+          await updateDoc(doc(db, "Users", chatData.user.uid), {
+            transacions: arrayUnion(id),
+          });
         });
       }
 

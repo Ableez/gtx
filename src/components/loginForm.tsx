@@ -22,8 +22,14 @@ type Props = {
   url: string | null;
 };
 
-const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
+export const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
   const { pending, data } = useFormStatus();
+
+  useEffect(() => {
+    if (pending) {
+      setLoading(true);
+    }
+  }, [pending, setLoading]);
 
   return (
     <Button
@@ -31,7 +37,6 @@ const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
       disabled={pending}
       className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300"
     >
-      {pending && <Loading />}
       Sign in
     </Button>
   );
