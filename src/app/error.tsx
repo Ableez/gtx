@@ -28,7 +28,7 @@ export default function Error({
             Please try again.
           </p>
         </div>
-        <Button onClick={() => reset()}>Retry</Button>
+        <Button className="mx-auto" onClick={() => reset()}>Retry</Button>
       </div>
     </section>
   );

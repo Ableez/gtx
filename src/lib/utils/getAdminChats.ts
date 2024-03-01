@@ -1,15 +1,12 @@
-"use server";
-
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
-import { cookies } from "next/headers";
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { Conversation } from "../../../chat";
+import { getUserCookie } from "./getUserCookie";
 
 export const getAdminChats = async () => {
-  try {
-    const uc = cookies().get("user")?.value;
+  const uc = await getUserCookie();
 
+  try {
     if (!uc) {
       return {
         message: "You are not logged in! UC",

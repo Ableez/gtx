@@ -3,7 +3,7 @@ import admin from "@/lib/utils/firebase-admin";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 
 export async function POST(req: Request) {
   try {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     await setDoc(doc(db, "Users", user.uid), userData);
 
     //   save user data to cookies
-    cookies().set("user", JSON.stringify(user.toJSON()), {});
+    Cookies.set("user", JSON.stringify(user.toJSON()), {});
 
     //   log user in
     await signInWithEmailAndPassword(auth, email, password);

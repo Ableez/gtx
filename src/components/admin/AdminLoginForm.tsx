@@ -85,6 +85,7 @@ const AdminLoginForm = (props: Props) => {
 
           if (checkedUser.role === "admin") {
             Cookies.set("user", JSON.stringify(user.user.toJSON()));
+            Cookies.set("state", "true");
             router.push("/admin");
           }
         });

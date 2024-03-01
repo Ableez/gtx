@@ -2,14 +2,14 @@
 
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { cookies } from "next/headers";
 import { TransactionRec } from "../../../chat";
 import { db } from "./firebase";
+import { getUserCookie } from "./getUserCookie";
 
 export async function getUserTransactions() {
-  try {
-    const uc = cookies().get("user")?.value;
+  const uc = (await getUserCookie()) as string;
 
+  try {
     if (!uc) {
       return {
         message: "You are not logged in! UC",

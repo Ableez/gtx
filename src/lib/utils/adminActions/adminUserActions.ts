@@ -1,5 +1,3 @@
-"use server";
-
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import admin from "../firebase-admin";
 import { db } from "../firebase";
@@ -8,14 +6,14 @@ import { checkIsAdmin } from "./checkAdmin";
 
 export async function toggleBlockUser(uid: string) {
   try {
-    const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
+    // const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
 
-    if (!isAdmin) {
-      return {
-        message: "You are not authorized to perform this action.",
-        success: false,
-      };
-    }
+    // if (!isAdmin) {
+    //   return {
+    //     message: "You are not authorized to perform this action.",
+    //     success: false,
+    //   };
+    // }
 
     const userRef = doc(db, "Users", uid);
     const check = await getDoc(userRef);
@@ -64,14 +62,14 @@ export async function toggleBlockUser(uid: string) {
 
 export async function toggleDeleteUser(uid: string) {
   try {
-    const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
+    // const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
 
-    if (!isAdmin) {
-      return {
-        message: "You are not authorized to perform this action.",
-        success: false,
-      };
-    }
+    // if (!isAdmin) {
+    //   return {
+    //     message: "You are not authorized to perform this action.",
+    //     success: false,
+    //   };
+    // }
 
     const userRef = doc(db, "Users", uid);
     const check = await getDoc(userRef);

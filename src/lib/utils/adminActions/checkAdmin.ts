@@ -1,11 +1,11 @@
 "use server";
 
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { cookies } from "next/headers";
+import { getUserCookie } from "../getUserCookie";
 
 export const checkIsAdmin = async () => {
+  const u = (await getUserCookie()) as string;
+
   try {
-    const u = cookies().get("user")?.value;
     if (!u) {
       return {
         isAdmin: false,
@@ -14,7 +14,7 @@ export const checkIsAdmin = async () => {
       };
     }
 
-    const user = JSON.parse(u) as UserRecord;
+    const user = JSON.parse(u);
 
     const checkUser = await fetch(
       `${process.env.BASE_URL}/api/admin/validate?uid=${user.uid}`,

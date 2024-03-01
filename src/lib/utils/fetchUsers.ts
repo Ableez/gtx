@@ -1,18 +1,11 @@
+"use server";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
-import { User } from "../../../types";
-import { postToast } from "@/components/postToast";
-import admin from "./firebase-admin";
 
 export async function getUsers() {
   try {
     const usersRef = collection(db, "Users");
     const usersSnapshot = await getDocs(usersRef);
-
-    if (usersSnapshot.empty) {
-      postToast("Opps", { description: "No users were found!" });
-      throw new Error("No users found");
-    }
 
     const fetchTransactions = async (id: string) => {
       const transactionsSnapshot = query(
@@ -52,6 +45,5 @@ export async function getUsers() {
     return fetchedUsers;
   } catch (error) {
     console.error("ERROR FETCHING USERS: ", error);
-    throw new Error("Error fetching users");
   }
 }

@@ -3,10 +3,13 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
 import { useRouter } from "next/navigation";
 import { SunIcon } from "@heroicons/react/24/outline";
+import Cookies from "js-cookie";
 
 type Props = {
   children: ReactNode;
 };
+
+const state = Cookies.get("state");
 
 const AdminRedirect = (props: Props) => {
   const [user, setUser] = useState<
@@ -22,13 +25,23 @@ const AdminRedirect = (props: Props) => {
 
   useEffect(() => {
     const check = async () => {
-      const user = await checkIsAdmin();
-      setUser(user);
+      if (!state) {
+        const user = await checkIsAdmin();
+
+        if (!user || !user.isAdmin) {
+          router.push("/admin/login");
+          return;
+        } else {
+          Cookies.set("state", "true");
+          setUser(user);
+        }
+      }
+
       setMounted(true);
     };
 
     check();
-  }, [mounted]);
+  }, [mounted, router, user]);
 
   if (!mounted) {
     return (
@@ -39,17 +52,12 @@ const AdminRedirect = (props: Props) => {
     );
   }
 
-  if (!user) {
+  if (!state) {
     router.push("/admin/login");
     return;
   }
 
-  if (!user.isAdmin) {
-    router.push("/admin/login");
-    return;
-  }
-
-  if (user.isAdmin) {
+  if (state) {
     return <>{props.children}</>;
   }
 };

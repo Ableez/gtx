@@ -8,7 +8,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {

@@ -5,11 +5,12 @@ import { db } from "./firebase";
 import { cookies } from "next/headers";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { Conversation } from "../../../chat";
+import { getUserCookie } from "./getUserCookie";
 
 export const getUserChats = async () => {
-  try {
-    const uc = cookies().get("user")?.value;
+  const uc = (await getUserCookie()) as string;
 
+  try {
     if (!uc) {
       return {
         message: "You are not logged in! UC",

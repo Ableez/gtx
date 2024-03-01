@@ -53,7 +53,15 @@ const AdminManageUserPage = async () => {
           {renderUsers}
         </Accordion>
       ) : (
-        <div>No users found</div>
+        <div className="grid grid-flow-row gap-6 place-items-center align-middle justify-center py-10">
+          <h4>Could not fetch any user data</h4>
+          <Link
+            className="underline text-primary p-3 rounded-lg hover:bg-pink-400/10 duration-300"
+            href={"/admin/users"}
+          >
+            Refresh
+          </Link>
+        </div>
       )}
     </div>
   );
