@@ -14,6 +14,7 @@ import { Conversation, TransactionRec } from "../../../../chat";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
+import { checkIsAdmin } from "./checkAdmin";
 
 export const startTransaction = async (
   id: string,
@@ -24,7 +25,7 @@ export const startTransaction = async (
   idx?: number
 ) => {
   try {
-    const user = await checkServerAdmin();
+    const user = await checkIsAdmin();
 
     if (!user?.isAdmin)
       return {
@@ -36,6 +37,8 @@ export const startTransaction = async (
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
+
+    const userData = JSON.parse(user.user);
 
     if (!update || !data.transaction.started) {
       await updateDoc(chatDocRef, {
@@ -72,8 +75,8 @@ export const startTransaction = async (
           type: "card",
           deleted: false,
           sender: {
-            username: user.user?.username,
-            uid: user.user?.id,
+            username: userData.displayName,
+            uid: userData.uid,
           },
           recipient: "user",
           card: {
@@ -135,13 +138,13 @@ export const startTransaction = async (
       }
     }
     return {
-      message: "Rate sent to successfully",
+      message: "Transaction started successfully",
       success: true,
     };
   } catch (error) {
-    console.log("SEND_RATE", error);
+    console.log("START_TRANSACTION: ", error);
     return {
-      message: "Internal error. Rate not sent",
+      message: "Internal error. Error starting transaction",
       success: false,
     };
   }
@@ -155,7 +158,7 @@ export const finishTransactionAction = async (
   tId?: string
 ) => {
   try {
-    const user = await checkServerAdmin();
+    const user = await checkIsAdmin();
 
     if (!user?.isAdmin)
       return {
@@ -265,6 +268,14 @@ export const finishTransactionAction = async (
 
 export const closeChat = async (id: string) => {
   try {
+    const user = await checkIsAdmin();
+
+    if (!user?.isAdmin)
+      return {
+        message: "Not Allowed. User is not an admin",
+        success: false,
+      };
+
     const chatDocRef = doc(db, "Messages", id as string);
     const time = timeStamper();
 
@@ -292,6 +303,14 @@ export const closeChat = async (id: string) => {
 
 export const cancelTransaction = async (chatId: string, tId: string) => {
   try {
+    const user = await checkIsAdmin();
+
+    if (!user?.isAdmin)
+      return {
+        message: "Not Allowed. User is not an admin",
+        success: false,
+      };
+
     const transactionRef = doc(db, "Transactions", tId as string);
 
     const { success } = await closeChat(chatId);

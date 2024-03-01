@@ -12,7 +12,6 @@ import { ChatBubbleIcon, ImageIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import TransactionCard from "./transactions/TransactionCard";
 import { LastMessage, TransactionRec } from "../../../chat";
-import { NewType } from "./users/DisplayUserPage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { formatTime } from "@/lib/utils/formatTime";
@@ -31,23 +30,13 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { postToast } from "../postToast";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
 
 type Props = {
   user: NewType;
 };
 
 const Usercard = ({ user }: Props) => {
-  const markRead = async (chat: LastMessage, id: string) => {
-    const chatRef = doc(db, "Messages", id);
-    const chatData = {
-      "lastMessage.read_receipt": {
-        ...chat.read_receipt,
-        delivery_status: "seen",
-        status: true,
-      },
-    };
-    await updateDoc(chatRef, chatData);
-  };
   return (
     <>
       <AccordionItem value={user.id}>
@@ -114,12 +103,21 @@ const Usercard = ({ user }: Props) => {
                                 <Link
                                   href={`/admin/chat/${chat?.id}`}
                                   className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
-                                  onClick={() =>
-                                    markRead(
-                                      chat?.lastMessage as LastMessage,
-                                      chat?.id as string
-                                    )
-                                  }
+                                  onClick={async () => {
+                                    const chatRef = doc(
+                                      db,
+                                      "Messages",
+                                      chat.id
+                                    );
+                                    const chatData = {
+                                      "lastMessage.read_receipt": {
+                                        ...chat.lastMessage.read_receipt,
+                                        delivery_status: "seen",
+                                        status: true,
+                                      },
+                                    };
+                                    await updateDoc(chatRef, chatData);
+                                  }}
                                 >
                                   <div className="flex align-middle place-items-center justify-between gap-3 w-fit">
                                     {chat?.user.photoUrl ? (
@@ -251,39 +249,40 @@ const Usercard = ({ user }: Props) => {
                     </DrawerDescription>
                   </DrawerHeader>
                   <form
-                    action={() => {
-                      postToast(
-                        `${user.disabled ? "Unsuspending" : "Suspending"} ${
-                          user.username
-                        }`,
-                        {
-                          description: "Please wait...",
-                          dismissible: true,
-                        }
-                      );
-
-                      toggleBlockUser(user.id)
-                        .then((res) => {
-                          if (res.success) {
-                            postToast("Successfully", {
-                              description: `User has been ${
-                                user.disabled ? "unsuspended" : "suspended"
-                              } successfully`,
-                            });
-                            window.location.reload();
-                          } else {
-                            postToast("Error", {
-                              description: "An error occured, Try again later.",
-                            });
-                          }
-                        })
-                        .catch((e) => {
-                          console.log("TOGGLE BLOCK USER CL: ", e);
-                          postToast("Error", {
-                            description:
-                              "An internal error occured, Try again later.",
+                    // onSubmit={async (e) => {
+                    //   e.preventDefault();
+                    //   postToast(
+                    //     `${user.disabled ? "Unsuspending" : "Suspending"} ${
+                    //       user.username
+                    //     }`,
+                    //     {
+                    //       description: "Please wait...",
+                    //       dismissible: true,
+                    //     }
+                    //   );
+                    // }}
+                    action={async () => {
+                      try {
+                        const res = await toggleBlockUser(user.id);
+                        if (res.success) {
+                          postToast("Successfully", {
+                            description: `User has been ${
+                              user.disabled ? "unsuspended" : "suspended"
+                            } successfully`,
                           });
+                          window.location.reload();
+                        } else {
+                          postToast("Error", {
+                            description: "An error occured, Try again later.",
+                          });
+                        }
+                      } catch (error) {
+                        console.log("TOGGLE BLOCK USER CL: ", error);
+                        postToast("Error", {
+                          description:
+                            "An internal error occured, Try again later.",
                         });
+                      }
                     }}
                     className="px-4 pb-6 grid grid-flow-row w-full gap-2"
                   >
@@ -319,18 +318,20 @@ const Usercard = ({ user }: Props) => {
                     </DrawerDescription>
                   </DrawerHeader>
                   <form
-                    action={() => {
-                      postToast(
-                        `${user.disabled ? "Restoring" : "Deleting"} ${
-                          user.username
-                        }`,
-                        {
-                          description: "Please wait...",
-                          dismissible: true,
-                        }
-                      );
-
-                      toggleDeleteUser(user.id).then((res) => {
+                    // onSubmit={async () => {
+                    //   postToast(
+                    //     `${user.disabled ? "Restoring" : "Deleting"} ${
+                    //       user.username
+                    //     }`,
+                    //     {
+                    //       description: "Please wait...",
+                    //       dismissible: true,
+                    //     }
+                    //   );
+                    // }}
+                    action={async () => {
+                      try {
+                        const res = await toggleDeleteUser(user.id);
                         if (res.success) {
                           postToast("Successfully", {
                             description: `User has been ${
@@ -338,12 +339,13 @@ const Usercard = ({ user }: Props) => {
                             } successfully`,
                           });
                           window.location.reload();
-                        } else {
-                          postToast("Error", {
-                            description: "An error occured, Try again later.",
-                          });
                         }
-                      });
+                      } catch (error) {
+                        console.error("ERROR DELETING USER__CL: ", error);
+                        postToast("Error", {
+                          description: "An error occured, Try again later.",
+                        });
+                      }
                     }}
                     className="px-4 pb-6 grid grid-flow-row w-full gap-2"
                   >

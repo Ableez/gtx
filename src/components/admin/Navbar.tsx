@@ -56,6 +56,7 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
     } else if (pathName.split("/")[2] === "reports") {
       setPageTitle("Reports");
     }
+    
   }, [pathName]);
 
   return (

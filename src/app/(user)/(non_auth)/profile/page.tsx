@@ -33,7 +33,7 @@ type Props = {};
 
 const UserProfile = (props: Props) => {
   const [user, setUser] = useState<User>();
-  const [imageUrl, setImageUrl] = useState<string>("/logoplace.svg");
+  const [imageUrl, setImageUrl] = useState("/logoplace.svg");
   const router = useRouter();
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -263,19 +263,7 @@ const UserProfile = (props: Props) => {
   }, [progress, sent]);
 
   return (
-    <div className="px-4 space-y-5 pb-8 max-w-screen-sm mx-auto">
-      <div className="relative flex align-middle place-items-center justify-start gap-2">
-        <Button
-          onClick={() => {
-            router.back();
-          }}
-          variant={"ghost"}
-          className="border-2 rounded-xl bg-neutral-100 dark:bg-neutral-700 p-3"
-        >
-          <ArrowLeftIcon width={20} />
-        </Button>
-        <h4 className="font-bold text-lg">Account</h4>
-      </div>
+    <div className="px-4 space-y-5 pb-8 py-4 max-w-screen-sm mx-auto">
       <form action={update}>
         <div className="relative w-fit mx-auto">
           {image && (
@@ -299,14 +287,14 @@ const UserProfile = (props: Props) => {
             } w-fit rounded-full duration-500 relative ring-2 ring-transparent p-0.5 overflow-clip mx-auto group`}
           >
             <Image
-              src={imageUrl}
+              src={imageUrl || "/logoplace.svg"}
               alt="User Profile image"
               width={100}
               height={100}
               priority
               className={`${
                 loading && "opacity-50"
-              } rounded-full overflow-clip aspect-square object-cover`}
+              } rounded-full overflow-clip aspect-square object-cover border-2 p-2 bg-white dark:bg-neutral-700`}
             />
             <label
               className={`bg-neutral-200 bg-opacity-10 backdrop-blur-md absolute group-hover:bottom-0 duration-300 left-1/2 -translate-x-1/2 p-3 w-full text-center text-xs font-bold -bottom-full ${

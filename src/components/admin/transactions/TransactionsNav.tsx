@@ -6,9 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 type Props = {
@@ -19,7 +17,6 @@ type Props = {
 const TransactionsNav = ({ filteredStatus, setFilteredStatus }: Props) => {
   return (
     <nav className="container my-2 px-4 flex align-middle justify-between place-items-center">
-      <div className="flex align-middle justify-between place-items-center"></div>
       <DropdownMenu>
         {filteredStatus !== "all" ? (
           <Button

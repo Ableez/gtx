@@ -3,6 +3,8 @@ import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
+import { checkIsAdmin } from "./checkAdmin";
+import { cookies } from "next/headers";
 
 export const sendAdminMessage = async (
   data: {
@@ -32,13 +34,14 @@ export const sendAdminMessage = async (
 
     const { timeStamp } = data;
 
-    const user = await checkServerAdmin();
+    const uc = cookies().get("user")?.value;
 
-    if (!user?.isAdmin)
+    if (!uc) {
       return {
-        message: "Not Allowed. User is not an admin",
         success: false,
+        message: "Please login to send a message",
       };
+    }
 
     const chatDocRef = doc(db, "Messages", id as string);
 
@@ -48,6 +51,7 @@ export const sendAdminMessage = async (
           text: message,
         };
 
+    const user = JSON.parse(uc as string);
     const msg = {
       id: v4(),
       timeStamp: new Date(),
@@ -72,8 +76,8 @@ export const sendAdminMessage = async (
         deleted: false,
         timeStamp: timeStamp,
         sender: {
-          username: user.user?.username,
-          uid: user.user?.id,
+          username: user.displayName,
+          uid: user.uid,
         },
         recipient: "user",
         content: {

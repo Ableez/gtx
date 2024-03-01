@@ -26,10 +26,11 @@ const ToggleTheme = (props: Props) => {
         )}
       </div>
       <Label
-        className="w-full flex align-middle place-items-start justify-start first-letter:capitalize"
+        className="w-full flex align-middle place-items-start justify-start gap-1"
         htmlFor="theme"
       >
-        {`${theme.theme} mode` || "System mode"}
+        <span className="capitalize">{theme.theme}</span>
+        <span>mode</span>
       </Label>
       <Switch
         id="theme"

@@ -1,3 +1,4 @@
+import ChatCard from "@/components/admin/chat/ChatCard";
 import { getUserChats } from "@/lib/utils/getUserChats";
 import Link from "next/link";
 import React from "react";
@@ -5,14 +6,14 @@ import React from "react";
 type Props = {};
 
 const UserChats = async (props: Props) => {
-  const users = await getUserChats();
+  const chats = await getUserChats();
 
-  if (!users.success) {
+  if (!chats || !chats.success || !chats.data) {
     return (
       <section className="bg-white dark:bg-neutral-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           <div className="mx-auto max-w-screen-sm text-center">
-            <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">
+            <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary">
               Whoops!
             </h1>
             <p className="mb-4 text-3xl tracking-tight font-bold text-neutral-900 md:text-4xl dark:text-white">
@@ -22,21 +23,19 @@ const UserChats = async (props: Props) => {
               Please try again.
             </p>
           </div>
-          <Link href={"/chat"}>Retry</Link>
+          <Link className=" mx-auto" href={"/chat"}>
+            Retry
+          </Link>
         </div>
       </section>
     );
   }
 
-  const renderChats = users?.data?.map((chat) => {
-    return (
-      <div key={chat.id}>
-        <Link href={`/chat/${chat.id}`}>{chat.id}</Link>
-      </div>
-    );
+  const renderChats = chats.data.map((chat, idx) => {
+    return <ChatCard chat={chat} key={idx} />;
   });
 
-  return <div>{renderChats}</div>;
+  return <div className="">{renderChats}</div>;
 };
 
 export default UserChats;

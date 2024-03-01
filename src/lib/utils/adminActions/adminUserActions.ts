@@ -3,10 +3,20 @@
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import admin from "../firebase-admin";
 import { db } from "../firebase";
-import { NewType } from "@/components/admin/users/DisplayUserPage";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { checkIsAdmin } from "./checkAdmin";
 
 export async function toggleBlockUser(uid: string) {
   try {
+    const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
+
+    if (!isAdmin) {
+      return {
+        message: "You are not authorized to perform this action.",
+        success: false,
+      };
+    }
+
     const userRef = doc(db, "Users", uid);
     const check = await getDoc(userRef);
     const data = check.data() as NewType;
@@ -54,6 +64,15 @@ export async function toggleBlockUser(uid: string) {
 
 export async function toggleDeleteUser(uid: string) {
   try {
+    const isAdmin = await checkIsAdmin().then((res) => res?.isAdmin);
+
+    if (!isAdmin) {
+      return {
+        message: "You are not authorized to perform this action.",
+        success: false,
+      };
+    }
+
     const userRef = doc(db, "Users", uid);
     const check = await getDoc(userRef);
     const data = check.data() as NewType;

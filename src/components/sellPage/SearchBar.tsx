@@ -65,7 +65,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
   });
 
   return (
-    <div className="px-4 sticky top-0 z-[50] bg-white dark:bg-neutral-800 py-4 shadow-sm">
+    <div className="sticky top-0 z-[50] bg-white dark:bg-neutral-800 py-4 shadow-sm">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"

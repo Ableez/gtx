@@ -6,6 +6,7 @@ import { Conversation } from "../../../../chat";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
+import { checkIsAdmin } from "./checkAdmin";
 
 export const setCardRate = async (
   id: string,
@@ -16,7 +17,7 @@ export const setCardRate = async (
   try {
     const rate = e.get("rate");
 
-    const user = await checkServerAdmin();
+    const user = await checkIsAdmin();
 
     if (!user?.isAdmin)
       return {
@@ -44,6 +45,8 @@ export const setCardRate = async (
         timeStamp: new Date(),
       };
 
+      const userData = JSON.parse(user.user);
+
       await updateDoc(chatDocRef, {
         lastMessage: {
           id: msg.id,
@@ -62,8 +65,8 @@ export const setCardRate = async (
           type: "card",
           deleted: false,
           sender: {
-            username: user.user?.username,
-            uid: user.user?.id,
+            username: userData.displayName,
+            uid: userData.uid,
           },
           recipient: "user",
           card: {

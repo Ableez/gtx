@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { Conversation } from "../../../chat";
 
-export const getUserChats = async () => {
+export const getAdminChats = async () => {
   try {
     const uc = cookies().get("user")?.value;
 
@@ -18,12 +18,7 @@ export const getUserChats = async () => {
       };
     }
 
-    const cachedUser = JSON.parse(uc) as UserRecord;
-
-    const chatsRef = query(
-      collection(db, "Messages"),
-      where("user.uid", "==", cachedUser.uid)
-    );
+    const chatsRef = query(collection(db, "Messages"));
     const chats = await getDocs(chatsRef);
 
     const userChats = chats.docs.map((doc) => {
@@ -39,7 +34,7 @@ export const getUserChats = async () => {
       data: userChats as { data: Conversation; id: string }[],
     };
   } catch (error) {
-    console.error("GET USER CHATS: ", error);
+    console.error("GET ADMIN CHATS: ", error);
 
     return {
       message: "An Internal error occured",

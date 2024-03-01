@@ -1,3 +1,4 @@
+"use client";
 import { formatTime } from "@/lib/utils/formatTime";
 import { ImageIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
@@ -51,7 +52,8 @@ const ChatCard = ({ chat, chat2 }: Props) => {
             <div className="">
               <h4
                 className={`${
-                  chat?.data?.lastMessage?.read_receipt.status
+                  chat?.data?.lastMessage?.read_receipt.status &&
+                  chat.data.lastMessage.sender !== chat.data.user.uid
                     ? ""
                     : "font-semibold text-secondary"
                 } truncate max-w-[13rem]`}

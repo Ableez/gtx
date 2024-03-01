@@ -8,6 +8,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -62,6 +63,7 @@ const FinishTransaction = ({
         setTransfer(false);
         setCancel(false);
         setFinishTransaction(false);
+        setReferenceId("");
         setResp(res.message);
         postToast("Successfull", {
           description: "Transaction completed",
@@ -89,82 +91,82 @@ const FinishTransaction = ({
     <>
       <Drawer open={finishTransaction} onOpenChange={setFinishTransaction}>
         {transfer && (
-          <DrawerContent className="max-w-md">
-            <DrawerHeader>
-              <DrawerTitle className="text-base font-bold">
+          <DrawerContent className="max-w-md mx-auto">
+            <DrawerHeader className="py-6">
+              <DrawerTitle className="text-base font-bold text-center">
                 Confirm & close chat
               </DrawerTitle>
+              <DrawerDescription className="text-center">
+                Make the tranfer and paste the{" "}
+                <em className="font-bold">reference ID</em> below
+              </DrawerDescription>
             </DrawerHeader>
             <div className="grid px-4 gap-4">
-              <div>
-                Make the tranfer and paste the <em>reference ID</em> below
-              </div>
               <form
-                className="sm:grid sm:grid-cols-3 space-y-4 sm:px-0"
                 onSubmit={(e) => {
                   e.preventDefault();
                   start("confirm");
                 }}
               >
-                <div className="flex align-middle place-items-center justify-between border rounded-lg">
-                  <Input
-                    className="border-none focus-visible:outline-none focus-visible:ring-0 bgnon"
-                    minLength={10}
-                    required
-                    value={referenceId}
-                    placeholder="Reference ID"
-                    onChange={(e) => setReferenceId(e.target.value)}
-                  />
-                  <Button
-                    className="text-xs px-3 py-1.5 hover:bg-neutral-200 border-none"
-                    onClick={() => {
-                      const cliped = navigator.clipboard.readText();
-                      cliped.then((e) => {
-                        setReferenceId(e);
-                      });
-                    }}
-                    type="button"
-                    variant={"ghost"}
-                  >
-                    Paste
-                  </Button>
-                </div>
+                <div className="w-full px-4 grid grid-flow-row gap-4">
+                  <div className="flex align-middle place-items-center justify-between border rounded-lg">
+                    <Input
+                      className="border-none focus-visible:outline-none focus-visible:ring-0 bg-none"
+                      minLength={10}
+                      required
+                      value={referenceId}
+                      placeholder="Reference ID"
+                      onChange={(e) => setReferenceId(e.target.value.trim())}
+                    />
+                    <Button
+                      className="text-xs px-3 py-1.5 hover:bg-neutral-200 border-none"
+                      onClick={() => {
+                        const cliped = navigator.clipboard.readText();
+                        cliped.then((e) => {
+                          setReferenceId(e);
+                        });
+                      }}
+                      type="button"
+                      variant={"ghost"}
+                    >
+                      Paste
+                    </Button>
+                  </div>
 
-                {resp ? <p className="text-xs text-red-500">{resp}</p> : null}
-                <div className="grid gap-2 pb-3">
-                  <Button
-                    type="submit"
-                    title="Confirm & close chat"
-                    disabled={loading}
-                    className="w-full"
-                  >
-                    {loading && (
-                      <SunIcon
-                        width={22}
-                        className="animate-spin duration-1000 text-white"
-                      />
-                    )}
-                    Confirm & Close
-                  </Button>
-                  <Button
-                    title="Go back"
-                    disabled={loading}
-                    onClick={() => {
-                      setTransfer(false);
-                      setCancel(false);
-                    }}
-                    variant={"outline"}
-                    className="w-full hover:text-neutral-500"
-                  >
-                    Cancel
-                  </Button>
+                  {resp ? <p className="text-xs text-red-500">{resp}</p> : null}
+                  <div className="grid gap-3 pb-6">
+                    <Button
+                      type="submit"
+                      title="Confirm & close chat"
+                      disabled={loading}
+                      className="w-full text-primary hover:text-pink-400"
+                      variant={"ghost"}
+                    >
+                      {loading && (
+                        <SunIcon width={22} className="animate-spin" />
+                      )}
+                      Confirm & Close
+                    </Button>
+                    <Button
+                      title="Go back"
+                      disabled={loading}
+                      onClick={() => {
+                        setTransfer(false);
+                        setCancel(false);
+                      }}
+                      variant={"ghost"}
+                      className="w-full hover:text-neutral-500"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               </form>
             </div>
           </DrawerContent>
         )}
         {cancel && (
-          <DrawerContent className="max-w-md">
+          <DrawerContent className="max-w-md mx-auto">
             <DrawerHeader>
               <DrawerTitle className="text-base font-bold">
                 Are you sure?
@@ -210,15 +212,15 @@ const FinishTransaction = ({
           </DrawerContent>
         )}
         {!transfer && !cancel ? (
-          <DrawerContent className="max-w-md">
+          <DrawerContent className="max-w-md mx-auto">
             <DrawerHeader>
               <DrawerTitle className="text-base font-bold">
-                Double-check everything
+                This is to keep record of the FinishTransaction
               </DrawerTitle>
             </DrawerHeader>
 
             <div>
-              <div className="px-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              <div className="px-6">
                 <div className="font-medium leading-6 text-[10px] uppercase dark:text-neutral-400 text-neutral-500">
                   Amount
                 </div>

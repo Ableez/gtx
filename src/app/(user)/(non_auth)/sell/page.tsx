@@ -36,7 +36,7 @@ const SellPage = () => {
   }, [currCards, tabTitle, currPage]);
 
   return (
-    <div className="pb-8" ref={container}>
+    <div className="pb-8 max-w-screen-md mx-auto" ref={container}>
       <SearchBar setTabTitle={setTabTitle} tabTitle={tabTitle} />
 
       {!currCards || !cardsToShow ? (

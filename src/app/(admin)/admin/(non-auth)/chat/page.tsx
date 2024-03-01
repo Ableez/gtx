@@ -1,73 +1,40 @@
-"use client";
-
-import { auth, db } from "@/lib/utils/firebase";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { ConversationCollections, LastMessage } from "../../../../../../chat";
-import { ImageIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import Image from "next/image";
-import { formatTime } from "@/lib/utils/formatTime";
 import ChatCard from "@/components/admin/chat/ChatCard";
+import { getAdminChats } from "@/lib/utils/getAdminChats";
+import Link from "next/link";
 
 type Props = {};
 
-const AdminChat = (props: Props) => {
-  const [chatList, setChatList] = useState<ConversationCollections>();
-  const [empty, setEmpty] = useState(false);
+const AdminChat = async (props: Props) => {
+  const chats = await getAdminChats();
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        if (auth.currentUser) {
-          const q = query(
-            collection(db, "Messages"),
-            orderBy("lastMessage.read_receipt.time", "desc")
-          );
-          const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const chatData = querySnapshot.docs.map((doc) => {
-              if (doc.exists()) {
-                return { id: doc.id, data: doc.data() };
-              } else {
-                console.log("document does not exist");
-              }
-            });
+  if (!chats || !chats.success || !chats.data) {
+    return (
+      <section className="bg-white dark:bg-neutral-900">
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <div className="mx-auto max-w-screen-sm text-center">
+            <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary">
+              Whoops!
+            </h1>
+            <p className="mb-4 text-3xl tracking-tight font-bold text-neutral-900 md:text-4xl dark:text-white">
+              Chats data could not be fetched.
+            </p>
+            <p className="mb-4 text-lg font-light text-neutral-500 dark:text-neutral-400">
+              Please try again.
+            </p>
+          </div>
+          <Link className=" mx-auto" href={"/chat"}>
+            Retry
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
-            if (chatData.length === 0) {
-              setEmpty(true);
-            } else {
-              setEmpty(false);
-            }
-            const sortedChats = chatData;
-
-            setChatList(sortedChats as ConversationCollections);
-          });
-
-          return () => unsubscribe();
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetch();
-  }, []);
-
-  const renderChats = chatList?.map((chat, idx) => {
+  const renderChats = chats.data.map((chat, idx) => {
     return <ChatCard chat={chat} key={idx} />;
   });
 
-  return (
-    <div className="mx-auto w-full">
-      {empty ? <p className="py-6 text-center">No chats yet</p> : renderChats}
-    </div>
-  );
+  return <div>{renderChats}</div>;
 };
 
 export default AdminChat;

@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const uid = request.nextUrl.searchParams.get("uid") as string;
+    const uid = (await request.nextUrl.searchParams.get("uid")) as string;
     const userRecord = await admin.auth().getUser(uid);
 
     if (!userRecord) {

@@ -9,7 +9,7 @@ type Props = {
 
 const CardDisplay = ({ filteredCards }: Props) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-5 my-7 duration-200 container">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-5 my-7 duration-200">
       {filteredCards.map((giftCard, idx) => {
         return (
           <Link

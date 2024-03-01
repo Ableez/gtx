@@ -1,0 +1,50 @@
+"use server";
+
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { cookies } from "next/headers";
+import { TransactionRec } from "../../../chat";
+import { db } from "./firebase";
+
+export async function getUserTransactions() {
+  try {
+    const uc = cookies().get("user")?.value;
+
+    if (!uc) {
+      return {
+        message: "You are not logged in! UC",
+        success: false,
+        data: null,
+      };
+    }
+
+    const cachedUser = JSON.parse(uc) as UserRecord;
+
+    const transactionsRef = query(
+      collection(db, "Transactions"),
+      where("userId", "==", cachedUser.uid)
+    );
+    const transactions = await getDocs(transactionsRef);
+
+    const userTransactions = transactions.docs.map((doc) => {
+      return {
+        ...(JSON.parse(JSON.stringify(doc.data())) as TransactionRec),
+        id: doc.id,
+      };
+    });
+
+    return {
+      message: "Transactions fetched successfully",
+      success: true,
+      data: userTransactions,
+    };
+  } catch (error) {
+    console.error("GET USER TRANSACTIONS: ", error);
+
+    return {
+      message: "An Internal error occured",
+      success: false,
+      data: null,
+    };
+  }
+}

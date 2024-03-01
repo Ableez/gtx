@@ -20,6 +20,7 @@ export const checkServerAdmin = async () => {
       id: string;
     };
 
+
     if (!user || !getUser.exists()) {
       return {
         isAdmin: false,
