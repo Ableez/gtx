@@ -105,6 +105,7 @@ const LoginForm = (props: Props) => {
         dismissible: true,
         duration: 3500,
       });
+      console.log(err.code);
       return {
         message:
           err?.code === "auth/invalid-login-credentials"
@@ -114,7 +115,9 @@ const LoginForm = (props: Props) => {
             : err?.code === "auth/wrong-password"
             ? err.message
             : err.code === "auth/network-request-failed"
-            ? "You seem to be offline. check your internet connection."
+            ? "Network request failed. Check your internet connection."
+            : err.code === "auth/user-disabled"
+            ? "This account has been disabled. Contact support for help."
             : err.code === "auth/too-many-requests"
             ? err.message
             : "Something went wrong. Try again",

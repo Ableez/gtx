@@ -35,6 +35,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "greatexc.vercel.app",
+        pathname: "**",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "**",
         port: "",

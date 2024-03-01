@@ -1,16 +1,16 @@
 "use client";
-
 import { db } from "@/lib/utils/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { Conversation, Message } from "../../../../../../chat";
+import { postToast } from "@/components/postToast";
 const UserChatWrapper = dynamic(() => import("@/components/chat/ChatWrapper"), {
   ssr: false,
 });
@@ -29,13 +29,16 @@ const UserChatScreen = ({ params }: Props) => {
   const [error, setError] = useState("");
   const scrollToBottom = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState<Message>();
-  const [mount, setMount] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      redirect("/sell");
-    }
-  });
+  if (!user) {
+    postToast("Unauthorized", {
+      description: "You are not logged in",
+      action: {
+        label: "Login",
+        onClick: () => router.push("/login"),
+      },
+    });
+  }
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -43,7 +46,13 @@ const UserChatScreen = ({ params }: Props) => {
       (doc) => {
         if (!doc.exists()) {
           setError("chat not found!");
-          router.replace("/sell");
+          postToast("No data!", {
+            description: "Could not fetch chat data.",
+            action: {
+              label: "Retry",
+              onClick: () => router.refresh(),
+            },
+          });
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 
@@ -85,17 +94,20 @@ const UserChatScreen = ({ params }: Props) => {
     params.chatId
   );
 
-  if (!messages)
-    <div className="text-center p-8">
-      Please wait...{" "}
-      <div>
-        <p>{error}</p>
+  if (!messages) {
+    return (
+      <div className="text-center p-8">
+        Please wait...{" "}
         <div>
-          <Button onClick={() => router.refresh()}>Reload page</Button>
-          <Link href={"/sell"}>Start over</Link>
+          <p>{error}</p>
+          <div>
+            <Button onClick={() => router.refresh()}>Reload page</Button>
+            <Link href={"/sell"}>Start over</Link>
+          </div>
         </div>
       </div>
-    </div>;
+    );
+  }
 
   return (
     <UserChatWrapper

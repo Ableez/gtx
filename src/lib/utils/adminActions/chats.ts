@@ -27,27 +27,27 @@ export const sendAdminMessage = async (
   },
   media?: boolean
 ) => {
-  const message = e ? e.get("message") : mediaContent?.caption;
+  try {
+    const message = e ? e.get("message") : mediaContent?.caption;
 
-  const { timeStamp } = data;
+    const { timeStamp } = data;
 
-  const user = await checkServerAdmin();
+    const user = await checkServerAdmin();
 
-  if (!user?.isAdmin)
-    return {
-      message: "Not Allowed. User is not an admin",
-      success: false,
-    };
-
-  const chatDocRef = doc(db, "Messages", id as string);
-
-  const content = media
-    ? mediaContent
-    : {
-        text: message,
+    if (!user?.isAdmin)
+      return {
+        message: "Not Allowed. User is not an admin",
+        success: false,
       };
 
-  try {
+    const chatDocRef = doc(db, "Messages", id as string);
+
+    const content = media
+      ? mediaContent
+      : {
+          text: message,
+        };
+
     const msg = {
       id: v4(),
       timeStamp: new Date(),

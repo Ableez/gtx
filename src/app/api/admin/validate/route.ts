@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error) {
-    console.error(error);
+    console.error("VALIDATE ADMIN ERROR: ", error);
     return Response.json({
       user: null,
       isAdmin: false,

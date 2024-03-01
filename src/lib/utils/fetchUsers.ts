@@ -2,6 +2,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { User } from "../../../types";
 import { postToast } from "@/components/postToast";
+import admin from "./firebase-admin";
 
 export async function getUsers() {
   try {

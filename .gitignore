@@ -38,3 +38,4 @@ next-env.d.ts
 
 
 gtx-service-account.json
+/.firebase

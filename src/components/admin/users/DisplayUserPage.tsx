@@ -11,7 +11,10 @@ export type NewType = {
   imageUrl: string;
   savedPayments: boolean;
   role: string;
+  disabled: boolean;
+  deleted: boolean;
   email: string;
+  feedbacks: string[];
   payment: AccountDetails[];
   id: string;
   username: string;
@@ -29,11 +32,9 @@ const DisplayUserPage = () => {
       try {
         setLoading(true);
         const fetchedUsers = await getUsers();
-        console.log(fetchedUsers);
         setUsers(fetchedUsers as NewType[]);
       } catch (error) {
         setError("An error occured while fetching users");
-        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -48,6 +49,7 @@ const DisplayUserPage = () => {
 
   return (
     <div>
+      {loading && <Loading />}
       <DisplayUser users={users as NewType[]} error={error} loading={loading} />
     </div>
   );

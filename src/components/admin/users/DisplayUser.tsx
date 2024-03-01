@@ -10,10 +10,6 @@ type DisplayUserProps = {
 };
 
 const DisplayUser = ({ users, loading, error }: DisplayUserProps) => {
-  if (loading) {
-    return <Loading />;
-  }
-
   if (error) {
     return <div>{error}</div>;
   }
