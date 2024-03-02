@@ -85,23 +85,17 @@ const LoginForm = (props: Props) => {
         description:
           err?.code === "auth/invalid-login-credentials"
             ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
             : err?.code === "auth/user-not-found"
             ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
             : err?.code === "auth/wrong-password"
             ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
             : err.code === "auth/network-request-failed"
-            ? "You seem to be offline. check your internet connection."
+            ? "Network request failed. Check your internet connection."
+            : err.code === "auth/user-disabled"
+            ? "This account has been disabled. Contact support for help."
             : err.code === "auth/too-many-requests"
             ? err.message
-                .replace("Firebase: ", "")
-                .replace(`(${err.code}).`, "")
-            : "Something went wrong. Try again",
+            : err.message,
         dismissible: true,
         duration: 3500,
       });
