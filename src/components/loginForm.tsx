@@ -84,18 +84,18 @@ const LoginForm = (props: Props) => {
       toast("Login failed", {
         description:
           err?.code === "auth/invalid-login-credentials"
-            ? err.message
+            ? "Invalid login credentials"
             : err?.code === "auth/user-not-found"
-            ? err.message
+            ? "User does not exists"
             : err?.code === "auth/wrong-password"
-            ? err.message
+            ? "Wrong email or password"
             : err.code === "auth/network-request-failed"
             ? "Network request failed. Check your internet connection."
             : err.code === "auth/user-disabled"
             ? "This account has been disabled. Contact support for help."
             : err.code === "auth/too-many-requests"
-            ? err.message
-            : err.message,
+            ? "You have tried too many times. Please try again later"
+            : "Don't panic. Its us, Please try again.",
         dismissible: true,
         duration: 3500,
       });
