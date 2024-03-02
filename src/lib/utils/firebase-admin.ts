@@ -1,12 +1,14 @@
 import * as admin from "firebase-admin";
-import { applicationDefault } from "firebase-admin/app";
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: applicationDefault(),
-    databaseURL:
-      "https://greatexc-default-rtdb.europe-west1.firebasedatabase.app",
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECTID,
+      privateKey: process.env.FIREBASE_PRIVATEKEY,
+      clientEmail: process.env.FIREBASE_CLIENTEMAIL,
+    }),
+    databaseURL: process.env.FIREBASE_DATABASEURL,
   });
 }
 
-export default admin
+export default admin;
