@@ -35,7 +35,7 @@ const LoginPage = (props: Props) => {
       const email = e.get("email");
       const username = e.get("username");
 
-      const data = await fetch("/api/admin", {
+      const data = await fetch("/api/admin/register", {
         method: "post",
         body: JSON.stringify({
           email: email,

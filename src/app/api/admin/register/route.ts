@@ -48,6 +48,7 @@ export async function POST(req: Request) {
   } catch (error) {
     const err = error as FirebaseError;
     let message = err.message;
+    console.log("REGISTER ERROR: ", error);
 
     return Response.json({ message: message, login: false, user: null });
   }
