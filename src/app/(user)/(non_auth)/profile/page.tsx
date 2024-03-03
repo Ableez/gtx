@@ -14,7 +14,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { User, signOut, updateEmail, updateProfile } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import { auth, db, storage } from "@/lib/utils/firebase";
@@ -30,6 +30,8 @@ import { postToast } from "@/components/postToast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {};
+
+const user = Cookies.get("user");
 
 const UserProfile = (props: Props) => {
   const [user, setUser] = useState<User>();
@@ -261,6 +263,16 @@ const UserProfile = (props: Props) => {
       }, 4000);
     }
   }, [progress, sent]);
+
+  if (!user) {
+    postToast("Unauthorized", {
+      description: "You are not logged in",
+      action: {
+        label: "Login",
+        onClick: () => router.push("/login"),
+      },
+    });
+  }
 
   return (
     <div className="px-4 space-y-5 pb-8 py-4 max-w-screen-sm mx-auto">

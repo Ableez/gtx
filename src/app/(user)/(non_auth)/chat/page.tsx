@@ -1,12 +1,20 @@
 import ChatCard from "@/components/admin/chat/ChatCard";
 import { getUserChats } from "@/lib/utils/getUserChats";
+import Cookies from "js-cookie";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
 type Props = {};
 
+const user = Cookies.get("user");
+
 const UserChats = async (props: Props) => {
   const chats = await getUserChats();
+
+  if (!user) {
+    return redirect("/sell");
+  }
 
   if (!chats || !chats.success || !chats.data) {
     return (

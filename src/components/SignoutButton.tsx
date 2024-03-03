@@ -1,11 +1,9 @@
 "use client";
 
 import React, { Dispatch, SetStateAction } from "react";
-import { Button } from "./ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import Cookies from "js-cookie";
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 import {
   Drawer,
@@ -13,7 +11,6 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "./ui/drawer";
 import { DialogClose } from "./ui/dialog";
 import { postToast } from "./postToast";
@@ -41,7 +38,8 @@ const SignoutButton = ({ open, setOpen }: Props) => {
               Cookies.remove("user");
               Cookies.remove("isLoggedIn");
               postToast("Done", { description: "You have logged out" });
-              router.refresh();
+              router.push("/sell");
+              window.location.href = "/sell";
             }}
             className="font-semibold text-red-500 border py-3 rounded-lg hover:border-neutral-300 dark:hover:border-neutral-600 border-transparent duration-300"
           >

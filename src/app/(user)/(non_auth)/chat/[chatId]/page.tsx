@@ -20,10 +20,10 @@ type Props = {
     chatId: string;
   };
 };
+const cachedUser = Cookies.get("user");
 
 const UserChatScreen = ({ params }: Props) => {
   const [messages, setMessages] = useState<Conversation>();
-  const cachedUser = Cookies.get("user");
   const user = cachedUser ? JSON.parse(cachedUser) : null;
   const router = useRouter();
   const [error, setError] = useState("");

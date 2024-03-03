@@ -89,13 +89,20 @@
 import ChatCard from "@/components/admin/chat/ChatCard";
 import TransactionCard from "@/components/admin/transactions/TransactionCard";
 import { getUserTransactions } from "@/lib/utils/getUserTransactions";
+import Cookies from "js-cookie";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
 type Props = {};
+const user = Cookies.get("user");
 
 const UserTransactionsPage = async (props: Props) => {
   const transaction = await getUserTransactions();
+
+  if (!user) {
+    return redirect("/sell");
+  }
 
   if (!transaction || !transaction.success || !transaction.data) {
     return (

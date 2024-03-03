@@ -1,5 +1,4 @@
 "use client";
-import Loading from "@/app/loading";
 import Loader from "@/components/Loader";
 import SuccessCheckmark from "@/components/successMark";
 import {
