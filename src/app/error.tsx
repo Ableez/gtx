@@ -21,14 +21,21 @@ export default function Error({
           <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">
             Whoops!
           </h1>
-          <p className="mb-4 text-3xl tracking-tight font-bold text-neutral-900 md:text-4xl dark:text-white">
+          <p className="mb-4 text-lg tracking-tight font-bold text-neutral-900 md:text-4xl dark:text-white">
             We are sorry, but something went wrong.
           </p>
-          <p className="mb-4 text-lg font-light text-neutral-500 dark:text-neutral-400">
+          <p className="mb-4 text-sm font-light text-neutral-500 dark:text-neutral-400">
             Please try again.
           </p>
         </div>
-        <Button className="mx-auto" onClick={() => reset()}>Retry</Button>
+        <div className="w-full grid place-items-center justify-center">
+          <Button
+            className="mx-auto px-16 hover:ring-pink-200 ring-4 ring-transparent duration-300"
+            onClick={() => reset()}
+          >
+            Retry
+          </Button>
+        </div>
       </div>
     </section>
   );

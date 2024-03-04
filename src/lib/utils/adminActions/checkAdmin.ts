@@ -3,7 +3,7 @@
 import { getUserCookie } from "../getUserCookie";
 
 export const checkIsAdmin = async () => {
-  const u = (await getUserCookie()) as string;
+  const u = await getUserCookie();
 
   try {
     if (!u) {

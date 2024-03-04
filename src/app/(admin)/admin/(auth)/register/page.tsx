@@ -45,8 +45,11 @@ const LoginPage = (props: Props) => {
       });
       const res = await data.json();
 
+      console.log("REGISTER ROUTE RES: ", res);
+
       if (res.login) {
         Cookies.set("user", JSON.stringify(res.user));
+        Cookies.set("state", "true");
         postToast("Success", { description: "Account created successfully" });
         router.push("/admin");
       }
