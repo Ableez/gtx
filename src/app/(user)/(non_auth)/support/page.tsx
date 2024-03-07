@@ -1,208 +1,153 @@
-"use client";
-import Loader from "@/components/Loader";
-import SuccessCheckmark from "@/components/successMark";
+import TicketCard from "@/components/admin/tickets/TicketCard";
 import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-} from "@/components/ui/alert-dialog";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { sendReport } from "@/lib/utils/actions/support-report";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { getUserTickets } from "@/lib/utils/actions/getUserTickets";
+import { getUserCookie } from "@/lib/utils/getUserCookie";
+import {
+  BugAntIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  CreditCardIcon,
+  PlusCircleIcon,
+  QuestionMarkCircleIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import React, { ReactNode } from "react";
+
 type Props = {};
 
-const SupportPage = (props: Props) => {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+const iconMap = {
+  "Bug Report": (
+    <BugAntIcon className="text-fuchsia-700 dark:text-fuchsia-500" width={20} />
+  ),
+  "Transaction issues": <CreditCardIcon className="text-rose-500" width={20} />,
+  "Improvement suggestion": (
+    <SparklesIcon className="text-blue-500" width={20} />
+  ),
+  Question: <QuestionMarkCircleIcon className="text-yellow-500" width={20} />,
+};
 
-  const searchParams = useSearchParams();
-  const reason = searchParams.get("reason");
-  const transactionId = searchParams.get("transactionId");
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (error) setError("");
-    }, 5000);
-  }, [error]);
-
-  const submitReport = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setLoading(true);
-
-    try {
-      const form = new FormData(e.target as HTMLFormElement);
-
-      if (transactionId) form.append("transactionId", transactionId);
-
-      const result = await sendReport(form);
-
-      if (result.success) {
-        setSent(true);
-      } else {
-        setError(result.message);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const UserSupportPage = async (props: Props) => {
+  const tickets = await getUserTickets();
+  const uc = await getUserCookie();
 
   return (
-    <div className="py-10">
-      <div className="mx-auto max-w-2xl text-center px-4">
-        <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-2xl">
-          Contact Support
-        </h2>
-        <p className="mt-2 text-sm font-medium leading-6 max-w-md mx-auto">
-          Address any challenges you encounter while using our platform. Whether
-          it&apos;s a technical glitch, a transactional hiccup, valuable
-          feedback, or simply a helpful remark, we&apos;re here to listen and
-          improve.
-        </p>
-      </div>
-
-      <AlertDialog open={sent} onOpenChange={setSent}>
-        <AlertDialogContent className="text-xl font-bold dark:text-neutral-300">
-          <AlertDialogDescription>
-            <div>
-              <SuccessCheckmark />
-            </div>
-            <h4 className="text-center">Sent!</h4>
-          </AlertDialogDescription>
-          <AlertDialogCancel onClick={() => setSent(false)}>
-            Close
-          </AlertDialogCancel>
-        </AlertDialogContent>
-      </AlertDialog>
-      <form
-        onSubmit={submitReport}
-        className="mt-8 max-w-xl dark:bg-neutral-800 dark:border dark:border-neutral-700 bg-neutral-100 container rounded-lg py-8 px-4"
-      >
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="">
-            <label
-              htmlFor="name"
-              className="block text-sm font-semibold text-neutral-900 dark:text-white"
-            >
-              Reason
-            </label>
-            <select
-              title="Reason"
-              id="reason"
-              defaultValue={reason || ""}
-              required
-              aria-required
-              name="reason"
-              className="mt-1.5 border p-2 border-neutral-600 rounded-lg w-full bg-transparent"
-            >
-              <option
-                value={""}
-                className="dark:bg-neutral-700 text-neutral-500"
-              >
-                Select a reason...
-              </option>
-              <option className="dark:bg-neutral-700" value="transactional">
-                Transactional
-              </option>
-              <option className="dark:bg-neutral-700" value="technical">
-                Technical
-              </option>
-              <option className="dark:bg-neutral-700" value="feedback">
-                Feedback
-              </option>
-            </select>
-          </div>
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-semibold text-neutral-900 dark:text-white"
-            >
-              Name
-            </label>
-            <div className="mt-1.5">
-              <Input
-                type="text"
-                name="name"
-                required
-                id="name"
-                autoComplete="firstName"
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-neutral-900 dark:text-white"
-            >
-              Email
-            </label>
-            <div className="mt-1.5">
-              <Input
-                type="email"
-                required
-                name="email"
-                id="email"
-                autoComplete="email"
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="phone-number"
-              className="block text-sm font-semibold text-neutral-900 dark:text-white"
-            >
-              Phone number
-            </label>
-            <div className="relative mt-1.5">
-              <Input
-                type="tel"
-                name="phoneNumber"
-                required
-                id="phone-number"
-                autoComplete="phone"
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="message"
-              className="block text-sm font-semibold text-neutral-900 dark:text-white"
-            >
-              Message
-            </label>
-            <div className="mt-1.5">
-              <textarea
-                name="message"
-                id="message"
-                required
-                aria-required
-                rows={4}
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm"
-              />
-            </div>
-          </div>
-          <p className="text-xs text-red-500 text-center">{error && error}</p>
-          <Button
-            aria-disabled={loading}
-            disabled={loading}
-            className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300"
-          >
-            {loading && <Loader color="#fff" />}
-            Sign in
-          </Button>
+    <div className="max-w-screen-md mx-auto">
+      <div className="p-4">
+        <div className="mb-6 grid grid-flow-row gap-4">
+          <h2 className="text-2xl font-bold">Hey there</h2>
+          <p className="text-neutral-600 dark:text-neutral-300 text-sm">
+            Send us reports, questions, technical issues, and improvements
+            suggestions.
+          </p>
         </div>
-      </form>
+
+        <div className="bg-neutral-200 dark:bg-neutral-800 bg-opacity-60 rounded-md grid grid-flow-row ">
+          <Link
+            href={"/support/ticket"}
+            className="flex align-middle justify-start gap-4 place-items-center w-full p-3"
+          >
+            <div className="p-1 w-fit rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center">
+              <PlusCircleIcon className="text-green-500" width={30} />
+            </div>
+            <h4 className="font-medium">Submit new ticket</h4>
+          </Link>
+          <Link
+            href="mailto:djayableez@gmail.com"
+            className="flex align-middle justify-start gap-4 place-items-center w-full p-3"
+          >
+            <div className="p-1 w-fit rounded-full bg-purple-500 bg-opacity-20 flex items-center justify-center">
+              <ChatBubbleOvalLeftEllipsisIcon
+                className="text-purple-500"
+                width={30}
+              />
+            </div>
+            <h4 className="font-medium">Contact us via email</h4>
+          </Link>
+        </div>
+        {uc && (
+          <div className="mt-8">
+            <div className="mb-6">
+              <div className="flex align-middle place-items-center justify-between">
+                <h4 className="font-semibold">Your tickets</h4>
+                <Link
+                  href={"/support"}
+                  className="flex align-middle place-items-center gap-2 shadow-none hover:text-neutral-600"
+                >
+                  <ReloadIcon width={16} />
+                  <span>Refresh</span>
+                </Link>
+              </div>
+              <div className="mt-4">
+                {!tickets.success ? (
+                  <div>
+                    <p className="text-neutral-500 text-xs p-4 text-center">
+                      {tickets.message}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-flow-row gap-1">
+                    {tickets.data
+                      ?.filter((ticket) => !ticket.status.addressed)
+                      .map((ticket, idx) => {
+                        if (!ticket.status.addressed)
+                          return (
+                            <TicketCard
+                              key={idx}
+                              ticket={ticket}
+                              idx={idx}
+                              link={`/support/ticket/${ticket.id}`}
+                            />
+                          );
+                      })}
+                  </div>
+                )}
+              </div>
+            </div>
+            {tickets?.data?.find((ticket) => ticket.status.addressed) && (
+              <Accordion type="single" collapsible>
+                <AccordionItem value="addressedTickets">
+                  <AccordionTrigger className="no-underline border-none">
+                    <h4 className="font-semibold flex align-middle place-items-center justify-start gap-2">
+                      <CheckCircleIcon
+                        className="text-neutral-500"
+                        width={20}
+                      />
+                      <span>Addressed</span>
+                    </h4>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div>
+                      {tickets.data
+                        ?.filter((ticket) => ticket.status.addressed)
+                        .map((ticket, idx) => {
+                          if (ticket.status.addressed)
+                            return (
+                              <TicketCard
+                                key={idx}
+                                ticket={ticket}
+                                idx={idx}
+                                link={`/support/ticket/${ticket.id}`}
+                              />
+                            );
+                        })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default SupportPage;
+export default UserSupportPage;

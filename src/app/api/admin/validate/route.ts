@@ -11,6 +11,8 @@ const getParams = async (request: NextRequest) => {
 };
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  console.log("💳 Validating user...");
+
   const uid = (await getParams(request)) as string;
 
   try {

@@ -35,11 +35,11 @@ const navBoxes = [
     link: "/admin/users",
   },
   {
-    name: "Reports",
+    name: "Tickets",
     icon: <InformationCircleIcon width={24} color="white" />,
     desc: "View reported issues",
     color: "orange",
-    link: "/admin/reports",
+    link: "/admin/tickets",
   },
 ];
 

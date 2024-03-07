@@ -118,7 +118,12 @@ const AdminLoginForm = (props: Props) => {
         action={async (e) => {
           login(e).then((res) => {
             if (res?.message) {
-              postToast("Error", { description: res?.message });
+              postToast("Error", {
+                description: res?.message,
+                duration: 10000,
+                important: true,
+                icon: <>❌</>,
+              });
             }
 
             if (res?.message === "Too many login attempts") {

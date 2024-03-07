@@ -2,24 +2,18 @@
 
 import {
   CreditCardIcon,
-  DocumentTextIcon,
   LockClosedIcon,
-  PaperAirplaneIcon,
   PaperClipIcon,
   PhotoIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerHeader,
   DrawerTrigger,
 } from "../ui/drawer";
-import { formatFileSize } from "@/lib/utils/formartFileSize";
-import { useFormStatus } from "react-dom";
-import { Progress } from "../ui/progress";
+
 import ECodeComp from "./eCode";
 import { Conversation } from "../../../chat";
 import AccountComp from "./account-dialog";

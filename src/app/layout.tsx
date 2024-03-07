@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
+import NetworkMonitor from "@/lib/context/NetworkMonitor";
 // import { Toast } from "@/components/ui/toast";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -44,7 +45,9 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
         >
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          <Suspense fallback={<Loading />}>
+            <NetworkMonitor>{children}</NetworkMonitor>
+          </Suspense>
         </ThemeProvider>
         <Toaster />
       </body>

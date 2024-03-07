@@ -1,25 +1,30 @@
+import { StringToBoolean } from "class-variance-authority/dist/types";
 import { Conversation, Timestamp } from "./chat";
 
-export type ReportType = "feedback" | "report";
-export type CauseType = "transactional" | "technical" | "chat" | "feedback";
-
-export type ReportData = {
-  link: string;
-  type: ReportType;
-  cause: CauseType;
-  details: {
-    subject: string;
-    body: string;
+export type TicketsData = {
+  id: string;
+  content: {
+    type: string;
+    description: string;
+    images: string[]; //url
   };
   date: Timestamp;
-  user: {
-    uid: string;
-    username: string;
-    email: string;
+  status: {
+    seen: boolean;
+    seen_at: Timestamp | null;
+    addressed: boolean;
+    addressed_at: Timestamp | null;
   };
-  read: boolean;
-  transactionId: string;
-  data?: any;
+  user: {
+    fullname: string;
+    email: string;
+    id: string | null;
+  };
+  adminReply?: {
+    adminId: string;
+    message: string;
+    date: Timestamp | null;
+  }[];
 };
 
 export type CachedUser = {

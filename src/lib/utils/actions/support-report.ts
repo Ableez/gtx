@@ -20,7 +20,7 @@ export const sendReport = async (e: FormData) => {
 
   try {
     const transactionRef = doc(db, "Transactions", obj.transactionId as string);
-    const getTransaction = await await getDoc(transactionRef);
+    const getTransaction = await getDoc(transactionRef);
 
     if (!getTransaction.exists()) {
       return {
@@ -47,7 +47,7 @@ export const sendReport = async (e: FormData) => {
         email: user?.email || obj.email || "Anonymous",
       },
       read: false,
-      data: obj.transactionId ? { ...transaction, id: getTransaction.id } : {},
+      transactionId: obj.transactionId || getTransaction.id,
     });
 
     return {
@@ -61,4 +61,8 @@ export const sendReport = async (e: FormData) => {
       success: false,
     };
   }
+};
+
+export const sendSupportMessage = async (e: FormData) => {
+
 };

@@ -97,7 +97,7 @@ const LoginForm = (props: Props) => {
             ? "You have tried too many times. Please try again later"
             : "Don't panic. Its us, Please try again.",
         dismissible: true,
-        duration: 3500,
+        duration: 10000,
       });
       console.log(err.code);
       return {

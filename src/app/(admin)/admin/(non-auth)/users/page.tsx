@@ -21,6 +21,7 @@ export type NewType = {
   username: string;
   chats: Conversation[];
   transactions: TransactionRec[];
+  reports_reviews: string[];
 };
 
 const AdminManageUserPage = async () => {

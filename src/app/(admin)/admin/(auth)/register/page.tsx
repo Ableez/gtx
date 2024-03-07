@@ -78,7 +78,7 @@ const LoginPage = (props: Props) => {
               src={"/greatexc.svg"}
               alt="Great Exchange"
             />
-            <h4 className="text-xl font-bold">Sign up</h4>
+            <h4 className="text-xl font-bold">Admin Sign up</h4>
           </div>
         </Link>
 
@@ -101,7 +101,7 @@ const LoginPage = (props: Props) => {
                     type="username"
                     autoComplete="username"
                     required
-                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm  ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -122,7 +122,7 @@ const LoginPage = (props: Props) => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -145,7 +145,7 @@ const LoginPage = (props: Props) => {
                   </div>
                 </div>
                 <div className="mt-2">
-                  <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-2">
+                  <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-2  ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500">
                     <Input
                       disabled={loading}
                       aria-disabled={loading}

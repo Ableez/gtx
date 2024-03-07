@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AccordionContent,
   AccordionItem,
@@ -29,12 +29,26 @@ import {
 } from "../ui/drawer";
 import { postToast } from "../postToast";
 import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { usePathname } from "next/navigation";
 
 type Props = {
   user: NewType;
 };
 
 const Usercard = ({ user }: Props) => {
+  const [shine, setShine] = useState(false);
+
+  useEffect(() => {
+    if (window.location.hash.split("#")[1] === user.id) {
+      setShine(true);
+    }
+
+    if (setShine)
+      setTimeout(() => {
+        setShine(false);
+      }, 6000);
+  }, [user.id]);
+
   const toggleUser = async (todo: string) => {
     const response = await fetch("/api/admin/user", {
       body: JSON.stringify({
@@ -48,11 +62,15 @@ const Usercard = ({ user }: Props) => {
 
   return (
     <>
-      <AccordionItem value={user.id}>
-        <AccordionTrigger className="flex gap-4 py-3 px-4 hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-200 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto hover:no-underline">
+      <AccordionItem value={user.id} id={user.id}>
+        <AccordionTrigger
+          className={`${
+            shine && "bg-pink-300 dark:bg-pink-900 dark:bg-opacity-20"
+          } flex gap-4 py-3 px-4 hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-200 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto hover:no-underline`}
+        >
           <div className="rounded-full aspect-square grid place-items-center object-fill border-2 border-white dark:border-neutral-700 overflow-clip bg-white dark:bg-neutral-700">
             <Image
-              className="self-center dark:opacity-40 aspect-square object-cover "
+              className="self-center dark:opacity-40 aspect-square object-cover"
               src={user.imageUrl || "/logoplace.svg"}
               width={50}
               height={50}

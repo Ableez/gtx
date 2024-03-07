@@ -16,7 +16,7 @@ const AdminLogin = (props: Props) => {
               src={"/greatexc.svg"}
               alt="Great Exchange"
             />
-            <h4 className="text-xl font-bold">Sign in</h4>
+            <h4 className="text-xl font-bold">Admin Sign in</h4>
           </div>
         </Link>
 

@@ -35,7 +35,6 @@ export const fileToObject = async (
           data: reader.result,
         };
 
-        console.log("PLAIN OBJECT: ", plainObject);
         resolve(plainObject);
       } else {
         reject(new Error("Failed to convert File to plain object"));
@@ -59,8 +58,8 @@ export const objectToFile = (obj: {
     uint8Array[i] = binaryString.charCodeAt(i);
   }
 
-  // const blob = new Blob([uint8Array], { type: obj.type });
-  // const file = new File([blob], obj.name, { type: obj.type });
-  const file = Buffer.from(obj.data.split(",")[1], "base64");
+  const blob = new Blob([uint8Array], { type: obj.type });
+  const file = new File([blob], obj.name, { type: obj.type });
+  // const file = Buffer.from(obj.data.split(",")[1], "base64");
   return file;
 };

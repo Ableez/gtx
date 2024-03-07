@@ -54,7 +54,7 @@ export default function SellNavbar() {
 
   return (
     <>
-      <div className="max-w-screen-md mx-auto py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4">
+      <div className="max-w-screen-md mx-auto py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4 md:px-0">
         {pageTitle === "" ? (
           <Link
             href={"/"}

@@ -8,3 +8,4 @@ export const getUserCookie = async () => {
     return null;
   }
 };
+

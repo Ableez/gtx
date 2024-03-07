@@ -41,16 +41,12 @@ export const formatDateOnly = (dateString: string): string => {
 
   const difference = Date.now() - messageDate.getTime();
 
-  if (difference < 30000) {
-    return "just now";
-  } else {
-    // Use a locale-axware method for formatting time
-    return `${messageDate.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })}`;
-  }
+  // Use a locale-axware method for formatting time
+  return `${messageDate.toLocaleDateString("en-US", {
+    month: "numeric",
+    day: "numeric",
+    year: "numeric",
+  })}`;
 };
 
 // else if (difference < 300000) {

@@ -5,15 +5,14 @@ import { getUserCookie } from "../getUserCookie";
 export const checkIsAdmin = async () => {
   const u = await getUserCookie();
 
+  if (!u) {
+    return {
+      isAdmin: false,
+      message: "User does not exists in cookies",
+      user: null,
+    };
+  }
   try {
-    if (!u) {
-      return {
-        isAdmin: false,
-        message: "User does not exists in cookies",
-        user: null,
-      };
-    }
-
     const user = JSON.parse(u);
 
     const checkUser = await fetch(

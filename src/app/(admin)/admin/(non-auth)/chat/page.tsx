@@ -7,7 +7,23 @@ type Props = {};
 const AdminChat = async (props: Props) => {
   const chats = await getAdminChats();
 
-  if (!chats || !chats.success || !chats.data) {
+  if (chats.data?.length === 0) {
+    return (
+      <div className="grid place-items-center justify-center align-middle gap-6 max-w-screen-md text-center mx-auto">
+        <h3 className="font-bold text-lg">Chats not found</h3>
+        <p className="text-xs">It may be your internet connection.</p>
+        <div className="w-full">
+          <Link
+            className="mx-auto py-2 px-4 bg-primary rounded-md text-white font-medium"
+            href={"/admin/chat"}
+          >
+            Retry
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  if (!chats.success || !chats.data) {
     return (
       <section className="bg-white dark:bg-neutral-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -22,9 +38,14 @@ const AdminChat = async (props: Props) => {
               Please try again.
             </p>
           </div>
-          <Link className=" mx-auto" href={"/chat"}>
-            Retry
-          </Link>
+          <div className="w-full">
+            <Link
+              className="mx-auto py-2 px-4 bg-primary rounded-md text-white font-medium"
+              href={"/admin/chat"}
+            >
+              Retry
+            </Link>
+          </div>
         </div>
       </section>
     );

@@ -1,64 +1,35 @@
-"use client";
-import React, { ReactNode, useEffect, useState } from "react";
+import { redirect } from "next/navigation";
+import Confirm from "./Confirm";
 import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
-import { useRouter } from "next/navigation";
-import { SunIcon } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
+import { getUserCookie } from "../utils/getUserCookie";
+import { cookies } from "next/headers";
+import { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
 };
 
-const state = Cookies.get("state");
+let notLogged = false;
 
-const AdminRedirect = (props: Props) => {
-  const [user, setUser] = useState<
-    | {
-        isAdmin: boolean;
-        message: string;
-        user: any;
-      }
-    | undefined
-  >();
-  const [mounted, setMounted] = useState(false);
-  const router = useRouter();
+const AdminRedirect = async (props: Props) => {
+  const uc = await getUserCookie();
+  const state = cookies().get("state")?.value;
 
-  useEffect(() => {
-    const check = async () => {
-      if (!state) {
-        const user = await checkIsAdmin();
-
-        if (!user || !user.isAdmin) {
-          router.push("/admin/login");
-          return;
-        } else {
-          Cookies.set("state", "true");
-          setUser(user);
-        }
-      }
-
-      setMounted(true);
-    };
-
-    check();
-  }, [mounted, router, user]);
-
-  if (!mounted) {
-    return (
-      <div className="flex gap-1 h-24 text-center text-xs place-items-center justify-center align-middle">
-        <SunIcon width={18} className="animate-spin text-pink-500" />
-        Please wait...
-      </div>
-    );
+  if (!uc) {
+    return redirect("/admin/login");
   }
 
-  if (!state) {
-    router.push("/admin/login");
-    return;
-  }
+  if (uc && state) {
+    notLogged = true;
 
-  if (state) {
-    return <>{props.children}</>;
+    return <Confirm isAdmin={notLogged}>{props.children}</Confirm>;
+  } else {
+    const fetchedUser = await checkIsAdmin();
+    if (fetchedUser?.isAdmin) {
+      notLogged = true;
+
+      return <Confirm isAdmin={notLogged}>{props.children}</Confirm>;
+    }
   }
 };
 

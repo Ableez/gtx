@@ -1,33 +1,10 @@
 "use client";
 import NavCards from "@/components/admin/dashboard/navCards";
-import SuccessCheckmark from "@/components/successMark";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { auth, db } from "@/lib/utils/firebase";
-import { formatTime } from "@/lib/utils/formatTime";
-import { StarIcon } from "@heroicons/react/20/solid";
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-import Link from "next/link";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ConversationCollections } from "../../../../../chat";
-import { ImageIcon } from "@radix-ui/react-icons";
 import QuickView from "@/components/admin/chat/QuickView";
 import PostReview from "@/components/admin/chat/PostReview";
 
