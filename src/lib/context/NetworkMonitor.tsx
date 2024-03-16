@@ -38,13 +38,17 @@ const NetworkMonitor = (props: Props) => {
   }, []); // Empty dependency array ensures this effect runs only once after initial render
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+    if (
+      typeof window !== "undefined" &&
+      navigator &&
+      "serviceWorker" in navigator
+    ) {
       const messaging = getMessaging(app);
       const unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground push notification received:", payload);
         // Handle the received push notification while the app is in the foreground
         // You can display a notification or update the UI based on the payload
-        
+
         postToast(
           payload.data ? payload.data.body : "New notification received!",
           {
