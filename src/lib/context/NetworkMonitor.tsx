@@ -10,25 +10,26 @@ type Props = {
 
 const NetworkMonitor = (props: Props) => {
   useEffect(() => {
-    const requestPermission = async () => {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-          const token = await getToken(messaging, {
-            vapidKey:
-              "BOIPo2AXDin_HMhdECMatpEy9-726K5A2d4coifj5AzWL66FHL07hSaUzI0DOCB9IkK1pe-rB7EA-AN4rNxPJCY",
-          });
-          console.log("FCM Token:", token);
-          // Send the token to your server or handle it as needed
-        } else {
-          console.log("Notification permission denied");
+    if ("navigator" in window && "serviceWorker" in navigator) {
+      const requestPermission = async () => {
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === "granted") {
+            const token = await getToken(messaging, {
+              vapidKey:
+                "BOIPo2AXDin_HMhdECMatpEy9-726K5A2d4coifj5AzWL66FHL07hSaUzI0DOCB9IkK1pe-rB7EA-AN4rNxPJCY",
+            });
+            console.log("FCM Token:", token);
+            // Send the token to your server or handle it as needed
+          } else {
+            console.log("Notification permission denied");
+          }
+        } catch (error) {
+          console.error("Error getting FCM token:", error);
         }
-      } catch (error) {
-        console.error("Error getting FCM token:", error);
-      }
-    };
-
-    requestPermission();
+      };
+      requestPermission();
+    }
   }, []);
 
   useEffect(() => {
