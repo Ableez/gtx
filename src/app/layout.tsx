@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
+import NotificationWrapper from "@/lib/context/NotificationWrapper";
 import NetworkMonitor from "@/lib/context/NetworkMonitor";
 // import { Toast } from "@/components/ui/toast";
 
@@ -46,7 +47,9 @@ export default function RootLayout({
           enableSystem
         >
           <Suspense fallback={<Loading />}>
-            <NetworkMonitor>{children}</NetworkMonitor>
+            <NotificationWrapper>
+              <NetworkMonitor>{children}</NetworkMonitor>
+            </NotificationWrapper>
           </Suspense>
         </ThemeProvider>
         <Toaster />

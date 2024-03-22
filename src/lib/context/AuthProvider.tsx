@@ -11,26 +11,26 @@ type Props = {
 
 export const AuthContext = createContext({});
 
+const user = Cookies.get("user") as string;
+
 const AuthProvider = (props: Props) => {
-  const [user, setUser] = useState({});
+  const [userState, setUserState] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      const user = Cookies.get("user") as string;
-
       if (authUser || user) {
-        setUser(authUser || JSON.parse(user));
+        setUserState(authUser || JSON.parse(user));
         Cookies.set("user", JSON.stringify(authUser));
       } else {
-        setUser({});
+        setUserState({});
         Cookies.remove("user");
         router.push("/sell");
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, [router, userState]);
 
   return (
     <AuthContext.Provider value={user}>{props.children}</AuthContext.Provider>

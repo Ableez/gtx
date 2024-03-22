@@ -1,7 +1,7 @@
+
 import AuthProvider from "@/lib/context/AuthProvider";
 import { Suspense } from "react";
 import Loading from "../loading";
-import { cookies } from "next/headers";
 
 type Props = {
   children: React.ReactNode;

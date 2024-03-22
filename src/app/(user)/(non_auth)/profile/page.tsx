@@ -31,7 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {};
 
-const user = Cookies.get("user");
+const cachedUser = Cookies.get("user");
 
 const UserProfile = (props: Props) => {
   const [user, setUser] = useState<User>();
@@ -55,18 +55,12 @@ const UserProfile = (props: Props) => {
   });
 
   useEffect(() => {
-    const cachedUser = Cookies.get("user");
-
-    if (!cachedUser) {
-      alert("You need to login to view profile information");
-      router.replace("/sell");
-      return;
+    const user = JSON.parse(cachedUser as string);
+    if (user) {
+      setUser(user as User);
     }
 
-    const user = JSON.parse(cachedUser as string);
-    setUser(user as User);
-
-    setImageUrl(user.photoURL satisfies User);
+    setImageUrl(user?.photoURL satisfies User);
 
     setForm((prev) => {
       return {
@@ -264,288 +258,302 @@ const UserProfile = (props: Props) => {
     }
   }, [progress, sent]);
 
-  if (!user) {
+  if (cachedUser === null) {
     postToast("Unauthorized", {
       description: "You are not logged in",
-      action: {
-        label: "Login",
-        onClick: () => router.push("/login"),
-      },
     });
+    router.replace("/sell");
+    return;
   }
 
-  return (
-    <div className="px-4 space-y-5 pb-8 py-4 max-w-screen-sm mx-auto">
-      <form action={update}>
-        <div className="relative w-fit mx-auto">
-          {image && (
-            <button
-              onClick={() => {
-                if (image) {
-                  setImage(null);
-                  setImageUrl(user?.photoURL as string);
-                }
-              }}
-              type="button"
-              title="Cancel"
-              className="absolute -right-6 rounded-full top-0 z-50 p-1 dark:bg-neutral-700 bg-neutral-200 border-2 border-transparent dark:hover:border-neutral-600 hover:border-neutral-300"
-            >
-              <XMarkIcon width={16} />
-            </button>
-          )}
-          <div
-            className={`${
-              image && "ring-rose-500"
-            } w-fit rounded-full duration-500 relative ring-2 ring-transparent p-0.5 overflow-clip mx-auto group`}
-          >
-            <Image
-              src={imageUrl || "/logoplace.svg"}
-              alt="User Profile image"
-              width={100}
-              height={100}
-              priority
-              className={`${
-                loading && "opacity-50"
-              } rounded-full overflow-clip aspect-square object-cover border-2 p-2 bg-white dark:bg-neutral-700`}
-            />
-            <label
-              className={`bg-neutral-200 bg-opacity-10 backdrop-blur-md absolute group-hover:bottom-0 duration-300 left-1/2 -translate-x-1/2 p-3 w-full text-center text-xs font-bold -bottom-full ${
-                loading && "cursor-not-allowed"
-              }`}
-              title="Edit profile image"
-            >
-              <PencilSquareIcon
-                width={18}
-                strokeWidth={2}
-                className="mx-auto"
-              />
-              <input
-                disabled={loading}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  setImage(file as File);
-                  if (file) {
-                    const url = URL.createObjectURL(file);
-                    setImageUrl(url);
+  console.log(cachedUser, "CACHED USER");
+  // if (!user) {
+  //   postToast("Unauthorized", {
+  //     description: "You are not logged in",
+  //     action: {
+  //       label: "Login",
+  //       onClick: () => router.push("/login"),
+  //     },
+  //   });
+  // }
+
+  if (cachedUser)
+    return (
+      <div className="px-4 space-y-5 pb-8 py-4 max-w-screen-sm mx-auto">
+        <form action={update}>
+          <div className="relative w-fit mx-auto">
+            {image && (
+              <button
+                onClick={() => {
+                  if (image) {
+                    setImage(null);
+                    setImageUrl(user?.photoURL as string);
                   }
                 }}
-                accept="image/*"
-                type="file"
-                className="hidden"
-                placeholder="Image"
+                type="button"
+                title="Cancel"
+                className="absolute -right-6 rounded-full top-0 z-50 p-1 dark:bg-neutral-700 bg-neutral-200 border-2 border-transparent dark:hover:border-neutral-600 hover:border-neutral-300"
+              >
+                <XMarkIcon width={16} />
+              </button>
+            )}
+            <div
+              className={`${
+                image && "ring-rose-500"
+              } w-fit rounded-full duration-500 relative ring-2 ring-transparent p-0.5 overflow-clip mx-auto group`}
+            >
+              <Image
+                src={imageUrl || "/logoplace.svg"}
+                alt="User Profile image"
+                width={100}
+                height={100}
+                priority
+                className={`${
+                  loading && "opacity-50"
+                } rounded-full overflow-clip aspect-square object-cover border-2 bg-white dark:bg-neutral-700`}
               />
-            </label>
-          </div>
-        </div>
-
-        <div>
-          {user ? (
-            <>
-              <div
-                className={`${
-                  form.username.editted &&
-                  "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
-                } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:border-neutral-500 px-3 py-3.5`}
+              <label
+                className={`bg-neutral-200 bg-opacity-10 backdrop-blur-md absolute group-hover:bottom-0 duration-300 left-1/2 -translate-x-1/2 p-3 w-full text-center text-xs font-bold -bottom-full ${
+                  loading && "cursor-not-allowed"
+                }`}
+                title="Edit profile image"
               >
-                <input
-                  defaultValue={user.displayName as string}
-                  value={form.username.value as string}
-                  disabled={!user?.displayName}
-                  onChange={(e) => {
-                    setForm((prev) => {
-                      return {
-                        ...prev,
-                        username: { ...prev.username, value: e.target.value },
-                      };
-                    });
-                  }}
-                  contentEditable
-                  data-gramm="false"
-                  data-gramm_editor="false"
-                  data-enable-grammarly="false"
-                  aria-label="username"
-                  className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
+                <PencilSquareIcon
+                  width={18}
+                  strokeWidth={2}
+                  className="mx-auto"
                 />
-                {form.username.editted && (
-                  <button
-                    type="button"
-                    title="Cancel"
-                    onClick={() => {
-                      setForm((prev) => {
-                        return {
-                          ...prev,
-                          username: {
-                            editted: false,
-                            value: user?.displayName,
-                          },
-                        };
-                      });
-                    }}
-                  >
-                    <XMarkIcon
-                      title="Edit username"
-                      className="text-purple-800"
-                      width={18}
-                      strokeWidth={2}
-                    />
-                  </button>
-                )}
-                {!user?.displayName && (
-                  <SunIcon
-                    title="Loading"
-                    className="animate-spin text-neutral-400 dark:text-neutral-600"
-                    width={18}
-                    strokeWidth={2}
-                  />
-                )}
-              </div>
-              <div
-                className={`${
-                  form.email.editted &&
-                  "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
-                } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:bor
-            der-neutral-500 px-3 py-3.5`}
-              >
                 <input
-                  defaultValue={user.email as string}
-                  value={form.email.value as string}
-                  disabled={!user?.email}
+                  disabled={loading}
                   onChange={(e) => {
-                    setForm((prev) => {
-                      return {
-                        ...prev,
-                        email: { ...prev.email, value: e.target.value },
-                      };
-                    });
+                    const file = e.target.files?.[0];
+                    setImage(file as File);
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setImageUrl(url);
+                    }
                   }}
-                  contentEditable
-                  data-gramm="false"
-                  data-gramm_editor="false"
-                  data-enable-grammarly="false"
-                  aria-label="email"
-                  id={"profile-email"}
-                  className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
+                  accept="image/*"
+                  type="file"
+                  className="hidden"
+                  placeholder="Image"
                 />
-
-                {form.email.editted && (
-                  <button
-                    type="button"
-                    title="Cancel"
-                    onClick={() => {
-                      setForm((prev) => {
-                        return {
-                          ...prev,
-                          email: {
-                            editted: false,
-                            value: user?.email,
-                          },
-                        };
-                      });
-                    }}
-                  >
-                    <XMarkIcon
-                      title="Edit username"
-                      className="text-purple-800"
-                      width={18}
-                      strokeWidth={2}
-                    />
-                  </button>
-                )}
-                {!user?.displayName && (
-                  <SunIcon
-                    title="Loading"
-                    className="animate-spin text-neutral-400 dark:text-neutral-600"
-                    width={18}
-                    strokeWidth={2}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="grid grid-flow-row gap-4">
-              <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
-              <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
+              </label>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="mt-2 mb-1 max-w-[70px] ml-auto h-3 flex align-middle place-items-center justify-end">
-          {progress > 0 && (
-            <Progress className="duration-1000" value={progress} />
-          )}
-        </div>
-        <div className="flex justify-end mt-2">
-          <Button
-            className="flex align-middle place-items-center gap-1"
-            // onClick={() => {
-            //   setLoading(true);
-            // }}
-            disabled={
-              (!form.username.editted && !form.email.editted && !image) ||
-              loading
-            }
-          >
-            {loading ? (
+          <div>
+            {user ? (
               <>
-                <SunIcon className="animate-spin" width={20} strokeWidth={2} />
-                <span>Updating</span>
+                <div
+                  className={`${
+                    form.username.editted &&
+                    "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
+                  } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:border-neutral-500 px-3 py-3.5`}
+                >
+                  <input
+                    defaultValue={user.displayName as string}
+                    value={form.username.value as string}
+                    disabled={!user?.displayName}
+                    onChange={(e) => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          username: { ...prev.username, value: e.target.value },
+                        };
+                      });
+                    }}
+                    contentEditable
+                    data-gramm="false"
+                    data-gramm_editor="false"
+                    data-enable-grammarly="false"
+                    aria-label="username"
+                    className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
+                  />
+                  {form.username.editted && (
+                    <button
+                      type="button"
+                      title="Cancel"
+                      onClick={() => {
+                        setForm((prev) => {
+                          return {
+                            ...prev,
+                            username: {
+                              editted: false,
+                              value: user?.displayName,
+                            },
+                          };
+                        });
+                      }}
+                    >
+                      <XMarkIcon
+                        title="Edit username"
+                        className="text-purple-800"
+                        width={18}
+                        strokeWidth={2}
+                      />
+                    </button>
+                  )}
+                  {!user?.displayName && (
+                    <SunIcon
+                      title="Loading"
+                      className="animate-spin text-neutral-400 dark:text-neutral-600"
+                      width={18}
+                      strokeWidth={2}
+                    />
+                  )}
+                </div>
+                <div
+                  className={`${
+                    form.email.editted &&
+                    "border-b-2 border-neutral-700 bg-purple-100 dark:bg-purple-500 dark:bg-opacity-10 hover:border-neutral-400 "
+                  } disabled:text-neutral-400 disabled:cursor-not-allowed flex align-middle w-full duration-300 hover:bg-opacity-60 border-b border-neutral-200 outline-none focus-within:outline-none hover:bor
+            der-neutral-500 px-3 py-3.5`}
+                >
+                  <input
+                    defaultValue={user.email as string}
+                    value={form.email.value as string}
+                    disabled={!user?.email}
+                    onChange={(e) => {
+                      setForm((prev) => {
+                        return {
+                          ...prev,
+                          email: { ...prev.email, value: e.target.value },
+                        };
+                      });
+                    }}
+                    contentEditable
+                    data-gramm="false"
+                    data-gramm_editor="false"
+                    data-enable-grammarly="false"
+                    aria-label="email"
+                    id={"profile-email"}
+                    className=" outline-none focus-within:outline-none hover:border-neutral-500 w-full bg-transparent"
+                  />
+
+                  {form.email.editted && (
+                    <button
+                      type="button"
+                      title="Cancel"
+                      onClick={() => {
+                        setForm((prev) => {
+                          return {
+                            ...prev,
+                            email: {
+                              editted: false,
+                              value: user?.email,
+                            },
+                          };
+                        });
+                      }}
+                    >
+                      <XMarkIcon
+                        title="Edit username"
+                        className="text-purple-800"
+                        width={18}
+                        strokeWidth={2}
+                      />
+                    </button>
+                  )}
+                  {!user?.displayName && (
+                    <SunIcon
+                      title="Loading"
+                      className="animate-spin text-neutral-400 dark:text-neutral-600"
+                      width={18}
+                      strokeWidth={2}
+                    />
+                  )}
+                </div>
               </>
             ) : (
-              "Update"
+              <div className="grid grid-flow-row gap-4">
+                <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
+                <Skeleton className="w-full px-3 py-5 border-b border-neutral-400 rounded-none " />
+              </div>
             )}
-          </Button>
+          </div>
+
+          <div className="mt-2 mb-1 max-w-[70px] ml-auto h-3 flex align-middle place-items-center justify-end">
+            {progress > 0 && (
+              <Progress className="duration-1000" value={progress} />
+            )}
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              className="flex align-middle place-items-center gap-1"
+              // onClick={() => {
+              //   setLoading(true);
+              // }}
+              disabled={
+                (!form.username.editted && !form.email.editted && !image) ||
+                loading
+              }
+            >
+              {loading ? (
+                <>
+                  <SunIcon
+                    className="animate-spin"
+                    width={20}
+                    strokeWidth={2}
+                  />
+                  <span>Updating</span>
+                </>
+              ) : (
+                "Update"
+              )}
+            </Button>
+          </div>
+        </form>
+        <div>
+          <button
+            onClick={() => {
+              router.push("/chat");
+            }}
+            className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
+          >
+            <ChatBubbleIcon width={18} /> <span>View conversations</span>
+          </button>
+          <button
+            onClick={() => {
+              router.push("/transactions");
+            }}
+            className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
+          >
+            <CurrencyDollarIcon width={18} /> <span>Transactions</span>
+          </button>
+          <button
+            onClick={() => {
+              router.push("/iforgot");
+            }}
+            className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
+          >
+            <EyeSlashIcon width={18} /> <span>Reset password</span>
+          </button>
         </div>
-      </form>
-      <div>
-        <button
-          onClick={() => {
-            router.push("/chat");
-          }}
-          className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
-        >
-          <ChatBubbleIcon width={18} /> <span>View conversations</span>
-        </button>
-        <button
-          onClick={() => {
-            router.push("/transactions");
-          }}
-          className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
-        >
-          <CurrencyDollarIcon width={18} /> <span>Transactions</span>
-        </button>
-        <button
-          onClick={() => {
-            router.push("/iforgot");
-          }}
-          className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
-        >
-          <EyeSlashIcon width={18} /> <span>Reset password</span>
-        </button>
+        <div>
+          <button
+            onClick={() => {
+              router.push("/support");
+            }}
+            className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5 text-amber-500"
+          >
+            <InformationCircleIcon strokeWidth={2} width={18} />{" "}
+            <span>Report an issue</span>
+          </button>
+          <button
+            onClick={async () => {
+              await signOut(auth);
+              Cookies.remove("user");
+              Cookies.remove("isLoggedIn");
+              router.push("/sell");
+            }}
+            className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5 text-rose-500"
+          >
+            <XMarkIcon strokeWidth={2} width={18} /> <span>Sign out</span>
+          </button>
+        </div>
       </div>
-      <div>
-        <button
-          onClick={() => {
-            router.push("/support");
-          }}
-          className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5 text-amber-500"
-        >
-          <InformationCircleIcon strokeWidth={2} width={18} />{" "}
-          <span>Report an issue</span>
-        </button>
-        <button
-          onClick={async () => {
-            await signOut(auth);
-            Cookies.remove("user");
-            Cookies.remove("isLoggedIn");
-            router.push("/sell");
-          }}
-          className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5 text-rose-500"
-        >
-          <XMarkIcon strokeWidth={2} width={18} /> <span>Sign out</span>
-        </button>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default UserProfile;

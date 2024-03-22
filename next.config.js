@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pwa: {
-    dest: "public",
-    register: true,
-    sw: "/firebase-messaging-sw.js",
-  },
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [

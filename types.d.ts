@@ -115,3 +115,7 @@ export type Feedback = {
     username: string;
   };
 };
+
+export interface NotificationHandler {
+  displayNotification(title: string, options: any): void;
+}

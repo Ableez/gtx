@@ -30,7 +30,7 @@ const UserLayoutCtx: React.FC<UserLayoutCtxProps> = ({ children }) => {
         (mounted ? (
           <SellNavbar />
         ) : (
-          <div className="max-w-screen-sm mx-auto px-4 py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4">
+          <div className="max-w-screen-md mx-auto px-4 py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4">
             <Link
               href={"/"}
               className="flex align-middle place-items-center gap-2"
