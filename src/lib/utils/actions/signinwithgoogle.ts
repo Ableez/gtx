@@ -45,7 +45,7 @@ export const signInWithGoogle = async () => {
     }
     postToast("Successfully signed in");
 
-    redirect("/sell");
+    window.location.href = "/sell";
   } catch (err) {
     const error = err as FirebaseError;
     const errorCode = error.code;
