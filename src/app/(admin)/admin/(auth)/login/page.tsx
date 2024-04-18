@@ -41,8 +41,6 @@ const AdminLogin = (props: Props) => {
           </Button>
         </div> */}
 
-        <h4 className="w-fit mx-auto">Or</h4>
-
         <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-800 p-4 rounded-2xl">
           <AdminLoginForm />
 

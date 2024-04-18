@@ -81,7 +81,7 @@ const ReviewDrawer = (props: Props) => {
           onClick={() => {
             const review_in = localStorage.getItem("review_in");
             if (review_in && Number(review_in) % 2 !== 0) {
-              router.replace("/sell");
+              router.back();
             }
           }}
           variant={"ghost"}
@@ -186,7 +186,7 @@ const ReviewDrawer = (props: Props) => {
                     "review_in",
                     JSON.stringify(reviewNumber)
                   );
-                  router.replace("/sell");
+                  router.back();
                 }}
                 variant={"ghost"}
                 className="-mt-2 text-neutral-400"

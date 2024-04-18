@@ -63,12 +63,12 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
               <Image
                 src={chat.data.user.photoUrl}
                 alt={chat.data.user.username}
-                width={48}
-                height={48}
+                width={45}
+                height={45}
                 className="aspect-square rounded-full object-cover"
               />
             ) : (
-              <div className="p-5 h-12 w-12 aspect-square bg-gradient-to-tr rounded-full from-zinc-300 self-center to-stone-400 active:to-zinc-300 active:from-stone-500 shadow-primary" />
+              <div className="p-5 h-12 w-12 bg-gradient-to-tr rounded-full from-zinc-300 self-center to-stone-400 active:to-zinc-300 active:from-stone-500 shadow-primary" />
             )}
             <div className="w-full">
               <h4

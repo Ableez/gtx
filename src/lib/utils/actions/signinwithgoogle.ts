@@ -9,6 +9,7 @@ import { FirebaseError } from "firebase/app";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { postToast } from "@/components/postToast";
 import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 export const signInWithGoogle = async () => {
   try {
@@ -42,9 +43,9 @@ export const signInWithGoogle = async () => {
     } else {
       Cookies.set("user", JSON.stringify(checkUser.data()));
     }
-
-    window.location.href = `${process.env.BASE_URL}/sell`;
     postToast("Successfully signed in");
+
+    redirect("/sell");
   } catch (err) {
     const error = err as FirebaseError;
     const errorCode = error.code;
