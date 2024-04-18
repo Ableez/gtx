@@ -3,8 +3,7 @@
 import React from "react";
 import { Label } from "./ui/label";
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { DesktopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Switch } from "./ui/switch";
 
 type Props = {};
@@ -13,7 +12,7 @@ const ToggleTheme = (props: Props) => {
   const theme = useTheme();
 
   return (
-    <button
+    <div
       id="theme"
       onClick={() => theme.setTheme(theme.theme === "light" ? "dark" : "light")}
       className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
@@ -39,7 +38,7 @@ const ToggleTheme = (props: Props) => {
           theme.setTheme(theme.theme === "dark" ? "light" : "dark")
         }
       />
-    </button>
+    </div>
   );
 };
 

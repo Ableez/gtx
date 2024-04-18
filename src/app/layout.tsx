@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
 import NetworkMonitor from "@/lib/context/NetworkMonitor";
-// import { Toast } from "@/components/ui/toast";
 
-const inter = Inter({ subsets: ["latin"] });
+const openSans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Great Exchange",
@@ -38,7 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-[#f5f5f5] dark:bg-[#222] ${inter.className}`}>
+      <body className={`bg-[#f5f5f5] dark:bg-[#222] ${openSans.className}`}>
         <ThemeProvider
           disableTransitionOnChange
           attribute="class"

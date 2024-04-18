@@ -6,11 +6,7 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { ConversationCollections } from "../../../../chat";
-
-type Props = {
-  chatNumbers: number;
-};
+import useAdminConversations from "@/lib/hooks/useAdminConversations";
 
 const navBoxes = [
   {
@@ -43,7 +39,17 @@ const navBoxes = [
   },
 ];
 
-const NavCards = ({ chatNumbers }: Props) => {
+const NavCards = () => {
+  const { unReadConversationsNumber, allConversations } =
+    useAdminConversations();
+
+  const activeTransaction = allConversations?.filter((conversation) => {
+    return (
+      conversation.data.transaction.status === "pending" ||
+      conversation.data.transaction.status === "processing"
+    );
+  })?.length as number;
+
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-4">
       {navBoxes.map((box, idx) => {
@@ -51,7 +57,7 @@ const NavCards = ({ chatNumbers }: Props) => {
           <Link
             href={box.link}
             key={idx}
-            className="bg-white dark:bg-neutral-800 rounded-3xl shadow-lg shadow-purple-100 dark:shadow-purple-950/10 py-6 hover:border-purple-200 dark:hover:border-purple-600/30 hover:shadow-inner border duration-300"
+            className="rounded-3xl dark:shadow-lg py-6 ring-4 ring-transparent hover:ring-pink-400/20 duration-300 bg-neutral-300/20 dark:bg-neutral-700/20"
           >
             <div className="grid align-middle place-items-center justify-center">
               <div
@@ -68,19 +74,19 @@ const NavCards = ({ chatNumbers }: Props) => {
                 }  p-3.5 shadow-md rounded-xl relative`}
               >
                 {box.icon}
-                {box.name === "Messages" && chatNumbers > 0 && (
-                  <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-bold text-white">
-                    <h4>{chatNumbers}</h4>
+                {box.name === "Messages" && unReadConversationsNumber > 0 && (
+                  <div className="absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
+                    <h4>{unReadConversationsNumber}</h4>
+                  </div>
+                )}
+                {box.name === "Transactions" && activeTransaction > 0 && (
+                  <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
+                    <h4>{activeTransaction}</h4>
                   </div>
                 )}
               </div>
-              <h4 className="font-bold text-neutral-800 dark:text-white mt-2">
-                {box.name}
-              </h4>
+              <h4 className="font-medium mt-2">{box.name}</h4>
             </div>
-            <h6 className="text-neutral-300 dark:text-neutral-600 w-2/3 font-medium text-xs text-center mx-auto mt-3">
-              {box.desc}
-            </h6>
           </Link>
         );
       })}

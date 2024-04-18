@@ -16,14 +16,14 @@ import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 type Props = {
   url: string | null;
 };
 
 export const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
-  const { pending, data } = useFormStatus();
+  const { pending } = useFormStatus();
 
   useEffect(() => {
     if (pending) {
@@ -35,9 +35,9 @@ export const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
     <Button
       aria-disabled={pending}
       disabled={pending}
-      className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300"
+      className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-medium leading-6 text-white shadow-sm hover:bg-primary  disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300 mt-2"
     >
-      Sign in
+      Continue
     </Button>
   );
 };
@@ -56,68 +56,109 @@ const LoginForm = (props: Props) => {
     }
   }, [error]);
 
+  // This function handles the login process
   const login = async (e: FormData) => {
     try {
+      // Start loading
       setLoading(true);
+
+      // Get email and password from the form data
       const email = e.get("email");
       const password = e.get("password");
 
+      // Check if email and password are provided
       if (!email || !password) {
         return {
           message: "All fields are required",
           success: false,
         };
       }
-      await setPersistence(auth, browserLocalPersistence).then(async () => {
-        await signInWithEmailAndPassword(
-          auth,
-          email.toString(),
-          password.toString()
-        ).then((user) => {
-          Cookies.set("user", JSON.stringify(user.user.toJSON()));
-          router.push(props.url || "/sell");
-        });
-      });
+
+      // Set persistence and sign in with email and password
+      await setPersistence(auth, browserLocalPersistence);
+      const _u = await signInWithEmailAndPassword(
+        auth,
+        email.toString(),
+        password.toString()
+      );
+
+      // Get the user document reference
+      const userRef = doc(db, "Users", _u.user.uid);
+
+      // Get the user document
+      const user = await getDoc(userRef);
+
+      // If the user document does not exist, create a new one
+      if (!user.exists()) {
+        // Prepare user data
+        const userData = {
+          displayName: _u.user.displayName,
+          email: _u.user.email,
+          emailVerified: _u.user.emailVerified,
+          phoneNumber: _u.user.phoneNumber,
+          photoURL: _u.user.photoURL,
+          uid: _u.user.uid,
+          metadata: { ..._u.user.metadata },
+          role: "user",
+          conversations: [],
+          cardChoices: [],
+          transactions: [],
+        };
+
+        // Save user data to db
+        await setDoc(doc(db, "Users", user.id), userData);
+
+        // Save the user to cookies
+        Cookies.set("user", JSON.stringify(userData));
+      } else {
+        // If the user document exists, save it to cookies
+        Cookies.set("user", JSON.stringify(user.data()));
+      }
+
+      // Redirect to the referred url or to "/sell"
+      window.location.href = "/sell";
+      router.refresh();
+      router.push(props.url || "/sell");
     } catch (error) {
+      // Handle errors
       const err = error as FirebaseError;
       console.log(error);
-      toast("Login failed", {
-        description:
-          err?.code === "auth/invalid-login-credentials"
-            ? "Invalid login credentials"
-            : err?.code === "auth/user-not-found"
-            ? "User does not exists"
-            : err?.code === "auth/wrong-password"
-            ? "Wrong email or password"
-            : err.code === "auth/network-request-failed"
-            ? "Network request failed. Check your internet connection."
-            : err.code === "auth/user-disabled"
-            ? "This account has been disabled. Contact support for help."
-            : err.code === "auth/too-many-requests"
-            ? "You have tried too many times. Please try again later"
-            : "Don't panic. Its us, Please try again.",
+
+      // Display a toast message based on the error code
+      toast(getErrorMessage(err), {
         dismissible: true,
         duration: 10000,
       });
+
       console.log(err.code);
+
+      // Return an error message based on the error code
       return {
-        message:
-          err?.code === "auth/invalid-login-credentials"
-            ? err.message
-            : err?.code === "auth/user-not-found"
-            ? err.message
-            : err?.code === "auth/wrong-password"
-            ? err.message
-            : err.code === "auth/network-request-failed"
-            ? "Network request failed. Check your internet connection."
-            : err.code === "auth/user-disabled"
-            ? "This account has been disabled. Contact support for help."
-            : err.code === "auth/too-many-requests"
-            ? err.message
-            : "Something went wrong. Try again",
+        message: getErrorMessage(err),
       };
     } finally {
+      // Stop loading
       setLoading(false);
+    }
+  };
+
+  // This function returns an error message based on the error code
+  const getErrorMessage = (err: FirebaseError) => {
+    switch (err?.code) {
+      case "auth/invalid-login-credentials":
+        return "Invalid login credentials";
+      case "auth/user-not-found":
+        return "User does not exists";
+      case "auth/wrong-password":
+        return "Wrong email or password";
+      case "auth/network-request-failed":
+        return "Network request failed. Check your internet connection.";
+      case "auth/user-disabled":
+        return "This account has been disabled. Contact support for help.";
+      case "auth/too-many-requests":
+        return "You have tried too many times. Please try again later";
+      default:
+        return "An error occured. Don't panic, Its us, Please try again.";
     }
   };
 
@@ -135,7 +176,7 @@ const LoginForm = (props: Props) => {
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
+            className="block text-sm font-medium leading-6 text-neutral-600 dark:text-neutral-400"
           >
             Email address
           </label>
@@ -148,7 +189,7 @@ const LoginForm = (props: Props) => {
               type="email"
               autoComplete="email"
               required
-              className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+              className="block w-full rounded-md border-0 py-6 text-base shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -157,21 +198,21 @@ const LoginForm = (props: Props) => {
           <div className="flex items-center justify-between">
             <Label
               htmlFor="password"
-              className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
+              className="block text-sm font-medium leading-6 text-neutral-600 dark:text-neutral-400"
             >
               Password
             </Label>
             <div className="text-sm">
               <Link
                 href="/iforgot"
-                className="font-semibold text-primary hover:text-primary"
+                className="font-medium text-primary hover:text-primary"
               >
                 Forgot password?
               </Link>
             </div>
           </div>
           <div className="mt-2">
-            <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-2">
+            <div className="flex align-middle place-items-center justify-between gap-0.5">
               <Input
                 disabled={loading}
                 aria-disabled={loading}
@@ -179,14 +220,13 @@ const LoginForm = (props: Props) => {
                 name="password"
                 type={view ? "text" : "password"}
                 autoComplete="current-password"
-                className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white ring-0 placeholder:text-neutral-400 focus:ring-0 focus-visible:ring-0 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-6 text-base shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
                 required
               />
               <Button
                 onClick={() => setView((prev) => !prev)}
                 type="button"
                 variant={"ghost"}
-                className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300"
                 size={"icon"}
               >
                 {view ? <EyeIcon width={16} /> : <EyeSlashIcon width={16} />}

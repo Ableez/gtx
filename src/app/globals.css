@@ -17,6 +17,8 @@
 
 body {
   font-size: 0.875rem !important;
+  font-family: system-ui, -apple-system, "Open Sans", "Helvetica Neue",
+    sans-serif;
 }
 
 @media (prefers-color-scheme: light) {
@@ -372,3 +374,7 @@ input ~ grammarly-extension,
 textarea ~ grammarly-extension {
   display: none;
 }
+
+/* .renderContainer:last-child {
+  margin-bottom: 85px;
+} */

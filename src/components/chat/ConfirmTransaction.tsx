@@ -7,29 +7,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { SunIcon } from "@heroicons/react/24/outline";
-import { Label } from "../ui/label";
 import { Conversation } from "../../../chat";
 import Image from "next/image";
 import { sendConfirmTransactionToAdmin } from "@/lib/utils/actions/sendConfirmTransactionToAdmin";
 import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
-  id: string;
+  chatId: string;
   openConfirmTransaction: boolean;
   setOpenConfirmTransaction: React.Dispatch<React.SetStateAction<boolean>>;
   data: Conversation;
   edit?: boolean;
   idx?: number;
-  scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
 const ConfirmTransaction = ({
   openConfirmTransaction,
   setOpenConfirmTransaction,
-  id,
+  chatId,
   data,
   edit,
   idx,
@@ -45,7 +42,7 @@ const ConfirmTransaction = ({
     setLoading(true);
 
     try {
-      const res = await sendConfirmTransactionToAdmin(id, reason, idx);
+      const res = await sendConfirmTransactionToAdmin(chatId, reason, idx);
 
       if (res.success) {
         setOpenConfirmTransaction(false);

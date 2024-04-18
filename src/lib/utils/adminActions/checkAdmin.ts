@@ -2,6 +2,11 @@
 
 import { getUserCookie } from "../getUserCookie";
 
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_BASE_URL
+    : "http://localhost:3000";
+
 export const checkIsAdmin = async () => {
   const u = await getUserCookie();
 
@@ -12,11 +17,12 @@ export const checkIsAdmin = async () => {
       user: null,
     };
   }
+
   try {
     const user = JSON.parse(u);
 
     const checkUser = await fetch(
-      `${process.env.BASE_URL}/api/admin/validate?uid=${user.uid}`,
+      `${baseUrl}/api/admin/validate?uid=${user.uid}`,
       {
         method: "GET",
       }

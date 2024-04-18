@@ -3,28 +3,25 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
+// import { getMessaging } from "firebase/messaging";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyApBfR-yMJJ6CKZB7mv-EVXSFsUXCSnkNA",
-  authDomain: "greatexc.firebaseapp.com",
-  databaseURL:
-    "https://greatexc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "greatexc",
-  storageBucket: "greatexc.appspot.com",
-  messagingSenderId: "365786320575",
-  appId: "1:365786320575:web:ce912ce81954c56e5e400a",
-  measurementId: "G-2DN0PYT9EH",
+  apiKey: "AIzaSyBaqs5rPeY_5Mol9nq8MOzLhZ5QsdEwL2E",
+  authDomain: "great-exchange.firebaseapp.com",
+  projectId: "great-exchange",
+  storageBucket: "great-exchange.appspot.com",
+  messagingSenderId: "443106951382",
+  appId: "1:443106951382:web:4cb7f93ab5c93d09dd8977",
+  measurementId: "G-4HJNCTX5V7",
 };
-
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleAuthProvider = new GoogleAuthProvider();
 export const storage = getStorage(app);
-export const messaging = getMessaging(app);
+// export const messaging = getMessaging(app);

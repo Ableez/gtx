@@ -10,10 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
-import { User } from "firebase/auth";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
-import Cookies from "js-cookie";
 import {
   ArrowLeftOnRectangleIcon,
   EllipsisVerticalIcon,
@@ -23,15 +21,20 @@ import Image from "next/image";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { User } from "../../../types";
+import { useDebounceEffect } from "@/lib/hooks/useDebounceEffect";
 
-export default function SellNavbar() {
-  const cookieUser = Cookies.get("user");
-  const userCreds = JSON.parse(cookieUser || "{}") as User;
-  const router = useRouter();
-  const pathName = usePathname();
+type Props = {
+  user: User | null;
+};
+
+export default function SellNavbar({ user }: Props) {
   const [pageTitle, setPageTitle] = useState("");
   const [open, setOpen] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
+
+  const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     if (pathName == "/admin") {
@@ -47,34 +50,26 @@ export default function SellNavbar() {
     }
   }, [pathName]);
 
-  const user =
-    userCreds?.providerData?.length > 0
-      ? userCreds?.providerData[0]
-      : userCreds;
 
   return (
     <>
-      <div className="max-w-screen-md mx-auto py-2 backdrop-blur-lg bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4 md:px-0">
+      <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4">
         {pageTitle === "" ? (
           <Link
             href={"/"}
             className="flex align-middle place-items-center gap-2"
           >
             <Image
-              width={36}
-              height={36}
+              width={30}
+              height={30}
               src={"/greatexc.svg"}
               alt="Great Exchange"
               className="sticky top-0"
             />
-            <h4 className="text-lg font-bold">Greatex</h4>
+            <h4 className="text-lg font-bold text-primary">Greatex</h4>
           </Link>
         ) : (
-          <Button
-            onClick={() => router.back()}
-            variant={"ghost"}
-            className="hover:bg-white border p-3 py-4 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white"
-          >
+          <Button size={"icon"} onClick={() => router.back()} variant={"ghost"}>
             <ArrowLeftIcon width={24} />
           </Button>
         )}
@@ -82,23 +77,28 @@ export default function SellNavbar() {
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
             {user?.uid && user?.displayName?.charAt(0) ? (
-              <div className="bg-neutral-200 dark:bg-neutral-600 w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
-                {user.photoURL ? (
+              <div className="bg-neutral-200 dark:bg-neutral-600 aspect-square w-11 h-11 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
+                {user.imageUrl || user.photoURL ? (
                   <Image
-                    src={user.photoURL || "/greatexc.svg"}
+                    src={user.imageUrl || user.photoURL || "/greatexc.svg"}
                     width={50}
                     height={50}
                     alt={user.displayName}
                     priority
-                    className="w-full rounded-full"
+                    className="w-full rounded-full aspect-square object-cover text-[10px]"
                   />
                 ) : (
                   user?.uid && user?.displayName?.charAt(0)
                 )}
               </div>
             ) : (
-              <Button variant={"ghost"} className="rounded-full" size={"icon"}>
-                <EllipsisVerticalIcon width={24} />
+              <Button
+                asChild
+                variant={"ghost"}
+                className="rounded-full"
+                size={"icon"}
+              >
+                <EllipsisVerticalIcon width={18} />
               </Button>
             )}
           </DropdownMenuTrigger>
@@ -130,14 +130,14 @@ export default function SellNavbar() {
             {user?.uid ? (
               <DropdownMenuItem
                 onClick={() => setOpenLogout(true)}
-                className="w-full px-3 py-2 rounded-lg flex align-middle place-items-center justify-between text-rose-600 border border-rose-300 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 hover:dark:bg-red-200 dark:bg-opacity-10 duration-150"
+                className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150"
               >
                 Logout
                 <ArrowLeftOnRectangleIcon width={20} className="-scale-x-100" />
               </DropdownMenuItem>
             ) : (
               <Link href={"/login"}>
-                <DropdownMenuItem className="py-3 flex align-middle place-items-center justify-between bg-primary text-white font-semibold">
+                <DropdownMenuItem className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150">
                   Login
                   <ArrowRightOnRectangleIcon width={20} />
                 </DropdownMenuItem>

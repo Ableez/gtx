@@ -65,7 +65,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
   });
 
   return (
-    <div className="sticky top-0 z-[50] bg-white dark:bg-neutral-800 py-4 shadow-sm">
+    <div className="sticky px-4 top-0 z-[50] bg-white dark:bg-neutral-800 py-4 shadow-sm dark:rounded-2xl">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -82,7 +82,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
           <span className="text-xs">CTRL⌘</span>K
         </kbd>
       </Button>
-      <div className="mt-2 gap-2 flex">
+      <div className="mt-3 gap-2 flex">
         {TABS.map((tab, idx) => {
           return (
             <Button

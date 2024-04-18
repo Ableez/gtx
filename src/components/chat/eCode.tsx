@@ -11,9 +11,15 @@ import { Button } from "../ui/button";
 import { sendEcodeToAdmin } from "@/lib/utils/actions/userChat";
 import { SunIcon } from "@heroicons/react/24/outline";
 import { Conversation } from "../../../chat";
+import { v4 } from "uuid";
+import { Timestamp } from "firebase/firestore";
+import Cookies from "js-cookie";
+import { postToast } from "../postToast";
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
+import useScrollRef from "@/lib/hooks/useScrollRef";
 
 type Props = {
-  id: string;
+  chatId: string;
   openEcode: boolean;
   setOpenEcode: React.Dispatch<React.SetStateAction<boolean>>;
   scrollToBottom: React.RefObject<HTMLDivElement>;
@@ -22,22 +28,89 @@ type Props = {
   idx?: number;
 };
 
-const ECodeComp = ({ data, openEcode, setOpenEcode, id, edit, idx }: Props) => {
+const ECodeComp = ({
+  data,
+  openEcode,
+  setOpenEcode,
+  chatId,
+  edit,
+  idx,
+  scrollToBottom,
+}: Props) => {
   const [eCode, setEcode] = useState("");
   const [resp, setResp] = useState("");
   const [loading, setLoading] = useState(false);
+  const updateConversation = useMessagesStore(
+    (state) => state.updateConversation
+  );
 
   const sendEcode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const uc = Cookies.get("user");
+
+    if (!uc) {
+      postToast("User does not exists");
+      return;
+    }
+
+    const user = JSON.parse(uc);
+
     try {
       setLoading(true);
 
       const res = await sendEcodeToAdmin(
-        id,
+        chatId,
         new FormData(e.target as HTMLFormElement),
         edit,
         idx
       );
+
+      const msg = {
+        id: v4(),
+        timeStamp: Timestamp.fromDate(new Date()),
+      };
+      const newMessage = {
+        id: msg.id,
+        type: "card",
+        deleted: false,
+        sender: {
+          username: user.displayName,
+          uid: user.uid,
+        },
+        recipient: "admin",
+        card: {
+          title: "e-Code",
+          data: {
+            value: eCode,
+          },
+        },
+        timeStamp: msg.timeStamp,
+        edited: false,
+        read_receipt: {
+          delivery_status: "not_sent",
+          status: false,
+          time: msg.timeStamp,
+        },
+      };
+
+      if (!edit) {
+        updateConversation(
+          {
+            ...data,
+            id: data?.id || "",
+            messages: [...(data?.messages || []), newMessage],
+          } as Conversation,
+          scrollToBottom
+        );
+      }
+
+      if (scrollToBottom.current?.lastElementChild) {
+        scrollToBottom.current.lastElementChild.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
 
       if (res.success) {
         setOpenEcode(false);
@@ -68,12 +141,14 @@ const ECodeComp = ({ data, openEcode, setOpenEcode, id, edit, idx }: Props) => {
           <form className="grid gap-4" onSubmit={sendEcode}>
             <Input
               id="ecode"
+              value={eCode}
               disabled={loading}
               type="text"
               minLength={16}
               maxLength={19}
               required
               name="ecode"
+              aria-label="E-Code"
               onChange={(e) => setEcode(e.target.value)}
               placeholder="●●●● ●●●● ●●●● ●●●●"
               autoComplete="off"

@@ -1,8 +1,6 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-
 import { NavigationMenu } from "@/components/ui/navigation-menu";
 import {
   DropdownMenu,
@@ -24,19 +22,17 @@ import {
   SunIcon,
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { useAdminUser } from "@/lib/utils/adminActions/useAdminUser";
-import admin from "@/lib/utils/firebase-admin";
 
 type Props = {
-  setConfirmClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmClose: React.Dispatch<SetStateAction<boolean>>;
 };
 
 export default function AdminNavbar({ setConfirmClose }: Props) {
@@ -71,28 +67,29 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
             />
           </Link>
         ) : (
-          <Button
-            onClick={() => router.back()}
-            variant={"ghost"}
-            className="hover:bg-white border p-3 py-4 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white"
-          >
-            <ArrowLeftIcon width={24} />
+          <Button onClick={() => router.back()} variant={"ghost"} size={"icon"}>
+            <ArrowLeftIcon width={22} />
           </Button>
         )}
 
         <h4 className="text-lg font-bold">{pageTitle}</h4>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant={"ghost"}
-              className="hover:bg-white border p-3 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white"
-            >
+            <Button variant={"ghost"} size={"icon"}>
               <EllipsisVerticalIcon width={22} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
-            <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-              {user?.email || "Admin"}
+            <DropdownMenuLabel>
+              <h4 className="text-sm">
+                Howdy,{" "}
+                <span className="capitalize">
+                  {user?.displayName || "Admin"}
+                </span>
+              </h4>
+              <h6 className="text-neutral-500 text-[0.7em]">
+                You are an admin
+              </h6>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {/\/admin\/chat\/(.*)$/.test(pathName) ? (
@@ -102,9 +99,11 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
                     onClick={() => {
                       setConfirmClose(true);
                     }}
-                    className="py-3 border border-red-600 bg-rose-100"
+                    asChild
                   >
-                    Close chat
+                    <Button variant={"ghost"} className="w-full py-3 text-left">
+                      Close chat
+                    </Button>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </DropdownMenuGroup>

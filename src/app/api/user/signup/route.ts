@@ -32,13 +32,14 @@ export async function POST(req: Request) {
 
     // userData to be saved to db
     const userData = {
+      displayName: user.displayName,
       email: user.email,
-      username: user.displayName, // The display name should now be available
-      imageUrl: user.photoURL || "",
-      role: "user",
-      id: user.uid,
       emailVerified: user.emailVerified,
-      disabled: false,
+      phoneNumber: user.phoneNumber,
+      photoURL: user.photoURL,
+      uid: user.uid,
+      metadata: { ...user.metadata },
+      role: "user",
       conversations: [],
       cardChoices: [],
       transactions: [],
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
     return Response.json({
       message: "Signin successfull",
       login: true,
-      user: user.toJSON(),
+      user: userData,
     });
   } catch (error) {
     const err = error as FirebaseError;

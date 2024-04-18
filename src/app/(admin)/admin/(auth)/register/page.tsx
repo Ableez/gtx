@@ -12,6 +12,8 @@ import { SubmitButton } from "@/components/loginForm";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Loading from "@/app/loading";
 import { Label } from "@/components/ui/label";
+import { signInWithGoogle } from "@/lib/utils/actions/signinwithgoogle";
+import GoogleIcon from "@/components/icons/google";
 
 type Props = {};
 
@@ -27,40 +29,46 @@ const LoginPage = (props: Props) => {
     }
   }, [error]);
 
-  const signup = async (e: FormData) => {
+  const signup = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
     setError("");
-    try {
-      const password = e.get("password");
-      const email = e.get("email");
-      const username = e.get("username");
 
-      const data = await fetch("/api/admin/register", {
-        method: "post",
+    const formData = new FormData(event.currentTarget);
+    const password = formData.get("password");
+    const email = formData.get("email");
+    const username = formData.get("username");
+
+    try {
+      const response = await fetch("/api/admin/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          email: email,
-          password: password,
-          username: username,
+          email,
+          password,
+          username,
         }),
       });
-      const res = await data.json();
 
-      console.log("REGISTER ROUTE RES: ", res);
+      if (!response.ok) {
+        throw new Error("Response was not ok");
+      }
 
-      if (res.login) {
-        Cookies.set("user", JSON.stringify(res.user));
+      const data = await response.json();
+
+      if (data.login) {
+        Cookies.set("user", JSON.stringify(data.user));
         Cookies.set("state", "true");
         postToast("Success", { description: "Account created successfully" });
         router.push("/admin");
-      }
-
-      if (!res.login) {
-        postToast("Error", { description: res.message });
+      } else {
+        postToast("Error", { description: data.message });
       }
     } catch (error) {
-      console.log(error);
-
-      postToast("Error", { description: "An internal error occured" });
+      console.error(error);
+      postToast("Error", { description: "An internal error occurred" });
     } finally {
       setLoading(false);
     }
@@ -69,22 +77,40 @@ const LoginPage = (props: Props) => {
   return (
     <>
       {loading && <Loading />}
-      <div className="flex min-h-[100dvh] flex-1 flex-col justify-center p-4 pt-6 lg:px-8">
-        <Link href={"/"} className="sm:mx-auto sm:w-full sm:max-w-sm py-4">
-          <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
-            <Image
-              width={38}
-              height={38}
-              src={"/greatexc.svg"}
-              alt="Great Exchange"
-            />
-            <h4 className="text-xl font-bold">Admin Sign up</h4>
-          </div>
-        </Link>
+      <div className="grid grid-flow-row gap-6 py-6 px-2 max-w-sm mx-auto">
+        <div className="flex align-middle place-items-center justify-between px-4">
+          <Link href={"/"} className="py-2">
+            <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
+              <Image
+                width={32}
+                height={32}
+                src={"/greatexc.svg"}
+                alt="Great Exchange"
+              />
+              <h4 className="text-xl font-semibold text-primary">Greatex</h4>
+            </div>
+          </Link>
+          <h4 className="text-xl font-bold text-center">Sign Up</h4>
+        </div>
+        {/* enable admin register with google in #NEXT_UPDATE */}
+        {/*<div className="gap-4 px-4 mx-auto max-w-sm w-full">
+          <Button
+            onClick={() => {
+              signInWithGoogle();
+            }}
+            className="p-6 flex align-middle justify-center gap-3 place-items-center w-full"
+            variant={"outline"}
+          >
+            <GoogleIcon />
+            Continue with Google
+          </Button>
+        </div> */}
+
+        <h4 className="w-fit mx-auto">Or</h4>
 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-800 p-4 rounded-2xl">
           <div>
-            <form action={signup} className="space-y-4">
+            <form onSubmit={signup} className="space-y-4">
               <div>
                 <label
                   htmlFor="username"
@@ -101,7 +127,7 @@ const LoginPage = (props: Props) => {
                     type="username"
                     autoComplete="username"
                     required
-                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm  ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -122,30 +148,20 @@ const LoginPage = (props: Props) => {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="password"
-                    className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
-                  >
-                    Password
-                  </Label>
-                  <div className="text-sm">
-                    <Link
-                      href="/iforgot"
-                      className="font-semibold text-primary hover:text-primary"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                </div>
+                <Label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
+                >
+                  Password
+                </Label>
                 <div className="mt-2">
-                  <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pr-2  ring-1 ring-inset ring-neutral-300 dark:ring-neutral-500">
+                  <div className="flex align-middle place-items-center justify-between gap-0.5">
                     <Input
                       disabled={loading}
                       aria-disabled={loading}
@@ -153,7 +169,7 @@ const LoginPage = (props: Props) => {
                       name="password"
                       type={view ? "text" : "password"}
                       autoComplete="current-password"
-                      className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white ring-0 placeholder:text-neutral-400 focus:ring-0 focus-visible:ring-0 sm:text-sm sm:leading-6"
+                      className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
                       required
                     />
                     <Button
@@ -177,10 +193,10 @@ const LoginPage = (props: Props) => {
           </div>
 
           <p className="mt-10 text-center text-sm text-neutral-500 dark:text-white">
-            Already a member?{" "}
+            Have an account?{" "}
             <Link
-              href="/admin/login"
-              className="font-semibold leading-6 text-primary hover:text-primary"
+              href="/login"
+              className="font-medium leading-6 text-primary hover:text-primary"
             >
               Login
             </Link>

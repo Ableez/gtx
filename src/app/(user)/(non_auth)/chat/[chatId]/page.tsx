@@ -5,57 +5,73 @@ import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { sendUserMessage } from "@/lib/utils/actions/userChat";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-
-import { Conversation, Message } from "../../../../../../chat";
+import { Conversation } from "../../../../../../chat";
 import { postToast } from "@/components/postToast";
-const UserChatWrapper = dynamic(() => import("@/components/chat/ChatWrapper"), {
-  ssr: false,
-});
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
+import PageDataFetchError from "@/components/PageDataFetchError";
+import { Button } from "@/components/ui/button";
+import { ArrowDownIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: {
     chatId: string;
   };
 };
-const cachedUser = Cookies.get("user");
 
-const UserChatScreen = ({ params }: Props) => {
-  const [messages, setMessages] = useState<Conversation>();
-  const user = cachedUser ? JSON.parse(cachedUser) : null;
+const UserChatWrapper = dynamic(() => import("@/components/chat/ChatWrapper"), {
+  ssr: false,
+});
+
+/**
+ * UserChatScreen component displays the chat screen for a specific user.
+ * Props} params - The component props containing the chatId.
+ * JSX.Element} The rendered UserChatScreen component.
+ */
+
+const cachedUser = Cookies.get("user");
+const user = cachedUser ? JSON.parse(cachedUser) : null;
+
+const UserChatScreen = ({ params }: Props): JSX.Element => {
   const router = useRouter();
   const [error, setError] = useState("");
   const scrollToBottom = useRef<HTMLDivElement>(null);
-  const [newMessage, setNewMessage] = useState<Message>();
 
-  if (!user) {
-    postToast("Unauthorized", {
-      description: "You are not logged in",
-      action: {
-        label: "Login",
-        onClick: () => router.push("/login"),
-      },
-    });
-  }
+  const messages = useMessagesStore((state) => state.conversation);
+
+  const updateConversation = useMessagesStore(
+    (state) => state.updateConversation
+  );
+
+  // Check if user is logged in, if not show unauthorized toast and redirect to login page
+  useEffect(() => {
+    if (!user) {
+      postToast("Unauthorized", {
+        description: "You are not logged in",
+        action: {
+          label: "Login",
+          onClick: () => router.push("/login"),
+        },
+      });
+
+      window.location.href = "/login";
+    }
+  }, [router]);
 
   useEffect(() => {
+    // Fetch chat data from Firestore and update state
     const unsubscribe = onSnapshot(
       doc(db, "Messages", params.chatId),
       (doc) => {
         if (!doc.exists()) {
-          setError("chat not found!");
-          postToast("No data!", {
-            description: "Could not fetch chat data.",
-            action: {
-              label: "Retry",
-              onClick: () => router.refresh(),
-            },
-          });
+          postToast("Poor internet connection");
+          setError(
+            "Could not fetch chat data, This is usually due to a poor internet connection."
+          );
+          return;
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 
+          // Sort messages by timestamp
           const sortedArray = fetchedMessages.messages.sort((a, b) => {
             const timeStampA = new Date(
               a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
@@ -73,52 +89,25 @@ const UserChatScreen = ({ params }: Props) => {
             messages: sortedArray,
           };
 
-          setMessages(newChat as Conversation);
-
-          if (scrollToBottom.current) {
-            scrollToBottom.current.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
+          // zustand
+          updateConversation(newChat as Conversation, scrollToBottom);
         }
+
+        // Scroll to the bottom of the chat
       }
     );
 
     return () => unsubscribe();
-  }, [params.chatId, router, newMessage]);
+  }, [params.chatId, updateConversation]);
 
-  const sendMessageAction = sendUserMessage.bind(
-    null,
-    { timeStamp: new Date() },
-    params.chatId
-  );
-
-  if (!messages) {
-    return (
-      <div className="text-center p-8">
-        Please wait...{" "}
-        <div>
-          <p>{error}</p>
-          <div>
-            <Button onClick={() => router.refresh()}>Reload page</Button>
-            <Link href={"/sell"}>Start over</Link>
-          </div>
-        </div>
-      </div>
-    );
+  // If messages are not loaded yet, show loading message and options to reload or start over
+  if (!messages && error) {
+    return <PageDataFetchError error={error} />;
   }
 
+  // Render the UserChatWrapper component with necessary props
   return (
-    <UserChatWrapper
-      user={user}
-      id={params.chatId}
-      allMessages={messages}
-      sendMessageAction={sendMessageAction}
-      updateMessages={setMessages}
-      scrollToBottom={scrollToBottom}
-      setNewMessage={setNewMessage}
-    />
+    <UserChatWrapper scrollToBottom={scrollToBottom} chatId={params.chatId} />
   );
 };
 

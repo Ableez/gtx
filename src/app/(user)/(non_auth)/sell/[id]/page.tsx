@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { decodeUrlString } from "@/lib/utils";
 import Cookies from "js-cookie";
+import Loading from "@/app/loading";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   params: {
@@ -17,6 +19,7 @@ type Props = {
 
 const GiftCardPage = ({ params }: Props) => {
   const [mount, setMount] = useState(false);
+
   const router = useRouter();
   const card_id = decodeUrlString(params.id);
 
@@ -44,12 +47,17 @@ const GiftCardPage = ({ params }: Props) => {
   return (
     <>
       <div className="container font-bold text-lg relative max-w-screen-sm pb-6">
-        <Link
-          href={"/sell"}
-          className="border-2 absolute -top-2 rounded-xl bg-neutral-100 dark:bg-neutral-700 p-3"
+        {/* {loading && <Loading />} */}
+
+        <Button
+          variant={"outline"}
+          size={"icon"}
+          className="hover:ring-4 absolute -top-2"
         >
-          <ArrowLeftIcon width={20} />
-        </Link>
+          <Link href={"/sell"}>
+            <ArrowLeftIcon width={20} />
+          </Link>
+        </Button>
 
         <CardSelector id={card_id} />
 

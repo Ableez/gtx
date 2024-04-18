@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { reviewAction } from "@/lib/utils/reviewAction";
 import { useFormStatus } from "react-dom";
+import Cookies from "js-cookie";
 
 type Props = {};
 
@@ -31,6 +32,8 @@ const reviewsTemp = [
   "This na one correct!",
   "Love this! E choke die!",
 ];
+
+const review_in = localStorage.getItem("review_in");
 
 const ReviewDrawer = (props: Props) => {
   const { pending } = useFormStatus();
@@ -58,6 +61,9 @@ const ReviewDrawer = (props: Props) => {
     try {
       const res = await sendReview(e);
       setSent(res.sent);
+      let reviewNumber = Number(review_in) || 0;
+      reviewNumber++;
+      localStorage.setItem("review_in", JSON.stringify(reviewNumber));
       router.back();
       setError(res.error as string);
     } catch (error) {
@@ -69,9 +75,27 @@ const ReviewDrawer = (props: Props) => {
 
   return (
     <Drawer>
-      <DrawerTrigger className="hover:bg-white border p-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:text-white">
-        <ArrowLeftIcon width={24} />
-      </DrawerTrigger>
+      {review_in && Number(review_in) % 2 !== 0 ? (
+        <Button
+          size={"icon"}
+          onClick={() => {
+            const review_in = localStorage.getItem("review_in");
+            if (review_in && Number(review_in) % 2 !== 0) {
+              router.replace("/sell");
+            }
+          }}
+          variant={"ghost"}
+        >
+          <ArrowLeftIcon width={18} />
+        </Button>
+      ) : (
+        <DrawerTrigger asChild>
+          <Button variant={"ghost"}>
+            <ArrowLeftIcon width={18} />
+          </Button>
+        </DrawerTrigger>
+      )}
+
       <DrawerContent className="z-[9999] px-4 pb-4 max-w-md mx-auto">
         {sent ? (
           <>
@@ -84,7 +108,7 @@ const ReviewDrawer = (props: Props) => {
               onClick={() => {
                 setStars(0);
                 setSent(false);
-                router.replace("/sell")
+                router.replace("/sell");
               }}
             >
               Okay Close
@@ -156,6 +180,12 @@ const ReviewDrawer = (props: Props) => {
                 disabled={pending}
                 aria-disabled={pending}
                 onClick={() => {
+                  let reviewNumber = Number(review_in) || 0;
+                  reviewNumber++;
+                  localStorage.setItem(
+                    "review_in",
+                    JSON.stringify(reviewNumber)
+                  );
                   router.replace("/sell");
                 }}
                 variant={"ghost"}

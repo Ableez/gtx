@@ -12,6 +12,8 @@ import { CardDetails, Conversation, Message } from "../../../../../../../chat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import AdminChatWrapper from "@/components/admin/chat/AdminChatWrapper";
 import { postToast } from "@/components/postToast";
+import PageDataFetchError from "@/components/PageDataFetchError";
+import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 
 type Props = {
   params: {
@@ -19,36 +21,47 @@ type Props = {
   };
 };
 
+const cachedUser = Cookies.get("user");
+
 const AdminChatScreen = ({ params }: Props) => {
-  const [messages, setMessages] = useState<Conversation>();
-  const cachedUser = Cookies.get("user");
+  // const [messages, setMessages] = useState<Conversation>();
   const user = cachedUser ? JSON.parse(cachedUser) : null;
   const router = useRouter();
   const [error, setError] = useState("");
-  const scrollToBottom = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState<Message>();
+  const scrollToBottom = useRef<HTMLDivElement>(null);
+
+  // const { scrollToBottom } = useScrollRef();
+
+  const messages = adminCurrConversationStore((state) => state.conversation);
+
+  const updateConversation = adminCurrConversationStore(
+    (state) => state.updateConversation
+  );
+
+  // Check if user is logged in, if not show unauthorized toast and redirect to login page
+  if (!user) {
+    postToast("Unauthorized", {
+      description: "You are not logged in",
+      action: {
+        label: "Login",
+        onClick: () => router.push("/login"),
+      },
+    });
+  }
 
   useEffect(() => {
-    if (!user) {
-      postToast("Unauthorized", { description: "No user data not found!" });
-      router.replace("/admin");
-    }
-  });
-
-  useEffect(() => {
+    // Fetch chat data from Firestore and update state
     const unsubscribe = onSnapshot(
       doc(db, "Messages", params.chatId),
       (doc) => {
         if (!doc.exists()) {
-          setError("chat not found!");
-          postToast("Error!", {
-            description:
-              "Could fetch chat data. Confirm that the chat has not been deleted already.",
-          });
-          router.back();
+          postToast("Poor internet connection");
+          return;
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 
+          // Sort messages by timestamp
           const sortedArray = fetchedMessages.messages.sort((a, b) => {
             const timeStampA = new Date(
               a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
@@ -66,63 +79,30 @@ const AdminChatScreen = ({ params }: Props) => {
             messages: sortedArray,
           };
 
-          setMessages(newChat as Conversation);
-          if (scrollToBottom.current) {
-            scrollToBottom.current.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
+          // zustand
+          updateConversation(newChat as Conversation);
+
+          // Scroll to the bottom of the chat
         }
       }
     );
 
+    if (scrollToBottom.current) {
+      scrollToBottom.current.lastElementChild?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+
     return () => unsubscribe();
-  }, [params.chatId, router, newMessage]);
+  }, [params.chatId, router, newMessage, updateConversation, scrollToBottom]);
 
-  const sendMessageAction = sendAdminMessage.bind(
-    null,
-    { timeStamp: new Date() },
-    params.chatId,
-    messages?.user as {
-      username: string;
-      uid: string;
-      email: string;
-      photoUrl: string;
-    }
-  );
-
-  useEffect(() => {
-    if (error === "chat not found!") {
-      router.push("/admin/chat");
-    }
-  }, [error, router]);
-
-  if (!messages)
-    <div className="text-center p-8">
-      Please wait...{" "}
-      <div>
-        <p>{error}</p>
-        <div>
-          <Link href={"/sell"}>Start over</Link>
-          <Button onClick={() => router.refresh()}>Reload page</Button>
-        </div>
-      </div>
-    </div>;
+  // If messages are not loaded yet, show loading message and options to reload or start over
+  if (!messages && error) {
+    return <PageDataFetchError error={error} />;
+  }
 
   return (
-    <>
-      <AdminChatWrapper
-        card={messages?.transaction.cardDetails as CardDetails}
-        user={user}
-        id={params.chatId}
-        allMessages={messages}
-        sendMessageAction={sendMessageAction}
-        updateMessages={setMessages}
-        scrollToBottom={scrollToBottom}
-        setNewMessage={setNewMessage}
-      />
-    </>
+    <AdminChatWrapper scrollToBottom={scrollToBottom} chatId={params.chatId} />
   );
 };
 

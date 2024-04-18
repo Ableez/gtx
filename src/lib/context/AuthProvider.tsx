@@ -1,5 +1,5 @@
 "use client";
-import { User, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
 import Cookies from "js-cookie";
@@ -11,17 +11,17 @@ type Props = {
 
 export const AuthContext = createContext({});
 
+const cachedUser = Cookies.get("user") as string;
+
 const AuthProvider = (props: Props) => {
   const [user, setUser] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      const user = Cookies.get("user") as string;
-
-      if (authUser || user) {
-        setUser(authUser || JSON.parse(user));
-        Cookies.set("user", JSON.stringify(authUser));
+      if (authUser || cachedUser) {
+        setUser(authUser || JSON.parse(cachedUser));
+        Cookies.set("user", JSON.stringify(user));
       } else {
         setUser({});
         Cookies.remove("user");
@@ -30,7 +30,7 @@ const AuthProvider = (props: Props) => {
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, [router, user]);
 
   return (
     <AuthContext.Provider value={user}>{props.children}</AuthContext.Provider>

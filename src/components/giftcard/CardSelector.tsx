@@ -17,9 +17,10 @@ import { startChat } from "@/lib/utils/actions";
 import { giftcards } from "@/lib/data/giftcards";
 import { useFormStatus } from "react-dom";
 import Cookies from "js-cookie";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/app/loading";
+import { SunIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   id: string;
@@ -32,8 +33,8 @@ const CardSelector = ({ id }: Props) => {
   const [error, setError] = useState<string>("");
   const { pending } = useFormStatus();
   const [isLogged, setLogged] = useState<boolean>(false);
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const data = giftcards.find((card) => {
     return card.id === id;
@@ -58,7 +59,7 @@ const CardSelector = ({ id }: Props) => {
     if (error) {
       setLoading(false);
     }
-  }, [error]);
+  }, [error, setLoading]);
 
   if (!data) {
     return <div className="p-16 text-center text-neutral-400">No data</div>;
@@ -123,10 +124,8 @@ const CardSelector = ({ id }: Props) => {
 
   return (
     <div className="duration-300">
-      {loading && <Loading />}
-
       <div className="grid place-items-center justify-center gap-6">
-        <h5 className="text-center text-base">{data.name} Giftcard</h5>
+        <h5 className="text-center text-base w-[60vw]">{data.name} Giftcard</h5>
         <Image
           src={data.image}
           width={65}
@@ -199,6 +198,7 @@ const CardSelector = ({ id }: Props) => {
               disabled={pending || loading}
               aria-disabled={pending || loading}
               id="price"
+              autoComplete="off"
               minLength={3}
               onChange={(e) => setPrice(parseInt(e.target.value))}
               className="block w-full rounded-md border-0 pl-8 text-neutral-900 ring-1 ring-inset ring-neutral-200 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 sm:text-sm sm:leading-6 py-7 font-medium text-lg dark:text-white dark:ring-neutral-700"
@@ -237,7 +237,14 @@ const CardSelector = ({ id }: Props) => {
               pending && "bg-neutral-200 text-neutral-400"
             } md:w-[70%] w-full py-6 shadow-lg `}
           >
-            {loading ? "Please wait..." : "Live chat"}
+            {loading ? (
+              <>
+                <SunIcon width={18} className="animate-spin mr-1" /> Please
+                wait...
+              </>
+            ) : (
+              "Live chat"
+            )}
           </Button>
         </div>
       </form>

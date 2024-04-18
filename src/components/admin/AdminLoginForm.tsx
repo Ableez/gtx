@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { auth, db } from "@/lib/utils/firebase";
@@ -23,6 +22,7 @@ import { postToast } from "../postToast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { doc, getDoc } from "firebase/firestore";
 import { User } from "../../../types";
+import admin from "@/lib/utils/firebase-admin";
 
 const SubmitButton = ({ setLoading }: { setLoading: Function }) => {
   const { pending, data } = useFormStatus();
@@ -111,93 +111,85 @@ const AdminLoginForm = (props: Props) => {
       setLoading(false);
     }
   };
+
   return (
-    <div>
-      {loading && <Loading />}
-      <form
-        action={async (e) => {
-          login(e).then((res) => {
-            if (res?.message) {
-              postToast("Error", {
-                description: res?.message,
-                duration: 10000,
-                important: true,
-                icon: <>❌</>,
-              });
-            }
-
-            if (res?.message === "Too many login attempts") {
-              alert("Too many login attempts. Try again after 60s.");
-            }
-          });
-        }}
-        className="space-y-6"
-      >
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
-          >
-            Email address
-          </label>
-          <div className="mt-2">
-            <Input
-              disabled={loading}
-              aria-disabled={loading}
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset dark:focus:ring-primary sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="password"
+    <>
+      <div>
+        {loading && <Loading />}
+        <form
+          action={async (e) => {
+            login(e).then((res) => {
+              postToast(res?.message as string);
+            });
+          }}
+          className="space-y-6"
+        >
+          <div>
+            <label
+              htmlFor="email"
               className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
             >
-              Password
-            </Label>
-            <div className="text-sm">
-              <Link
-                href="/iforgot"
-                className="font-semibold text-primary hover:text-primary"
-              >
-                Forgot password?
-              </Link>
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="flex align-middle place-items-center justify-between w-full rounded-md border border-input bg-transparent text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-within:ring-1 focus-within:ring-primary disabled:cursor-not-allowed disabled:opacity-50 pr-2">
+              Email address
+            </label>
+            <div className="mt-2">
               <Input
                 disabled={loading}
                 aria-disabled={loading}
-                id="password"
-                name="password"
-                type={view ? "text" : "password"}
-                autoComplete="current-password"
-                className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white ring-0 placeholder:text-neutral-400 focus:ring-0 focus-visible:ring-0 sm:text-sm sm:leading-6"
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
                 required
+                className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
               />
-              <Button
-                onClick={() => setView((prev) => !prev)}
-                type="button"
-                variant={"ghost"}
-                className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300"
-                size={"icon"}
-              >
-                {view ? <EyeIcon width={16} /> : <EyeSlashIcon width={16} />}
-              </Button>
             </div>
           </div>
-        </div>
-        <SubmitButton setLoading={setLoading} />
-      </form>
-    </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <Label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-neutral-900 dark:text-neutral-400"
+              >
+                Password
+              </Label>
+              <div className="text-sm">
+                <Link
+                  href="/iforgot"
+                  className="font-medium text-primary hover:text-primary"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="flex align-middle place-items-center justify-between gap-0.5">
+                <Input
+                  disabled={loading}
+                  aria-disabled={loading}
+                  id="password"
+                  name="password"
+                  type={view ? "text" : "password"}
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-6 text-[15px] text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:focus:ring-primary sm:text-sm sm:leading-6"
+                  required
+                />
+                <Button
+                  onClick={() => setView((prev) => !prev)}
+                  type="button"
+                  variant={"ghost"}
+                  className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300"
+                  size={"icon"}
+                >
+                  {view ? <EyeIcon width={16} /> : <EyeSlashIcon width={16} />}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <SubmitButton setLoading={setLoading} />
+        </form>
+      </div>
+    </>
   );
 };
 

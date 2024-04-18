@@ -19,6 +19,8 @@ export const setCardRate = async (
 
     const user = await checkIsAdmin();
 
+    console.log("USER", user);
+
     if (!user?.isAdmin)
       return {
         message: "Not Allowed. User is not an admin",

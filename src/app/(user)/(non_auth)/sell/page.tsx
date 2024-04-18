@@ -32,7 +32,7 @@ const SellPage = () => {
       localStorage.setItem("card_page", currPage.toString());
       Cookies.set("card_page", currPage.toString());
     }
-    container.current?.scrollIntoView({ behavior: "smooth" });
+    container.current?.scrollIntoView({ behavior: "smooth", block:"start" });
   }, [currCards, tabTitle, currPage]);
 
   return (
@@ -88,23 +88,27 @@ const SellPage = () => {
         </>
       )}
 
-      <div className="bg-neutral-100 dark:bg-neutral-800 w-full px-8 py-10 place-items-center grid text-sm text-left border-t">
+      <div className="bg-neutral-100 dark:bg-neutral-800 w-full p-8 place-items-center grid text-sm text-left border-t dark:rounded-2xl">
         <div className="max-w-screen-lg mx-auto">
           <h4 className="font-bold text-neutral-500 w-full">
             Beware of gift card scams. Do not share your code.
           </h4>
-          <p className="my-4 text-neutral-400 text-[12px] leading-4">
+          <p className="my-4 text-neutral-400 text-[10px] leading-5">
             Protecting Your Gift Card: To safeguard your gift card from fraud,
             we recommend treating it like cash. Keep the card&apos;s details
             confidential and never share them online or over the phone. Only
             purchase cards from authorized retailers and verify the card&apos;s
             value upon purchase. Our Commitment to Privacy: As a company, we
-            prioritize your card&apos;s privacy. We do not request sensitive
-            information over the phone or via email. We will only ask for your
-            card&apos;s PIN when we are ready to process your transaction. Be
-            cautious of anyone claiming to represent our company who asks for
-            this information. Remember, your gift card&apos;s security is in
-            your hands. Stay vigilant to enjoy a worry-free gifting experience.
+            prioritize your card&apos;s privacy.{" "}
+            <b>
+              We do not request sensitive information over the phone or via
+              email.
+            </b>{" "}
+            We will only ask for your card&apos;s PIN when we are ready to
+            process your transaction. Be cautious of anyone claiming to
+            represent our company who asks for this information. Remember, your
+            gift card&apos;s security is in your hands. Stay vigilant to enjoy a
+            worry-free exchange experience.
           </p>
         </div>
       </div>

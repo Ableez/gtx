@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "./firebase";
 import { Conversation } from "../../../chat";
 import { getUserCookie } from "./getUserCookie";
@@ -15,7 +15,10 @@ export const getAdminChats = async () => {
       };
     }
 
-    const chatsRef = query(collection(db, "Messages"));
+    const chatsRef = query(
+      collection(db, "Messages"),
+      orderBy("updated_at", "desc")
+    );
     const chats = await getDocs(chatsRef);
 
     const userChats = chats.docs.map((doc) => {

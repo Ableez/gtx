@@ -1,4 +1,8 @@
+"use client";
 import AdminLoginForm from "@/components/admin/AdminLoginForm";
+import GoogleIcon from "@/components/icons/google";
+import { Button } from "@/components/ui/button";
+import { signInWithGoogle } from "@/lib/utils/actions/signinwithgoogle";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,31 +11,51 @@ type Props = {};
 const AdminLogin = (props: Props) => {
   return (
     <>
-      <div className="flex h-screen flex-1 flex-col justify-start p-4 py-12 lg:px-8">
-        <Link href={"/"} className="sm:mx-auto sm:w-full sm:max-w-sm py-4">
-          <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
-            <Image
-              width={38}
-              height={38}
-              src={"/greatexc.svg"}
-              alt="Great Exchange"
-            />
-            <h4 className="text-xl font-bold">Admin Sign in</h4>
-          </div>
-        </Link>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm dark:bg-neutral-700 dark:bg-opacity-70 bg-white p-4 rounded-2xl">
-          <AdminLoginForm />
-        </div>
-        <p className="mt-10 text-center text-sm text-neutral-500 dark:text-white">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/admin/register"
-            className="font-semibold leading-6 text-primary hover:text-primary"
-          >
-            Register
+      <div className="grid grid-flow-row gap-6 py-6 px-2 max-w-sm mx-auto">
+        <div className="flex align-middle place-items-center justify-between px-4">
+          <Link href={"/"} className="py-2">
+            <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
+              <Image
+                width={32}
+                height={32}
+                src={"/greatexc.svg"}
+                alt="Great Exchange"
+              />
+              <h4 className="text-xl font-semibold text-primary">Greatex</h4>
+            </div>
           </Link>
-        </p>
+          <h4 className="text-xl font-bold text-center">Sign In</h4>
+        </div>
+
+        {/* enable admin sign in with google in #NEXT_UPDATE */}
+        {/* <div className="gap-4 px-4 mx-auto w-full">
+          <Button
+            onClick={() => {
+              signInWithGoogle();
+            }}
+            className="p-6 flex align-middle justify-center gap-3 place-items-center w-full"
+            variant={"outline"}
+          >
+            <GoogleIcon />
+            Continue with Google
+          </Button>
+        </div> */}
+
+        <h4 className="w-fit mx-auto">Or</h4>
+
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-800 p-4 rounded-2xl">
+          <AdminLoginForm />
+
+          <p className="mt-10 text-center text-sm text-neutral-500">
+            New here?{" "}
+            <Link
+              href="/admin/register"
+              className="font-semibold leading-6 text-primary hover:text-primary"
+            >
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </div>
     </>
   );

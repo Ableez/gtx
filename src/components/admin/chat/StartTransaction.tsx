@@ -21,11 +21,10 @@ import { formatCurrency } from "@/lib/utils/thousandSeperator";
 import Loading from "@/app/loading";
 
 type Props = {
-  id: string;
+  chatId: string;
   openStartTransaction: boolean;
   card: Conversation | undefined;
   setOpenStartTransaction: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToBottom: React.RefObject<HTMLDivElement>;
   update?: {
     status: string;
   };
@@ -36,8 +35,7 @@ const StartAdminTransaction = ({
   card,
   openStartTransaction,
   setOpenStartTransaction,
-  id,
-  scrollToBottom,
+  chatId,
   resend,
   update,
 }: Props) => {
@@ -51,7 +49,7 @@ const StartAdminTransaction = ({
     try {
       setLoading(true);
 
-      const res = await startTransaction(id, update, resend);
+      const res = await startTransaction(chatId, update, resend);
 
       if (res.success) {
         setOpenStartTransaction(false);
@@ -199,11 +197,9 @@ const StartAdminTransaction = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <SetRateComp
+        <SetRateComp
         edit={card?.transaction?.cardDetails.rate ? true : false}
-        scrollToBottom={scrollToBottom}
-        id={id}
+        chatId={chatId}
         openRate={openRate}
         setOpenRate={setOpenRate}
         card={card?.transaction?.cardDetails as CardDetails}

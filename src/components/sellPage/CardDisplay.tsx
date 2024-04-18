@@ -9,13 +9,13 @@ type Props = {
 
 const CardDisplay = ({ filteredCards }: Props) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-5 my-7 duration-200">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 my-7 duration-200 px-4">
       {filteredCards.map((giftCard, idx) => {
         return (
           <Link
             href={`/sell/${giftCard.id}`}
             key={idx}
-            className="p-3 bg-white dark:bg-[#2c2c2c] rounded-2xl shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] grid place-items-center gap-4 active:border-slate-300 dark:active:border-slate-600  active:bg-slate-50 border duration-100 border-neutral-200 hover:border-neutral-300 dark:border-neutral-700"
+            className="p-3 bg-white dark:bg-[#242424] rounded-2xl shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] grid place-items-center gap-4 border dark:border-neutral-700 hover:border-transparent dark:hover:border-transparent ring-4 ring-transparent hover:ring-pink-400/10"
           >
             <Image
               src={giftCard.image}

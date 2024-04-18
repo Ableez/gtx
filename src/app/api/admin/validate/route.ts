@@ -6,7 +6,7 @@ const getParams = async (request: NextRequest) => {
   return new Promise((resolve) =>
     setTimeout(() => {
       resolve(params);
-    }, 1000)
+    }, 12)
   );
 };
 

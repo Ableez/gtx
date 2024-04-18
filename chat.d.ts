@@ -20,6 +20,7 @@ export type MediaMeta = {
 };
 
 export type MediaContent = {
+  text: string;
   caption?: string;
   url: string;
   metadata: MediaMeta;
@@ -38,7 +39,7 @@ export type ReadReceipt = {
 export type Message = {
   id: string;
   type: string;
-  edited_at: null | any;
+  edited_at?: null | any;
   deleted: boolean;
   timeStamp: Timestamp;
   content: {
@@ -49,14 +50,14 @@ export type Message = {
     title: string;
     data: any;
   };
-  quoted_message: {
+  quoted_message?: {
     text: string;
     url: string;
     metadata: MediaMeta;
   } | null;
   recipient: string;
-  edited: boolean;
-  deleted_at: null | any;
+  edited?: boolean;
+  deleted_at?: null | any;
   sender: Sender;
   read_receipt: ReadReceipt;
 };

@@ -24,26 +24,19 @@ import StartAdminTransaction from "./StartTransaction";
 import { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import CropImage from "./CropImage";
+import useScrollRef from "@/lib/hooks/useScrollRef";
 
 type Props = {
   message?: Conversation;
-  formRef: React.RefObject<HTMLFormElement>;
-  id: string;
+  chatId: string;
   scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
-const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
-  const [error, setError] = useState("");
+const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
   const [openRate, setOpenRate] = useState(false);
   const [openStartTransaction, setOpenStartTransaction] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (error) setError("");
-    }, 5500);
-  }, [error]);
 
   return (
     <>
@@ -52,13 +45,13 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
           type="button"
           className={`focus:outline-none border-secondary rounded-xl duration-300 w-full h-full py-1 grid col-span-1 place-items-center align-middle relative`}
         >
-          <PaperClipIcon width={22} />
+          <PaperClipIcon width={18} />
         </DrawerTrigger>
         <DrawerContent className="z-[99999] max-w-xl mx-auto">
           <div className="max-w-md w-full mx-auto">
             <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
               <DrawerClose
-                className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl "
+                className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 dark:hover:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl"
                 onClick={() => {
                   setOpenEdit(true);
                 }}
@@ -96,8 +89,7 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
       </Drawer>
       <SetRateComp
         edit={message?.transaction.cardDetails.rate ? true : false}
-        scrollToBottom={scrollToBottom}
-        id={id}
+        chatId={chatId}
         openRate={openRate}
         setOpenRate={setOpenRate}
         card={message?.transaction.cardDetails as CardDetails}
@@ -106,16 +98,15 @@ const AdminAttachFile = ({ message, formRef, id, scrollToBottom }: Props) => {
         openStartTransaction={openStartTransaction}
         setOpenStartTransaction={setOpenStartTransaction}
         card={message}
-        scrollToBottom={scrollToBottom}
-        id={id}
+        chatId={chatId}
       />
       <CropImage
-        id={id}
+        chatId={chatId}
         message={message as Conversation}
         openEdit={openEdit}
         setOpenEdit={setOpenEdit}
-        scrollToBottom={scrollToBottom}
         owns="admin"
+        scrollToBottom={scrollToBottom}
       />
     </>
   );

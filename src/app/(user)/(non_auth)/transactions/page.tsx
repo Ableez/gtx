@@ -86,19 +86,20 @@
 
 // export default Transactions;
 
-import ChatCard from "@/components/admin/chat/ChatCard";
 import TransactionCard from "@/components/admin/transactions/TransactionCard";
+import { Button } from "@/components/ui/button";
 import { getUserTransactions } from "@/lib/utils/getUserTransactions";
-import Cookies from "js-cookie";
+import { TicketIcon } from "@heroicons/react/24/outline";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
 type Props = {};
-const user = Cookies.get("user");
 
 const UserTransactionsPage = async (props: Props) => {
   const transaction = await getUserTransactions();
+  const user = cookies().get("user")?.value;
 
   if (!user) {
     return redirect("/sell");
@@ -107,22 +108,36 @@ const UserTransactionsPage = async (props: Props) => {
   if (!transaction || !transaction.success || !transaction.data) {
     return (
       <section className="bg-white dark:bg-neutral-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div className="mx-auto max-w-screen-sm text-center">
-            <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary">
-              Whoops!
-            </h1>
-            <p className="mb-4 text-3xl tracking-tight font-bold text-neutral-900 md:text-4xl dark:text-white">
-              Transaction data could not be fetched.
-            </p>
-            <p className="mb-4 text-lg font-light text-neutral-500 dark:text-neutral-400">
-              Please try again.
-            </p>
-          </div>
-          <Link className=" mx-auto" href={"/chat"}>
-            Retry
-          </Link>
-        </div>
+        <h4>Oops, something went wrong!</h4>
+        <p>
+          We&apos;re having trouble fetching your transactions at the moment.
+          Please try refreshing the page or check back later.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Refresh Page
+        </button>
+      </section>
+    );
+  }
+
+  if (transaction.data.length === 0) {
+    return (
+      <section className="flex flex-col gap-4 place-items-center max-w-sm mx-auto px-4">
+        <h4 className="text-xl font-semibold pt-8">No Transactions Yet</h4>
+        <TicketIcon
+          width={70}
+          className="text-neutral-300 dark:text-neutral-700 m-4"
+        />
+        <p className="p-4 bg-neutral-200 rounded-xl m-2 text-sm">
+          You haven&apos;t made any transactions yet. Start exploring and make
+          your first transaction!
+        </p>
+        <Link href={"/sell"} className="w-full">
+          <Button className="w-full">Sell a card</Button>
+        </Link>
       </section>
     );
   }

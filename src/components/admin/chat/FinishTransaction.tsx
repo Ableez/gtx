@@ -15,22 +15,17 @@ import {
 } from "@/components/ui/drawer";
 import { Conversation } from "../../../../chat";
 import Image from "next/image";
-import {
-  finishTransactionAction,
-  startTransaction,
-} from "@/lib/utils/adminActions/startTransaction";
+import { finishTransactionAction } from "@/lib/utils/adminActions/startTransaction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { postToast } from "@/components/postToast";
 
 type Props = {
-  id: string;
+  chatId: string;
   finishTransaction: boolean;
   card: Conversation | undefined;
   setFinishTransaction: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToBottom?: React.RefObject<HTMLDivElement>;
   update?: {
     status: string;
   };
@@ -41,7 +36,7 @@ const FinishTransaction = ({
   card,
   finishTransaction,
   setFinishTransaction,
-  id,
+  chatId,
 }: Props) => {
   const [resp, setResp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,7 +52,7 @@ const FinishTransaction = ({
     try {
       setLoading(true);
 
-      const res = await finishTransactionAction(id, referenceId, value);
+      const res = await finishTransactionAction(chatId, referenceId, value);
 
       if (res.success) {
         setTransfer(false);

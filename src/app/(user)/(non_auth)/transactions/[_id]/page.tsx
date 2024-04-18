@@ -134,7 +134,7 @@ const TransactionDetail = ({ params }: Props) => {
               <h6 className=" dark:text-neutral-300 text-[12px]">
                 {user?.email}
               </h6>
-              <h6 className="">{user?.username}</h6>
+              <h6 className="">{user?.displayName}</h6>
             </div>
             <div className="w-full border-b border-neutral-200 dark:border-neutral-700 py-0.5" />
             {/* Seperator /> */}

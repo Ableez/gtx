@@ -1,7 +1,7 @@
 import AuthProvider from "@/lib/context/AuthProvider";
 import { Suspense } from "react";
 import Loading from "../loading";
-import { cookies } from "next/headers";
+import { init } from "@/lib/utils/idb";
 
 type Props = {
   children: React.ReactNode;
@@ -10,9 +10,9 @@ type Props = {
 const UserLayout = (props: Props) => {
   return (
     <div className="max-w-screen-lg mx-auto">
-      <AuthProvider>
-        <Suspense fallback={<Loading />}>{props.children}</Suspense>
-      </AuthProvider>
+      {/* <AuthProvider> */}
+      <Suspense fallback={<Loading />}>{props.children}</Suspense>
+      {/* </AuthProvider> */}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import AdminPathHandler from "@/lib/context/AdminPathHandler";
 import AdminRedirect from "@/lib/context/AdminRedirect";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;

@@ -37,6 +37,8 @@ const SignoutButton = ({ open, setOpen }: Props) => {
               await signOut(auth);
               Cookies.remove("user");
               Cookies.remove("isLoggedIn");
+              Cookies.remove("verification");
+              Cookies.remove("card_page");
               postToast("Done", { description: "You have logged out" });
               router.push("/sell");
               window.location.href = "/sell";

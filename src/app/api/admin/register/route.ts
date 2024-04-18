@@ -4,6 +4,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -35,12 +36,12 @@ export async function POST(req: Request) {
     await setDoc(doc(db, "Users", user.uid), userData);
 
     //   save user data to cookies
-    Cookies.set("user", JSON.stringify(user.toJSON()), {});
+    Cookies.set("user", JSON.stringify(user.toJSON()));
 
     //   log user in
     await signInWithEmailAndPassword(auth, email, password);
 
-    return Response.json({
+    return NextResponse.json({
       message: "Signin successfull",
       login: true,
       user: user.toJSON(),
@@ -48,8 +49,8 @@ export async function POST(req: Request) {
   } catch (error) {
     const err = error as FirebaseError;
     let message = err.message;
-    console.log("REGISTER ERROR: ", error);
+    console.log("ADMIN REGISTER ERROR: ", error);
 
-    return Response.json({ message: message, login: false, user: null });
+    return NextResponse.json({ message: message, login: false, user: null });
   }
 }

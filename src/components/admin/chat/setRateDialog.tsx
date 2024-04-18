@@ -13,27 +13,34 @@ import { setCardRate } from "@/lib/utils/adminActions/setRate";
 import { CardDetails } from "../../../../chat";
 
 type Props = {
-  id: string;
+  chatId: string;
   openRate: boolean;
   card: CardDetails;
   setOpenRate: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollToBottom: React.RefObject<HTMLDivElement>;
   edit?: boolean;
   idx?: number;
 };
 
-const SetRateComp = ({ card, openRate, setOpenRate, id, edit, idx }: Props) => {
+const SetRateComp = ({
+  card,
+  openRate,
+  setOpenRate,
+  chatId,
+  edit,
+  idx,
+}: Props) => {
   const [rate, setRate] = useState("");
   const [resp, setResp] = useState("");
   const [loading, setLoading] = useState(false);
 
   const sendRate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       setLoading(true);
 
       const res = await setCardRate(
-        id,
+        chatId,
         new FormData(e.target as HTMLFormElement),
         edit,
         idx

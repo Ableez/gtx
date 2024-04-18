@@ -10,21 +10,20 @@ type Props = {
 };
 
 const TransactionCard = ({ idx, transaction }: Props) => {
+  console.log(transaction);
   return (
     <Link
       href={`transactions/${transaction.id}`}
       key={idx}
       className="flex gap-4 align-middle place-items-center justify-between py-3 px-4 hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-100 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto"
     >
-      <div className="p-2 bg-primary rounded-full">
-        <Image
-          className="self-center dark:opacity-40"
-          src={"/logoplace.svg"}
-          width={45}
-          height={45}
-          alt="vendor"
-        />
-      </div>
+      <Image
+        className="self-center"
+        src={transaction.data.cardDetails.image || "/logoplace.svg"}
+        width={40}
+        height={40}
+        alt="vendor"
+      />
 
       <div className="place-self-start w-full">
         <h4 className="">

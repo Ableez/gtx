@@ -1,10 +1,9 @@
 "use server";
-import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 } from "uuid";
-import { checkServerAdmin } from "./checkServerAdmin";
-import { checkIsAdmin } from "./checkAdmin";
 import { cookies } from "next/headers";
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
 
 export const sendAdminMessage = async (
   data: {
@@ -34,12 +33,14 @@ export const sendAdminMessage = async (
 
     const { timeStamp } = data;
 
-    const uc = cookies().get("user")?.value;
+    const cachedUser = cookies().get("user")?.value;
+    const user = cachedUser ? (JSON.parse(cachedUser) as UserRecord) : null;
 
-    if (!uc) {
+    if (!user) {
       return {
         success: false,
         message: "Please login to send a message",
+        error: null,
       };
     }
 
@@ -51,7 +52,6 @@ export const sendAdminMessage = async (
           text: message,
         };
 
-    const user = JSON.parse(uc as string);
     const msg = {
       id: v4(),
       timeStamp: new Date(),
@@ -94,12 +94,17 @@ export const sendAdminMessage = async (
       updated_at: msg.timeStamp,
     });
 
-    return { success: true, message: "Message sent" };
+    return {
+      success: true,
+      message: "Message sent",
+      error: null,
+    };
   } catch (error) {
     console.log(error);
     return {
       success: false,
-      message: "Internal error. Message not sent",
+      error: "Internal error. Message not sent",
+      message: null,
     };
   }
 };

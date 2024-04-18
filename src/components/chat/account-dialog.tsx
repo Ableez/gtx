@@ -11,11 +11,19 @@ import { Button } from "../ui/button";
 import { sendAccountToAdmin } from "@/lib/utils/actions/userChat";
 import { SunIcon } from "@heroicons/react/24/outline";
 import { Label } from "../ui/label";
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
+import { v4 } from "uuid";
+import { Conversation } from "../../../chat";
+import Cookies from "js-cookie";
+import { postToast } from "../postToast";
+import { Timestamp } from "firebase/firestore";
 
 type Props = {
-  id: string;
+  chatId: string;
   openAccount: boolean;
   setOpenAccount: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollToBottom: React.RefObject<HTMLDivElement>;
+  allMessages: Conversation;
   data?: {
     accountNumber: string;
     accountName: string;
@@ -23,29 +31,114 @@ type Props = {
   };
   edit?: boolean;
   idx?: number;
-  scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
 const AccountComp = ({
   openAccount,
   setOpenAccount,
-  id,
+  allMessages,
+  chatId,
   data,
   edit,
   idx,
+  scrollToBottom,
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState(data);
+
+  const updateConversation = useMessagesStore(
+    (state) => state.updateConversation
+  );
 
   const sendAccount = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
 
+    const uc = Cookies.get("user");
+
+    if (!uc) {
+      postToast("User not found");
+
+      return;
+    }
+    const user = JSON.parse(uc);
+
+    const eData = new FormData(e.target as HTMLFormElement);
+
+    const accountNumber = eData.get("accountNumber");
+    const accountName = eData.get("accountName");
+    const bankName = eData.get("bankName");
+
+    const accountDetails = {
+      accountName: accountName?.toString(),
+      accountNumber: accountNumber?.toString(),
+      bankName: bankName?.toString(),
+    };
+
+    const msg = {
+      id: v4(),
+      timeStamp: Timestamp.fromDate(new Date()),
+    };
+
+    if (!edit) {
+      updateConversation(
+        {
+          ...allMessages,
+          messages: [
+            ...allMessages.messages,
+            {
+              id: msg.id,
+              type: "card",
+              deleted: false,
+              sender: {
+                username: user.displayName,
+                uid: user.uid,
+              },
+              recipient: "admin",
+              card: {
+                title: "Account Details",
+                data: accountDetails,
+              },
+              content: {
+                text: "",
+                media: {
+                  text: "",
+                  metadata: {
+                    media_name: "",
+                    media_size: "",
+                    media_type: "",
+                  },
+                  url: "",
+                },
+              },
+              timeStamp: msg.timeStamp,
+              edited: false,
+              read_receipt: {
+                delivery_status: "sent",
+                status: false,
+                time: msg.timeStamp,
+              },
+            },
+          ],
+          updated_at: msg.timeStamp,
+          transaction: {
+            ...allMessages.transaction,
+            accountDetails: {
+              accountName: accountName?.toString() as string,
+              accountNumber: Number(accountNumber?.toString()),
+              bankName: bankName?.toString() as string,
+            },
+          },
+        },
+        scrollToBottom
+      );
+    }
+
     try {
       const res = await sendAccountToAdmin(
-        id,
+        chatId,
         new FormData(e.target as HTMLFormElement),
         edit,
         idx

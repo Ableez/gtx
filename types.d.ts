@@ -45,6 +45,16 @@ export type GiftCard = {
   subcategory: Subcategory[];
 };
 
+export type Card = {
+  id: string;
+  name: string;
+  vendor: string;
+  subcategory: string;
+  price: number;
+  ecode?: number | undefined;
+  rate: string;
+};
+
 export type Subcategory = {
   value: string;
   currency: string;
@@ -78,15 +88,25 @@ export type AccountDetails = {
   accountNumber: string;
   bankName: string;
 };
+import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserMetadata } from "firebase/auth";
 
 export type User = {
-  imageUrl: string;
-  savedPayments: boolean;
+  uid: string;
   role: string;
-  email: string;
   payment: AccountDetails[];
-  id: string;
-  username: string;
+  notificationsToken: string;
+  displayName: string;
+  email: string;
+  imageUrl?: string;
+  emailVerified: boolean;
+  phoneNumber: string | null;
+  photoURL?: string | null;
+  metadata: UserMetadata;
+  role: string;
+  conversations: string[];
+  cardChoices: string[];
+  transactions: string[];
 };
 
 export type ReviewContent = {

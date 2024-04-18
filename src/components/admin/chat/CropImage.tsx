@@ -5,39 +5,59 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
-import { storage } from "@/lib/utils/firebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import Image from "next/image";
-import React, { useState } from "react";
-import { Conversation } from "../../../../chat";
+import React, { FormEvent, useState } from "react";
+import { Conversation, Message } from "../../../../chat";
 import { postToast } from "@/components/postToast";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import ImageCropper from "./ImageCropper";
-import { PaperAirplaneIcon, SunIcon } from "@heroicons/react/24/outline";
-import { sendUserMessage } from "@/lib/utils/actions/userChat";
-import { Button } from "@/components/ui/button";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { MessageForm } from "@/app/(user)/(non_auth)/chat/[chatId]/_components/CaptionMessageForm";
+import { SelectImageButton } from "@/app/(user)/(non_auth)/chat/[chatId]/_components/SelectImageButton";
+import Loading from "@/app/loading";
+import { usePathname } from "next/navigation";
+import Cookies from "js-cookie";
+import { v4 } from "uuid";
+import useScrollRef from "@/lib/hooks/useScrollRef";
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
+import { Timestamp } from "firebase/firestore";
+import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
+
+const fileToBase64 = async (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+      } else {
+        reject(new Error("Error converting file to base64"));
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+};
 
 type Props = {
-  id: string;
+  chatId: string;
   openEdit: boolean;
   setOpenEdit: React.Dispatch<React.SetStateAction<boolean>>;
   message: Conversation;
   scrollToBottom: React.RefObject<HTMLDivElement>;
-  owns: string;
+  owns?: string;
 };
 
 const ASPECT_RATIO = undefined;
 const MIN_DIMENSION = 100;
 
+const uc = Cookies.get("user");
+const user = JSON.parse(uc || "{}");
+
 const CropImage = ({
   openEdit,
   setOpenEdit,
-  id,
   message,
-  scrollToBottom,
   owns,
+  chatId,
+  scrollToBottom,
 }: Props) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -45,162 +65,179 @@ const CropImage = ({
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<File | null>();
   const [imgSrc, setImgSrc] = useState("");
-  const [fakeUrl, setFakeUrl] = useState("");
+  const [realUrl, setRealUrl] = useState("");
   const [edit, setEdit] = useState(false);
 
-  const sendImageAction = async (e: React.FormEvent) => {
-    setLoading(true);
+  const { updateConversation, conversation } = useMessagesStore();
+  const adminConversationStore = adminCurrConversationStore();
+
+  const sendImageAction = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!image) {
+      postToast("Error", { description: "Image is required." });
+      return;
+    }
+
+    setOpenEdit(false);
 
     try {
-      e.preventDefault();
-      const formData = new FormData(e.target as HTMLFormElement);
-      formData.append("id", id);
-      if (image && image.size > 15000000) {
+      if (image && image.size > 8000000) {
         postToast("Warning!", {
-          description: "Image size is too big and might take a while to load.",
+          description:
+            "Image size is too big and might take a while to load. Please wait...",
         });
       }
 
-      if (image) {
-        setProgress(1);
-        const storageRef = ref(
-          storage,
-          `/cardImages/www.greatexchange.co---${id}---${image.name}`
-        );
+      const metadata = {
+        type: image.type,
+        size: image.size,
+        name: image.name,
+      };
 
-        setProgress(1);
+      const url = `/chatImages/${chatId}/greatexchange.co__${v4()}__${
+        user?.uid
+      }_${image.name}`;
 
-        const uploadTask = uploadBytesResumable(storageRef, image);
+      const base64 = await fileToBase64(image);
 
-        uploadTask.on(
-          "state_changed",
-          (snap) => {
-            const progress = (snap.bytesTransferred / snap.totalBytes) * 100;
-            setProgress(progress);
-          },
-          (err) => {
-            postToast("Error", { description: err.message });
-          },
-          async () => {
-            const mediaurl = await getDownloadURL(uploadTask.snapshot.ref);
-            if (owns === "admin") {
-              const sentMessage = await sendAdminMessage(
-                { timeStamp: new Date() },
-                id,
-                message?.user as {
-                  username: string;
-                  uid: string;
-                  email: string;
-                  photoUrl: string;
-                },
-                formData,
-                {
-                  caption: caption,
-                  url: mediaurl,
-                  metadata: {
-                    media_name: uploadTask.snapshot.metadata.name,
-                    media_size: uploadTask.snapshot.metadata.size,
-                    media_type: uploadTask.snapshot.metadata.contentType,
-                  },
-                },
-                true
-              );
+      const reqParams = {
+        image: base64,
+        metadata,
+        url,
+        uid: user.uid,
+        chatId: chatId,
+        caption,
+        owns: owns,
+        recipient:
+          owns === "admin"
+            ? adminConversationStore.conversation?.user
+            : conversation?.user,
+      };
 
-              if (!sentMessage?.success) {
-                postToast("Error", { description: sentMessage?.message });
-                setLoading(false);
-                return;
-              }
+      const res = await fetch(`/api/sendimage`, {
+        body: JSON.stringify(reqParams),
+        method: "POST",
+      }).then((e) => e.json());
 
-              if (sentMessage?.success) {
-                setOpenEdit(false);
-                setProgress(0);
-                setCaption("");
-                setError("");
-                setLoading(false);
-                scrollToBottom.current?.scrollIntoView({ behavior: "smooth" });
-                setImage(null);
-                setImgSrc("");
-                postToast("Done", { description: "Image sent!" });
-              }
-            } else if (owns === "user") {
-              const sentMessage = await sendUserMessage(
-                { timeStamp: new Date() },
-                id,
-                formData,
-                {
-                  caption: caption,
-                  url: mediaurl,
-                  metadata: {
-                    media_name: uploadTask.snapshot.metadata.name,
-                    media_size: uploadTask.snapshot.metadata.size,
-                    media_type: uploadTask.snapshot.metadata.contentType,
-                  },
-                },
-                true
-              );
-
-              if (!sentMessage?.success) {
-                postToast("Error", { description: sentMessage?.message });
-                setLoading(false);
-                return;
-              }
-
-              if (sentMessage?.success) {
-                setOpenEdit(false);
-                setProgress(0);
-                setCaption("");
-                setError("");
-                setLoading(false);
-                scrollToBottom.current?.scrollIntoView({
-                  behavior: "smooth",
-                });
-                setImage(null);
-                setImgSrc("");
-                postToast("Done", { description: "Image sent!" });
-              }
-            } else {
-              postToast("Error", { description: "An error occured." });
-              return;
-            }
-          }
-        );
+      if (res.success) {
+        postToast("Image sent", { icon: <>✔️</> });
+        setProgress(0);
+        setCaption("");
+        setError("");
+        // setLoading(false);
+        scrollToBottom.current?.lastElementChild?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      } else {
+        postToast("Error", {
+          description: "An error occured while sending image.",
+        });
       }
     } catch (error) {
-      postToast("Error", {
-        description: "An error occured while sending image.",
-      });
+      error instanceof Error && console.error(error.message);
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      setImage(null);
+      setImgSrc("");
     }
   };
 
-  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const updateConvo = () => {
+    if (!image) {
+      postToast("Error", { description: "Image is required." });
+      return;
+    }
 
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      const imageUrl = reader.result?.toString() || "";
-      setImgSrc(imageUrl);
-    });
-    reader.readAsDataURL(file);
+    if (image && image.size > 8000000) {
+      postToast("Warning!", {
+        description:
+          "Image size is too big and might take a while to load. Please wait...",
+      });
+    }
+
+    const msg = {
+      id: v4(),
+      timeStamp: Timestamp.fromDate(new Date()),
+    };
+
+    const newMessage: Message = {
+      id: msg.id,
+      type: "media",
+      deleted: false,
+      timeStamp: msg.timeStamp,
+      sender: {
+        username: user.displayName,
+        uid: user.uid,
+      },
+      recipient: owns === "admin" ? "user" : "admin",
+      card: {
+        title: "",
+        data: null,
+      },
+      content: {
+        text: caption,
+        media: {
+          text: "",
+          caption: caption,
+          url: URL.createObjectURL(image),
+          metadata: {
+            media_name: image.name,
+            media_type: image.type,
+            media_size: String(image.size),
+          },
+        },
+      },
+      edited: false,
+      read_receipt: {
+        delivery_status: "not_sent",
+        status: false,
+        time: msg.timeStamp,
+      },
+    };
+
+    updateConversation(
+      {
+        ...message,
+        id: message?.id || "",
+        messages: [...(message?.messages || []), newMessage],
+      } as Conversation,
+      scrollToBottom
+    );
+
+    adminConversationStore.updateConversation({
+      ...message,
+      id: message?.id || "",
+      messages: [...(message?.messages || []), newMessage],
+    } as Conversation);
   };
 
   return (
     <>
-      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+      {loading && <Loading />}
+      <Dialog
+        open={openEdit}
+        onOpenChange={(e) => {
+          setOpenEdit(e);
+          if (e === false) {
+            setImage(null);
+            setImgSrc("");
+          }
+        }}
+      >
         <DialogContent className="w-[100vw] max-w-md rounded-2xl">
           <DialogHeader>
             {imgSrc && (
               <button
                 disabled={loading}
-                className="absolute left-2 md:left-1/2 md:-translate-x-1/2 bg-white py-1 hover:bg-neutral-200 bg-opacity-30 backdrop-blur-lg rounded-md border px-3"
+                className="absolute left-2 md:left-1/2 md:-translate-x-1/2 bg-white py-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-700 bg-opacity-30 backdrop-blur-lg rounded-md border px-2 flex align-middle place-items-center gap-1.5"
                 onClick={() => {
                   setImgSrc("");
                   setImage(null);
                 }}
               >
+                <ArrowLeftIcon width={14} />
                 Clear
               </button>
             )}
@@ -221,28 +258,11 @@ const CropImage = ({
               loading={loading}
             />
           ) : (
-            <div className="p-2 grid place-items-center">
-              <Label
-                htmlFor="gallery"
-                className="p-8 rounded-xl border-2 border-dashed cursor-pointer hover:bg-purple-100 hover:border-purple-300 duration-300"
-              >
-                Select an Image
-              </Label>
-              <Input
-                className="hidden"
-                id="gallery"
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const url = URL.createObjectURL(file);
-                    setFakeUrl(url);
-                  }
-                  onSelectFile(e);
-                }}
-              />
-            </div>
+            <SelectImageButton
+              setImage={setImage}
+              setImgSrc={setImgSrc}
+              setRealUrl={setRealUrl}
+            />
           )}
 
           {imgSrc && !edit && (
@@ -257,44 +277,20 @@ const CropImage = ({
               >
                 {error}
               </div>
-              <form
-                onSubmit={sendImageAction}
-                className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-lg max-w-md mx-auto"
-              >
-                <input
-                  id="message"
-                  name="message"
-                  disabled={loading}
-                  value={caption}
-                  onChange={(e) => setCaption(e.target.value)}
-                  autoCorrect="true"
-                  autoComplete="off"
-                  className={`font-normal transition-all duration-300 resiL-none leading-4 text-xs md:text-sm antialiased focus:outline-none col-span-10 w-full h-fit p-3 bg-neutral-200 dark:bg-neutral-800 outline-none rounded-l-lg disabled:cursor-not-allowed disabled:bg-opacity-50`}
-                  placeholder="Caption (optional)"
-                  data-gramm="false"
-                  data-gramm_editor="false"
-                  data-enable-grammarly="false"
-                />
-                <Button
-                  size={"icon"}
-                  title="Send Message"
-                  variant={"secondary"}
-                  disabled={loading || edit}
-                  type="submit"
-                  className="focus:outline-none col-span-2 duration-300 w-full h-full py-1 grid place-items-center align-middle rounded-r-lg p-2 px-4 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <SunIcon width={22} className="animate-spin" />
-                  ) : (
-                    <PaperAirplaneIcon width={25} />
-                  )}
-                </Button>
-              </form>
+
+              <MessageForm
+                caption={caption}
+                setLoading={setLoading}
+                edit={edit}
+                loading={loading}
+                setCaption={setCaption}
+                sendImageAction={sendImageAction}
+                updateConvo={updateConvo}
+              />
             </div>
           )}
-          {/* Fake image element */}
           <Image
-            src={fakeUrl}
+            src={realUrl}
             alt=""
             width={0}
             height={0}
@@ -308,7 +304,7 @@ const CropImage = ({
                 postToast("Image", {
                   description: "Image must be at least 100 x 100 pixels.",
                 });
-                setFakeUrl("");
+                setRealUrl("");
                 setImgSrc("");
               }
             }}

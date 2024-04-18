@@ -3,31 +3,23 @@ import React from "react";
 import ReviewDrawer from "./chat/reviewDrawer";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
-import { Conversation } from "../../chat";
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
 
-type Props = {
-  data?: Conversation;
-};
+const UserChatNav = () => {
+  const { conversation } = useMessagesStore();
 
-const UserChatNav = ({ data }: Props) => {
   return (
-    <nav className="sticky border-b top-0 flex align-middle justify-between gap-2 place-items-center py-3.5 z-50 px-2 bg-[#f5f5f5] dark:bg-[#222222]">
+    <nav className="sticky border-b max-w-screen-md mx-auto top-0 flex align-middle justify-between gap-2 place-items-center py-2 z-50 px-2 bg-[#f5f5f5] dark:bg-[#222222]">
       <div className="flex align-middle place-items-center gap-2">
         <ReviewDrawer />
         <h4 className="text-lg font-semibold">Chat</h4>
       </div>
       <div>
         <Dialog>
-          <DialogTrigger>
-            <Button variant={"secondary"}>Card Details</Button>
+          <DialogTrigger asChild>
+            <Button variant={"outline"}>Card Details</Button>
           </DialogTrigger>
           <DialogContent className="w-[95vw] rounded-2xl">
             <Card className="border-none shadow-none dark:bg-black">
@@ -43,12 +35,13 @@ const UserChatNav = ({ data }: Props) => {
                     width={100}
                     height={100}
                     src={
-                      data?.transaction.cardDetails.image || "/logoplace.svg"
+                      conversation?.transaction.cardDetails.image ||
+                      "/logoplace.svg"
                     }
                     className="w-8 p-0.5 bg-neutral-200 rounded-3xl"
                   />
                   <h4 className="md:text-xl text-base tracking-wide font-bold">
-                    {data?.transaction.cardDetails.vendor} Card
+                    {conversation?.transaction.cardDetails.vendor} Card
                   </h4>
                 </div>
 
@@ -59,8 +52,8 @@ const UserChatNav = ({ data }: Props) => {
                         Subcategory
                       </dt>
                       <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                        {data?.transaction.cardDetails.subcategory.value ||
-                          "Please wait..."}
+                        {conversation?.transaction.cardDetails.subcategory
+                          .value || "Please wait..."}
                       </dd>
                     </div>
                     <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -68,7 +61,7 @@ const UserChatNav = ({ data }: Props) => {
                         Price
                       </dt>
                       <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                        {data?.transaction.cardDetails.price ||
+                        {conversation?.transaction.cardDetails.price ||
                           "Please wait..."}
                       </dd>
                     </div>

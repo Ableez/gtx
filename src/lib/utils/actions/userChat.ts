@@ -33,7 +33,7 @@ export const sendUserMessage = async (
 
   if (!user)
     return {
-      message: "User does not exists",
+      message: "Please login to send a message",
       success: false,
     };
 
@@ -52,7 +52,7 @@ export const sendUserMessage = async (
   const content = media
     ? mediaContent
     : {
-        text: message,
+        text: message?.toString(),
       };
 
   try {
@@ -195,7 +195,7 @@ export const sendEcodeToAdmin = async (
       if (data) {
         const index =
           idx ||
-          data.messages.findLastIndex((msg) => msg.card.title === "e-Code");
+          data.messages.findLastIndex((msg) => msg.card?.title === "e-Code");
 
         const time = timeStamper();
         if (Array.isArray(data.messages)) {
@@ -240,14 +240,14 @@ export const sendAccountToAdmin = async (
   edit?: boolean,
   idx?: number
 ) => {
+  const cachedUser = cookies().get("user")?.value;
+  const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+
   try {
     const accountNumber = e.get("accountNumber");
     const accountName = e.get("accountName");
     const bankName = e.get("bankName");
     const chatDocRef = doc(db, "Messages", id as string);
-
-    const cachedUser = cookies().get("user")?.value;
-    const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
     if (!user) {
       return {
@@ -330,7 +330,7 @@ export const sendAccountToAdmin = async (
         const index =
           idx ||
           data.messages.findLastIndex(
-            (msg) => msg.card.title === "Account Details"
+            (msg) => msg.card?.title === "Account Details"
           );
 
         const time = timeStamper();

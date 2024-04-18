@@ -38,10 +38,7 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Loading from "@/app/loading";
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
-import { User } from "firebase/auth";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
 
 type Props = {};
 
@@ -295,7 +292,10 @@ const TicketPage = (props: Props) => {
             </Button>
           </AlertDialogTrigger>
         ) : (
-          <Button className="w-full sm:w-fit duration-300 rounded-md text-white cursor-not-allowed font-medium my-8 bg-pink-400">
+          <Button
+            className="w-full sm:w-fit duration-300 rounded-md text-white cursor-not-allowed font-medium my-8"
+            disabled
+          >
             Submit
           </Button>
         )}
@@ -343,6 +343,7 @@ const TicketPage = (props: Props) => {
                   value={fullname}
                   required={true}
                   placeholder="Fullname"
+                  disabled={user}
                 />
               </div>
               <div>
@@ -352,6 +353,7 @@ const TicketPage = (props: Props) => {
                   value={email}
                   required={true}
                   placeholder="Email"
+                  disabled={user}
                 />
               </div>
             </div>

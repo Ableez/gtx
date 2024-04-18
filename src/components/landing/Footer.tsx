@@ -12,7 +12,7 @@ const Footer = (props: Props) => {
           <h4 className="font-bold text-neutral-500 w-full">
             Beware of gift card scams. Do not share your code.
           </h4>
-          <p className="my-4 text-neutral-400 text-[10px]">
+          <p className="my-4 text-neutral-400 text-[10px] leading-8">
             Protecting Your Gift Card: To safeguard your gift card from fraud,
             we recommend treating it like cash. Keep the card&apos;s details
             confidential and never share them online or over the phone. Only
@@ -32,7 +32,10 @@ const Footer = (props: Props) => {
           <div className="mx-auto max-w-screen-xl">
             <div className="md:flex md:justify-between gap-[2em]">
               <div className="mb-6 md:mb-0 px-4 grid place-item-center">
-                <a href="https://localhost:3000" className="flex items-center gap-2 place-items-center">
+                <a
+                  href="https://localhost:3000"
+                  className="flex items-center gap-2 place-items-center"
+                >
                   <Image
                     src="/logoplace.svg"
                     className="mr-1 h-8 opacity-40"

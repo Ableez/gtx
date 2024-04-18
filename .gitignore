@@ -28,6 +28,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env*
 
 # vercel
 .vercel
@@ -40,3 +41,11 @@ next-env.d.ts
 gtx-service-account.json
 /.firebase
 .vercel
+
+
+
+
+# random files
+t.ts
+# Sentry Config File
+.sentryclirc

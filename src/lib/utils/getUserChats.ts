@@ -1,29 +1,26 @@
 "use server";
 
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "./firebase";
-import { cookies } from "next/headers";
 import { UserRecord } from "firebase-admin/lib/auth/user-record";
 import { Conversation } from "../../../chat";
 import { getUserCookie } from "./getUserCookie";
+import { redirect } from "next/navigation";
 
 export const getUserChats = async () => {
   const uc = (await getUserCookie()) as string;
 
   try {
     if (!uc) {
-      return {
-        message: "You are not logged in! UC",
-        success: false,
-        data: null,
-      };
+      redirect("/sell");
     }
 
     const cachedUser = JSON.parse(uc) as UserRecord;
 
     const chatsRef = query(
       collection(db, "Messages"),
-      where("user.uid", "==", cachedUser.uid)
+      where("user.uid", "==", cachedUser.uid),
+      orderBy("updated_at", "desc")
     );
     const chats = await getDocs(chatsRef);
 
