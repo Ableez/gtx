@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
-import NetworkMonitor from "@/lib/context/NetworkMonitor";
+import NetworkMonitor from "../lib/context/NetworkMonitor";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -44,9 +44,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
         >
-          <Suspense fallback={<Loading />}>
-            <NetworkMonitor>{children}</NetworkMonitor>
-          </Suspense>
+          <Suspense fallback={<Loading />}>{children}</Suspense>
         </ThemeProvider>
         <Toaster />
       </body>

@@ -43,7 +43,7 @@ export const signInWithGoogle = async () => {
       Cookies.set("user", JSON.stringify(checkUser.data()));
     }
 
-    window.location.href = "http://localhost:3000/sell";
+    window.location.href = `${process.env.BASE_URL}/sell`;
     postToast("Successfully signed in");
   } catch (err) {
     const error = err as FirebaseError;
