@@ -68,7 +68,7 @@ const ImagesCarousel = ({
                 width={600}
                 height={600}
                 priority
-                className="max-h-[75dvh] object-cover"
+                className="h-[75dvh] object-cover"
               />
               <h4 className="border bg-neutral-800">
                 {message.content.media.text}
@@ -81,7 +81,7 @@ const ImagesCarousel = ({
 
   return (
     <Dialog open={openSlide} onOpenChange={setOpenSlide}>
-      <DialogContent className="p-1 md:w-[95vw]">
+      <DialogContent className="p-1 h-fit max-h-screen">
         <Carousel setApi={setSlideApi}>
           <CarouselContent>{renderImage}</CarouselContent>
           <CarouselPrevious />

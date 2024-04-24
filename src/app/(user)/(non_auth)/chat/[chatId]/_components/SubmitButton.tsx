@@ -22,7 +22,7 @@ const SubmitButton = ({ edit, pending, updateConvo }: Props) => {
         updateConvo();
       }}
       type="submit"
-      className="focus:outline-none col-span-2 duration-300 w-full h-full py-1 grid place-items-center align-middle rounded-r-lg p-2 px-4 disabled:cursor-not-allowed"
+      className="focus:outline-none col-span-2 duration-300 w-full h-full py-1 grid place-items-center align-middle rounded-r-lg p-2 disabled:cursor-not-allowed"
     >
       {pending ? (
         <SunIcon width={22} className="animate-spin" />

@@ -31,11 +31,19 @@ export const getUserChats = async () => {
       };
     });
 
-    return {
-      message: "Chats fetched successfully",
-      success: true,
-      data: userChats as { data: Conversation; id: string }[],
-    };
+    if (!chats.empty) {
+      return {
+        message: "Chats fetched successfully",
+        success: true,
+        data: userChats as { data: Conversation; id: string }[],
+      };
+    } else {
+      return {
+        message: "Could not fetch chats",
+        success: false,
+        data: [],
+      };
+    }
   } catch (error) {
     console.error("GET USER CHATS: ", error);
 

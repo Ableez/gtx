@@ -10,18 +10,20 @@ export const dynamic = "force-dynamic";
 const UserChats = async (props: Props) => {
   const chats = await getUserChats();
 
-  if (!chats || !chats.success || !chats.data) {
+  if (
+    !chats ||
+    !chats.success ||
+    !chats.data ||
+    (chats.success && chats.data?.length === 0)
+  ) {
     return (
       <div className="grid place-items-center justify-center align-middle gap-6 max-w-screen-md text-center mx-auto">
-        <h3 className="font-bold text-lg">Chats not found</h3>
-        <p className="text-xs">It may be your internet connection.</p>
+        <h3 className="font-bold text-xl">Chats not found</h3>
+        <p className="text-xs text-white/60">
+          It may be your internet connection.
+        </p>
         <div className="w-full">
-          <Link
-            className="mx-auto py-2 px-4 bg-primary rounded-md text-white font-medium"
-            href={"/chat"}
-          >
-            Retry
-          </Link>
+          <span>Refresh</span>
         </div>
       </div>
     );

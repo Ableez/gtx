@@ -19,6 +19,7 @@ import { Conversation } from "../../../chat";
 import AccountComp from "./account-dialog";
 import CropImage from "../admin/chat/CropImage";
 import "react-image-crop/dist/ReactCrop.css";
+import CropperJs from "./CropperJs";
 
 type Props = {
   message?: Conversation;
@@ -96,13 +97,18 @@ const AttachFile = ({ message, chatId, scrollToBottom }: Props) => {
           message?.transaction?.accountDetails?.accountNumber ? true : false
         }
       />
-      <CropImage
+      {/* <CropImage
         scrollToBottom={scrollToBottom}
         chatId={chatId}
         message={message as Conversation}
         openEdit={openEdit}
         setOpenEdit={setOpenEdit}
         owns="user"
+      /> */}
+      <CropperJs
+        scrollToBottom={scrollToBottom}
+        openS={openEdit}
+        setOpenS={setOpenEdit}
       />
     </>
   );

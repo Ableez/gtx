@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`bg-[#f5f5f5] dark:bg-[#222] ${openSans.className}`}>
         <ThemeProvider
           disableTransitionOnChange

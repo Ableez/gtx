@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -12,49 +13,36 @@ import {
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
-import {
-  ArrowLeftOnRectangleIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { usePathname, useRouter } from "next/navigation";
+import BackButton from "./BackButton";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { User } from "../../../types";
-import { useDebounceEffect } from "@/lib/hooks/useDebounceEffect";
 
 type Props = {
-  user: User | null;
+  pageTitle: String;
 };
 
-export default function SellNavbar({ user }: Props) {
-  const [pageTitle, setPageTitle] = useState("");
-  const [open, setOpen] = useState(false);
-  const [openLogout, setOpenLogout] = useState(false);
-
-  const router = useRouter();
-  const pathName = usePathname();
+export default function SellNavbar({ pageTitle }: Props) {
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (pathName == "/admin") {
-      setPageTitle("Dashboard");
-    } else if (pathName.split("/")[1] === "chat") {
-      setPageTitle("Chat");
-    } else if (pathName.split("/")[1] === "profile") {
-      setPageTitle("Profile");
-    } else if (pathName.split("/")[1] === "transactions") {
-      setPageTitle("Transactions");
-    } else {
-      setPageTitle("");
+    const userCached = Cookies.get("user");
+    if (userCached) {
+      setUser(JSON.parse(userCached));
     }
-  }, [pathName]);
+  }, []);
 
+  if (!user) {
+    return <div className="p-6" />;
+  }
 
   return (
     <>
       <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4">
-        {pageTitle === "" ? (
+        {pageTitle === "sell" ? (
           <Link
             href={"/"}
             className="flex align-middle place-items-center gap-2"
@@ -69,45 +57,41 @@ export default function SellNavbar({ user }: Props) {
             <h4 className="text-lg font-bold text-primary">Greatex</h4>
           </Link>
         ) : (
-          <Button size={"icon"} onClick={() => router.back()} variant={"ghost"}>
-            <ArrowLeftIcon width={24} />
-          </Button>
+          <BackButton />
         )}
         <h4 className="text-lg font-bold capitalize">{pageTitle}</h4>
-        <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {user?.uid && user?.displayName?.charAt(0) ? (
-              <div className="bg-neutral-200 dark:bg-neutral-600 aspect-square w-11 h-11 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
-                {user.imageUrl || user.photoURL ? (
-                  <Image
-                    src={user.imageUrl || user.photoURL || "/greatexc.svg"}
-                    width={50}
-                    height={50}
-                    alt={user.displayName}
-                    priority
-                    className="w-full rounded-full aspect-square object-cover text-[10px]"
-                  />
-                ) : (
-                  user?.uid && user?.displayName?.charAt(0)
-                )}
-              </div>
-            ) : (
-              <Button
-                asChild
-                variant={"ghost"}
-                className="rounded-full"
-                size={"icon"}
-              >
-                <EllipsisVerticalIcon width={18} />
-              </Button>
-            )}
+            <div className="bg-neutral-200 dark:bg-neutral-600 aspect-square w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
+              {user ? (
+                <Image
+                  src={user.photoURL || "/logoplace.svg"}
+                  width={55}
+                  height={55}
+                  alt={user.displayName}
+                  priority
+                  className="w-full rounded-full aspect-square object-cover text-[10px]"
+                />
+              ) : (
+                <Button
+                  asChild
+                  variant={"ghost"}
+                  className="rounded-full"
+                  size={"icon"}
+                >
+                  <EllipsisVerticalIcon width={18} />
+                </Button>
+              )}
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
             <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-              {user?.displayName || "NOT SIGNED IN"}
+              {user.displayName || "NOT SIGNED IN"}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {user?.uid && (
+            <ToggleTheme />
+
+            {user && (
               <DropdownMenuGroup>
                 <Link className="py-3" href={"/transactions"}>
                   <DropdownMenuItem className="py-3">
@@ -124,17 +108,10 @@ export default function SellNavbar({ user }: Props) {
               <Link className="py-3" href={"/support"}>
                 <DropdownMenuItem className="py-3">Support</DropdownMenuItem>
               </Link>
-              <ToggleTheme />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            {user?.uid ? (
-              <DropdownMenuItem
-                onClick={() => setOpenLogout(true)}
-                className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150"
-              >
-                Logout
-                <ArrowLeftOnRectangleIcon width={20} className="-scale-x-100" />
-              </DropdownMenuItem>
+            {user ? (
+              <SignoutButton />
             ) : (
               <Link href={"/login"}>
                 <DropdownMenuItem className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150">
@@ -146,7 +123,6 @@ export default function SellNavbar({ user }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <SignoutButton open={openLogout} setOpen={setOpenLogout} />
     </>
   );
 }

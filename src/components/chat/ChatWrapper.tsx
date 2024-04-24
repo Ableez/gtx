@@ -53,7 +53,7 @@ const UserChatWrapper = ({
 
       {/* {isScrolledToBottom && ( */}
       <Button
-        className="fixed bottom-16 right-4 z-[99999] bg-white dark:bg-black rounded-full"
+        className="fixed bottom-16 right-4 z-[49] bg-white dark:bg-black rounded-full"
         variant={"outline"}
         size={"icon"}
         onClick={() => {

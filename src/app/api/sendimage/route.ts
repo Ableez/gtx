@@ -1,10 +1,11 @@
+"use server";
+
 import { storage } from "@/lib/utils/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
+import sharp from "sharp";
 
 type MediaContent = {
   caption?: string;
@@ -24,6 +25,7 @@ type Message = {
   mediaContent?: MediaContent;
   media?: boolean;
 };
+
 type ReqType = {
   image: string;
   metadata: any;
@@ -53,17 +55,32 @@ export const POST = async (req: NextRequest) => {
       recipient,
     }: ReqType = await req.json();
 
+    //  {
+    //         image: imageUrl,
+    //         metadata,
+    //         url,
+    //         uid: user.uid,
+    //         chatId: chatId,
+    //         caption,
+    //         owns: owns,
+    //         recipient:
+    //           owns === "admin"
+    //             ? adminConversationStore.conversation?.user
+    //             : conversation?.user,
+    //       };
+
     const base64Data = image.split(";base64,").pop();
     if (!base64Data) {
       throw new Error("Invalid base64 string");
     }
 
     const toBlob = Buffer.from(base64Data, "base64");
+    const webp = await sharp(toBlob).webp().toBuffer();
 
     const storageRef = ref(storage, url);
 
-    const uploadTask = await uploadBytes(storageRef, toBlob, {
-      contentType: metadata.type,
+    const uploadTask = await uploadBytes(storageRef, webp, {
+      contentType: "image/webp",
     });
 
     const mediaurl = await getDownloadURL(uploadTask.ref);
@@ -81,8 +98,8 @@ export const POST = async (req: NextRequest) => {
           url: mediaurl,
           metadata: {
             media_name: metadata.name,
-            media_type: metadata.type,
-            media_size: metadata.size,
+            media_type: "",
+            media_size: 0,
           },
         },
         true
@@ -99,8 +116,8 @@ export const POST = async (req: NextRequest) => {
           url: mediaurl,
           metadata: {
             media_name: metadata.name,
-            media_type: metadata.type,
-            media_size: metadata.size,
+            media_type: "",
+            media_size: 0,
           },
         },
         true

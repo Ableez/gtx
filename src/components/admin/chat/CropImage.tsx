@@ -197,20 +197,22 @@ const CropImage = ({
       },
     };
 
-    updateConversation(
-      {
+    if (owns === "admin") {
+      adminConversationStore.updateConversation({
         ...message,
         id: message?.id || "",
         messages: [...(message?.messages || []), newMessage],
-      } as Conversation,
-      scrollToBottom
-    );
-
-    adminConversationStore.updateConversation({
-      ...message,
-      id: message?.id || "",
-      messages: [...(message?.messages || []), newMessage],
-    } as Conversation);
+      } as Conversation);
+    } else {
+      updateConversation(
+        {
+          ...message,
+          id: message?.id || "",
+          messages: [...(message?.messages || []), newMessage],
+        } as Conversation,
+        scrollToBottom
+      );
+    }
   };
 
   return (
@@ -278,15 +280,15 @@ const CropImage = ({
                 {error}
               </div>
 
-              <MessageForm
+              {/* <MessageForm
                 caption={caption}
                 setLoading={setLoading}
                 edit={edit}
                 loading={loading}
                 setCaption={setCaption}
-                sendImageAction={sendImageAction}
-                updateConvo={updateConvo}
-              />
+                // sendImageAction={sendImageAction}
+                // updateConvo={updateConvo}
+              /> */}
             </div>
           )}
           <Image
