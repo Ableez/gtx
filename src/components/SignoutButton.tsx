@@ -17,18 +17,17 @@ import { DialogClose } from "./ui/dialog";
 import { postToast } from "./postToast";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
+import { Button } from "./ui/button";
 
 const SignoutButton = () => {
-  const [openLogout, setOpenLogout] = useState(false);
-
   const router = useRouter();
   return (
     <Drawer>
-      <DrawerTrigger>
-        <DropdownMenuItem className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150">
+      <DrawerTrigger asChild>
+        <Button className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150">
           Logout
           <ArrowLeftOnRectangleIcon width={20} className="-scale-x-100" />
-        </DropdownMenuItem>
+        </Button>
       </DrawerTrigger>
       <DrawerContent className="max-w-md mx-auto text-center py-2">
         <DrawerHeader>

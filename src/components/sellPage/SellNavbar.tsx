@@ -35,10 +35,6 @@ export default function SellNavbar({ pageTitle }: Props) {
     }
   }, []);
 
-  if (!user) {
-    return <div className="p-6" />;
-  }
-
   return (
     <>
       <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4">
@@ -59,16 +55,20 @@ export default function SellNavbar({ pageTitle }: Props) {
         ) : (
           <BackButton />
         )}
-        <h4 className="text-lg font-bold capitalize">{pageTitle}</h4>
+
+        {pageTitle !== "sell" && (
+          <h4 className="text-lg font-bold capitalize">{pageTitle}</h4>
+        )}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="bg-neutral-200 dark:bg-neutral-600 aspect-square w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
               {user ? (
                 <Image
-                  src={user.photoURL || "/logoplace.svg"}
+                  src={user?.photoURL || "/logoplace.svg"}
                   width={55}
                   height={55}
-                  alt={user.displayName}
+                  alt={user?.displayName}
                   priority
                   className="w-full rounded-full aspect-square object-cover text-[10px]"
                 />
@@ -86,7 +86,7 @@ export default function SellNavbar({ pageTitle }: Props) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 mr-2 z-[9999] grid">
             <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-              {user.displayName || "NOT SIGNED IN"}
+              {user?.displayName || "NOT SIGNED IN"}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <ToggleTheme />
