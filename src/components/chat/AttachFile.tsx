@@ -106,6 +106,7 @@ const AttachFile = ({ message, chatId, scrollToBottom }: Props) => {
         owns="user"
       /> */}
       <CropperJs
+        owns="user"
         scrollToBottom={scrollToBottom}
         openS={openEdit}
         setOpenS={setOpenEdit}

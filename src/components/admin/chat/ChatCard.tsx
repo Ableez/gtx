@@ -43,15 +43,16 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
   // );
 
   if (chat) {
+    console.log(chat.data);
     return (
       <div
         className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-neutral-700/20"
         onClick={() => {
-          if (idx && chat.data.messages[idx].sender.uid !== user.uid) {
-            console.log("will mark read");
+          if (chat.data.messages[idx as number]?.sender?.uid !== user.uid) {
+            // console.log("will mark read");
             markRead(chat.data.lastMessage, chat.id);
           }
-          console.log("didnt mark read");
+          // console.log("didnt mark read");
         }}
       >
         <Link
@@ -73,8 +74,8 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
             <div className="w-full">
               <h4
                 className={`${
-                  chat?.data?.lastMessage?.read_receipt.status &&
-                  chat.data.lastMessage.sender !== chat.data.user.uid
+                  chat.data.lastMessage.read_receipt.status &&
+                  chat.data.messages[idx as number]?.sender?.uid !== user.uid
                     ? ""
                     : "font-semibold text-secondary"
                 } truncate max-w-[10rem] md:max-w-[13rem]`}

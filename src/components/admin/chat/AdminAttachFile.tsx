@@ -25,6 +25,7 @@ import { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import CropImage from "./CropImage";
 import useScrollRef from "@/lib/hooks/useScrollRef";
+import CropperJs from "@/components/chat/CropperJs";
 
 type Props = {
   message?: Conversation;
@@ -100,13 +101,19 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
         card={message}
         chatId={chatId}
       />
-      <CropImage
+      {/* <CropImage
         chatId={chatId}
         message={message as Conversation}
         openEdit={openEdit}
         setOpenEdit={setOpenEdit}
         owns="admin"
         scrollToBottom={scrollToBottom}
+      /> */}
+      <CropperJs
+        owns="admin"
+        scrollToBottom={scrollToBottom}
+        openS={openEdit}
+        setOpenS={setOpenEdit}
       />
     </>
   );

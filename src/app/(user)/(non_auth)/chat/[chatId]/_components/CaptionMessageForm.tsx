@@ -159,8 +159,6 @@ export const MessageForm = ({
       },
     };
 
-    console.log("NEW MESSAGE:", newMessage);
-
     if (owns === "admin") {
       adminConversationStore.updateConversation({
         ...adminConversationStore.conversation,

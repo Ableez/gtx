@@ -64,7 +64,7 @@ export const sendUserMessage = async (
     await updateDoc(chatDocRef, {
       lastMessage: {
         id: msg.id,
-        sender: "user",
+        sender: user.uid,
         read_receipt: {
           delivery_status: "sent",
           status: false,

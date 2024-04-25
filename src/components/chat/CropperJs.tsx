@@ -20,9 +20,10 @@ type Props = {
   openS: boolean;
   setOpenS: React.Dispatch<React.SetStateAction<boolean>>;
   scrollToBottom: React.RefObject<HTMLDivElement>;
+  owns: string;
 };
 
-const CropperJs = ({ openS, setOpenS, scrollToBottom }: Props) => {
+const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const cropperRef = useRef<Cropper | null>(null);
   const [edit, setEdit] = useState(false);
@@ -158,7 +159,6 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom }: Props) => {
                   blurDataURL={imageUrl}
                   alt="Cropper Preview"
                   className="w-fit md:h-[350px]"
-                  // layout="responsive"
                   width={100}
                   height={100}
                 />
@@ -170,7 +170,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom }: Props) => {
                   setCaption={setCaption}
                   setLoading={setLoading}
                   loading={false}
-                  owns={"user"}
+                  owns={owns}
                   scrollToBottom={scrollToBottom}
                 />
               </div>
