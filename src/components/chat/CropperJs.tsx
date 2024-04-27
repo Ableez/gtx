@@ -11,10 +11,9 @@ import {
   ImageIcon,
 } from "@radix-ui/react-icons";
 import { MessageForm } from "@/app/(user)/(non_auth)/chat/[chatId]/_components/CaptionMessageForm";
-import { compress } from "image-conversion";
+import { compressAccurately } from "image-conversion";
 import { Button } from "../ui/button";
-import { postToast } from "../postToast";
-import { fileToBase64 } from "@/lib/utils/fileConverter";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   openS: boolean;
@@ -34,8 +33,15 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
+
     if (file) {
-      const compressedFile = await compress(file, { quality: 30 });
+      const compressedFile = await compressAccurately(file, {
+        accuracy: 0.92,
+        size: 1000,
+      });
+
+      console.log("COMPRESSED FILE SIZE", compressedFile.size / 1024);
+
       const reader = new FileReader();
       reader.onload = () => {
         setImageUrl(reader.result as string);
@@ -49,9 +55,18 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
       const url = cropperRef.current
         .getCroppedCanvas({ maxWidth: 4096, height: 4096 })
         .toDataURL();
+
       setImageUrl(url);
       cropperRef.current.destroy();
       setEdit(false);
+    }
+  };
+
+  const clearEdit = () => {
+    if (cropperRef.current) {
+      setImageUrl("");
+      setEdit(false);
+      cropperRef.current.destroy();
     }
   };
 
@@ -61,6 +76,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
       onOpenChange={(e) => {
         if (e === false) {
           setImageUrl("");
+          setEdit(false);
           cropperRef.current?.destroy();
         }
         setOpenS(e);
@@ -71,7 +87,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
           {imageUrl && (
             <div className="flex align-middle place-items-center justify-start gap-1 pb-2">
               {!edit && (
-                <>
+                <div className="grid grid-flow-col gap-1.5 place-items-center">
                   <Button
                     onClick={() => setEdit(true)}
                     className={`edit`}
@@ -80,16 +96,25 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                   >
                     <CropIcon width={24} />
                   </Button>
-                </>
+                  <Button
+                    onClick={() => {
+                      clearEdit();
+                    }}
+                    variant={"ghost"}
+                    size={"icon"}
+                  >
+                    <TrashIcon width={18} />
+                  </Button>
+                </div>
               )}
 
               {edit && (
-                <>
+                <div className="grid grid-flow-col gap-2 place-items-center">
                   <Button
                     onClick={() => {
                       handleEdit();
                     }}
-                    className="bg-green-400/20 hover:bg-green-400/30"
+                    className="bg-green-400/20 hover:bg-green-400/30 dark:bg-green-400/60 dark:hover:bg-green-400/80"
                     variant={"ghost"}
                     size={"icon"}
                   >
@@ -103,13 +128,13 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
 
                       setEdit(false);
                     }}
-                    className="bg-red-400/20 hover:bg-rose-400/30"
+                    className="bg-red-400/20 hover:bg-red-400/30  dark:bg-red-400/70 dark:hover:bg-red-400/80"
                     variant={"ghost"}
                     size={"icon"}
                   >
                     <Cross1Icon width={24} />
                   </Button>
-                </>
+                </div>
               )}
             </div>
           )}
@@ -125,7 +150,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
               />
               <Label
                 htmlFor="heiuv9823"
-                className="p-8 w-full h-full border-2 border-dashed border-purple-400 rounded-xl flex align-middle place-items-center justify-center gap-2 hover:bg-purple-100 duration-300 hover:text-purple-900"
+                className="p-16 w-full h-full border-2 border-dashed border-purple-400 rounded-xl flex align-middle place-items-center justify-center gap-2 hover:bg-purple-100 dark:hover:bg-purple-100/10 duration-300 hover:text-purple-900 dark:hover:text-purple-300"
               >
                 <ImageIcon /> Upload
               </Label>
@@ -146,6 +171,9 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                       autoCrop: false,
                       zoomable: false,
                       movable: false,
+                      guides: false,
+                      highlight: false,
+                      background: false,
                     });
                   }
                 }}
@@ -161,6 +189,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                   className="w-fit md:h-[350px]"
                   width={100}
                   height={100}
+                  onLoad={(e) => {}}
                 />
                 <MessageForm
                   imageUrl={imageUrl}
@@ -171,7 +200,10 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                   setLoading={setLoading}
                   loading={false}
                   owns={owns}
+                  setImageUrl={setImageUrl}
+                  setEdit={setEdit}
                   scrollToBottom={scrollToBottom}
+                  cropperRef={cropperRef}
                 />
               </div>
             )

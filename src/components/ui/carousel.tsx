@@ -201,9 +201,9 @@ const CarouselPrevious = React.forwardRef<
     <Button
       ref={ref}
       variant={variant}
-      size={size}
+      size={"icon"}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-neutral-200/60 dark:bg-neutral-700/80",
+        "absolute h-12 w-12 rounded-2xl bg-neutral-200/60 dark:bg-neutral-700/80",
         orientation === "horizontal"
           ? "left-1 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -230,9 +230,9 @@ const CarouselNext = React.forwardRef<
     <Button
       ref={ref}
       variant={variant}
-      size={size}
+      size={"icon"}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-neutral-200/60 dark:bg-neutral-700/80",
+        "absolute h-12 w-12 rounded-2xl bg-neutral-200/60 dark:bg-neutral-700/80",
         orientation === "horizontal"
           ? "right-1 top-1/2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",

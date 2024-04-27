@@ -11,10 +11,10 @@ type Props = {
 const PageDataFetchError = ({ error }: Props) => {
   return (
     <div className="text-center p-8">
-      <h4 className="text-3xl font-black mb-4">✖️❌✖️</h4>
+      <h4 className="text-3xl font-black mb-4">✖️</h4>
       <div className="grid grid-flow-row place-items-center gap-4 align-middle">
         <p className="mb-5 md:text-left md:mb-0 text-3xl md:max-w-sm font-mono text-neutral-400 w-fit p-4 border-l-8 border dark:border-red-700 border-red-400">
-          Sorry, A fatal error occured
+          Sorry an error occured
         </p>
         <div className="grid grid-flow-row gap-4 max-w-sm w-full">
           <Button onClick={() => window.location.reload()}>Reload page</Button>

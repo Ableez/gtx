@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import sharp from "sharp";
+import { TERMINAL_BgGreen } from "../../../../terminal";
 
 type MediaContent = {
   caption?: string;
@@ -44,38 +45,23 @@ type ReqType = {
 
 export const POST = async (req: NextRequest) => {
   try {
-    const {
-      image,
-      metadata,
-      url,
-      uid,
-      chatId,
-      caption,
-      owns,
-      recipient,
-    }: ReqType = await req.json();
-
-    //  {
-    //         image: imageUrl,
-    //         metadata,
-    //         url,
-    //         uid: user.uid,
-    //         chatId: chatId,
-    //         caption,
-    //         owns: owns,
-    //         recipient:
-    //           owns === "admin"
-    //             ? adminConversationStore.conversation?.user
-    //             : conversation?.user,
-    //       };
+    const { image, metadata, url, chatId, caption, owns, recipient }: ReqType =
+      await req.json();
 
     const base64Data = image.split(";base64,").pop();
     if (!base64Data) {
       throw new Error("Invalid base64 string");
+      return NextResponse.json({
+        success: false,
+        message: "Invalid base64 string",
+        mediaUrl: null,
+      });
     }
 
     const toBlob = Buffer.from(base64Data, "base64");
     const webp = await sharp(toBlob).webp().toBuffer();
+
+    console.log(TERMINAL_BgGreen, webp.byteLength);
 
     const storageRef = ref(storage, url);
 

@@ -13,6 +13,8 @@ const uc = Cookies.get("user");
 const user = JSON.parse(uc || "{}");
 
 const TextMessage = ({ idx, message }: Props) => {
+  if (message.content.text === "") return null;
+
   return (
     <div
       key={idx}

@@ -1,13 +1,20 @@
 import { postToast } from "@/components/postToast";
 import SubmitButton from "./SubmitButton";
 import Cookies from "js-cookie";
-import { FormEvent, useState } from "react";
+import { BaseSyntheticEvent, FormEvent, useState } from "react";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import { v4 } from "uuid";
 import { usePathname } from "next/navigation";
 import { Conversation, Message } from "../../../../../../../chat";
 import { Timestamp } from "firebase/firestore";
+import { useUploadThing } from "@/lib/utils/uploadthing";
+import { dataURLtoFile } from "@/lib/utils/fileConverter";
+import { TERMINAL_FgGreen } from "../../../../../../../terminal";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/lib/utils/firebase";
+import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
+import { sendUserMessage } from "@/lib/utils/actions/userChat";
 
 type MessageFormProps = {
   loading: boolean;
@@ -19,6 +26,9 @@ type MessageFormProps = {
   imageUrl: string;
   owns: string;
   scrollToBottom: React.RefObject<HTMLDivElement>;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  cropperRef: React.MutableRefObject<Cropper | null>;
 };
 
 const uc = Cookies.get("user");
@@ -28,25 +38,24 @@ const IMAGE_NAME = v4();
 const URL_REGEX = /\/(?:admin\/)?chat\/(\w+)$/;
 
 export const MessageForm = ({
-  loading,
   setCaption,
   imageUrl,
   edit,
   caption,
-  setLoading,
-  setOpenS,
   owns,
+  loading,
+  setOpenS,
   scrollToBottom,
+  setImageUrl,
+  setEdit,
+  cropperRef,
+  setLoading,
 }: MessageFormProps) => {
-  const [progess, setProgress] = useState(0);
-
   const { updateConversation, conversation } = useMessagesStore();
   const adminConversationStore = adminCurrConversationStore();
   const chatId = usePathname().split("/")[usePathname().split("/").length - 1];
 
-  const sendImageAction = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const sendImageAction = async () => {
     if (!imageUrl) {
       postToast("Error", { description: "Image is required." });
       return;
@@ -55,70 +64,84 @@ export const MessageForm = ({
     setOpenS(false);
 
     try {
-      // if (imageUrl) {
-      //   postToast("Warning!", {
-      //     description:
-      //       "Image size is too big and might take a while to load. Please wait...",
-      //   });
-      // }
-
-      const metadata = {
-        name: IMAGE_NAME,
-      };
-
+      setLoading(true);
       const url = `/chatImages/${chatId}/greatexchange.co__${v4()}__${
         user?.uid
       }_${IMAGE_NAME}`;
 
-      const reqParams = {
-        image: imageUrl,
-        metadata,
-        url,
-        uid: user.uid,
-        chatId: chatId,
-        caption,
-        owns: owns,
-        recipient:
-          owns === "admin"
-            ? adminConversationStore.conversation?.user
-            : conversation?.user,
-      };
+      const recipient =
+        owns === "admin"
+          ? adminConversationStore.conversation?.user
+          : conversation?.user;
 
-      const res = await fetch(`/api/sendimage`, {
-        body: JSON.stringify(reqParams),
-        method: "POST",
-      }).then((e) => e.json());
+      const file = dataURLtoFile(imageUrl, IMAGE_NAME);
 
-      if (res.success) {
-        postToast("Image sent", { icon: <>✔️</> });
-        setProgress(0);
-        setCaption("");
-        // setError("");
-        // setLoading(false);
-        scrollToBottom.current?.lastElementChild?.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
+      const storageRef = ref(storage, url);
+
+      const uploadTask = await uploadBytes(storageRef, file);
+
+      const mediaurl = await getDownloadURL(uploadTask.ref);
+
+      if (owns === "admin") {
+        await sendAdminMessage(
+          {
+            timeStamp: new Date(),
+          },
+          chatId,
+          recipient as {
+            username: string;
+            uid: string;
+            email: string;
+            photoUrl: string;
+          },
+          undefined,
+          {
+            caption,
+            url: mediaurl,
+            metadata: {
+              media_name: url,
+              media_type: "",
+              media_size: 0,
+            },
+          },
+          true
+        );
       } else {
-        postToast("Error", {
-          description: "An error occured while sending image.",
-        });
+        await sendUserMessage(
+          {
+            timeStamp: new Date(),
+          },
+          chatId,
+          undefined,
+          {
+            caption,
+            url: mediaurl,
+            metadata: {
+              media_name: url,
+              media_type: "",
+              media_size: 0,
+            },
+          },
+          true
+        );
       }
+
+      setImageUrl("");
+      setEdit(false);
+      setCaption("");
+      cropperRef.current?.destroy();
+      scrollToBottom.current?.lastElementChild?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     } catch (error) {
       error instanceof Error && console.error(error.message);
     } finally {
-      // setLoading(false);
-      // setImage(null);
-      // setImgSrc("");
+      setLoading(false);
     }
   };
 
   const updateConvo = () => {
-    if (!imageUrl) {
-      postToast("Error", { description: "Image is required." });
-      return;
-    }
-
     const msg = {
       id: v4(),
       timeStamp: Timestamp.fromDate(new Date()),
@@ -182,8 +205,9 @@ export const MessageForm = ({
 
   return (
     <form
-      onSubmit={async (e) => {
-        sendImageAction(e);
+      onSubmit={(e) => {
+        e.preventDefault();
+        sendImageAction();
       }}
       className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-lg max-w-md mx-auto w-full"
     >

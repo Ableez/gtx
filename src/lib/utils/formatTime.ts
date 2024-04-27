@@ -5,12 +5,17 @@ export const formatTime = (dateString: string): string => {
 
   if (difference < 30000) {
     return "just now";
-  } else {
-    // Use a locale-axware method for formatting time
+  } else if (difference < 86400000) {
     return `${messageDate.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
+    })}`;
+  } else {
+    // also show date when time is beyond 24 hrs
+    return `${messageDate.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
     })}`;
   }
 };

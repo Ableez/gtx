@@ -10,8 +10,6 @@ import {
 } from "../ui/carousel";
 import Image from "next/image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { usePathname } from "next/navigation";
-import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import { Conversation } from "../../../chat";
 
 type Props = {
@@ -31,12 +29,15 @@ const ImagesCarousel = ({
   const [current, setCurrent] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
 
+  console.log(currId, "currId");
+  console.log(currentImage, "currentImage");
+
   useEffect(() => {
     if (!slideApi) {
       return;
     }
 
-    slideApi.scrollTo(currentImage - 7);
+    slideApi.scrollTo(currentImage);
 
     setCurrent(currentImage || slideApi.selectedScrollSnap() + 1);
 
@@ -59,8 +60,11 @@ const ImagesCarousel = ({
   const renderImage = conversation.messages.map((message, idx) => {
     if (message.type === "media")
       return (
-        <CarouselItem key={idx} className="grid place-items-center w-full">
-          <TransformWrapper>
+        <CarouselItem
+          key={idx}
+          className="grid place-items-center align-middle"
+        >
+          <TransformWrapper centerZoomedOut>
             <TransformComponent>
               <Image
                 src={message.content.media.url}
@@ -68,7 +72,7 @@ const ImagesCarousel = ({
                 width={600}
                 height={600}
                 priority
-                className="h-[75dvh] object-cover"
+                className="max-h-[90vh] object-contain "
               />
               <h4 className="border bg-neutral-800">
                 {message.content.media.text}
@@ -81,9 +85,9 @@ const ImagesCarousel = ({
 
   return (
     <Dialog open={openSlide} onOpenChange={setOpenSlide}>
-      <DialogContent className="p-1 h-fit max-h-screen">
-        <Carousel setApi={setSlideApi}>
-          <CarouselContent>{renderImage}</CarouselContent>
+      <DialogContent className="p-1 h-fit max-h-screen grid place-items-center">
+        <Carousel setApi={setSlideApi} className="h-fit">
+          <CarouselContent className="h-fit">{renderImage}</CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
