@@ -90,6 +90,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
           setCurrId={setCurrId}
           setOpenSlide={setOpenSlide}
           key={idx}
+          scrollToBottom={scrollToBottom}
         />
       );
     }
