@@ -140,6 +140,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
         ),
         duration: 100000,
         id: "uploadMultiple",
+        position: "top-right",
       });
 
       setEdit(false);
@@ -210,7 +211,10 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
       setMultipleFiles([]);
       setImageUrl("");
       setIsMultipleFile(false);
-      postToast("✔️ Done", { duration: 2000 });
+      postToast("✔️ Done", {
+        duration: 2000,
+        position: "top-right",
+      });
     } catch (error) {
       console.log("Error uploading files", error);
     } finally {
