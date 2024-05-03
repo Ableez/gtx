@@ -70,9 +70,7 @@ export const MessageForm = ({
 
     try {
       setLoading(true);
-      const url = `/chatImages/${chatId}/greatexchange.co__${v4()}__${
-        user?.uid
-      }_${IMAGE_NAME}`;
+      const url = `/chatImages/${chatId}/${user?.uid}_${IMAGE_NAME}`;
 
       const recipient =
         owns === "admin"

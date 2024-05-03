@@ -159,9 +159,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
 
       for (const file of multipleFiles) {
         const IMAGE_NAME = v4();
-        const path = `/chatImages/${chatId}/greatexchange.co__${v4()}__${
-          user?.uid
-        }_${IMAGE_NAME}`;
+        const path = `/chatImages/${chatId}/${user?.uid}_${IMAGE_NAME}`;
         const storageRef = ref(storage, path);
         const uploadTask = await uploadBytes(storageRef, file.file);
 
