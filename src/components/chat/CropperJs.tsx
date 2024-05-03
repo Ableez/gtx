@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.min.css";
 import Image from "next/image";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Label } from "../ui/label";
 import {
   CheckIcon,
@@ -32,6 +32,16 @@ import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { postToast } from "../postToast";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 type Props = {
   openS: boolean;
@@ -123,7 +133,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
       block: "end",
     });
 
-    if (multipleFiles.length < 2) return;
+    if (multipleFiles.length < 0) return;
 
     try {
       const recipient =
@@ -140,6 +150,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
         ),
         duration: 100000,
         id: "uploadMultiple",
+        dismissible: false,
         position: "top-right",
       });
 
@@ -226,6 +237,23 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
     }
   };
 
+  const handleAddFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    if (!files) return;
+
+    const filesArray = Array.from(files);
+    const fileObjects = filesArray.map((file) => {
+      const url = URL.createObjectURL(file);
+      return { file, url };
+    });
+
+    if (fileObjects.length > 0) {
+      setMultipleFiles((prev) => [...prev, ...fileObjects]);
+    }
+  };
+
+  console.log("MULTIPLE", multipleFiles);
   return (
     <Dialog
       open={openS}
@@ -298,31 +326,60 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             </div>
           )}
 
-          {isMultipleFile && multipleFiles.length > 1 && (
-            <Carousel>
-              <CarouselContent>
-                {multipleFiles.map(({ file, url }, idx) => (
-                  <CarouselItem
-                    key={file.name}
-                    className="place-items-center relative"
-                  >
-                    <Image
-                      src={url}
-                      alt={file.name}
-                      className="object-contain h-[75dvh] w-full rounded-xl"
-                      width={300}
-                      height={300}
-                    />
+          {isMultipleFile && multipleFiles.length > 0 && (
+            <div>
+              <Label
+                className="px-5 py-3 rounded-lg outline-2 hover:outline-pink-400/20 align-middle place-items-center flex gap-1 w-fit hover:bg-pink-500/20"
+                htmlFor="sjdjshd"
+              >
+                <ImageIcon /> Add
+              </Label>
+              <input
+                id="sjdjshd"
+                className="hidden"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleAddFiles}
+              />
+              <Carousel>
+                <CarouselContent>
+                  {multipleFiles.map(({ file, url }, idx) => (
+                    <CarouselItem
+                      key={file.name}
+                      className="place-items-center relative p-1"
+                    >
+                      {multipleFiles.length > 1 && (
+                        <Button
+                          onClick={() => {
+                            const newMultipleFiles = [...multipleFiles];
+                            newMultipleFiles.splice(idx, 1);
+                            setMultipleFiles(newMultipleFiles);
+                          }}
+                          variant={"ghost"}
+                          className="flex gap-1 text-red-500 mb-1.5 absolute top-8 right-2 bg-white/80"
+                        >
+                          <TrashIcon width={18} /> Remove
+                        </Button>
+                      )}
+                      <Image
+                        src={url}
+                        alt={file.name}
+                        className="object-contain h-[75dvh] w-full rounded-xl"
+                        width={300}
+                        height={300}
+                      />
 
-                    <span className="text-md font-bold bg-white/50 dark:bg-white/10 dark:text-white p-0.5 rounded-lg w-1/6 backdrop-blur-sm text-center absolute bottom-4 left-1/2 -translate-x-1/2 text-black">
-                      {idx + 1}
-                    </span>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+                      <span className="text-md font-bold bg-white/50 dark:bg-white/10 dark:text-white p-0.5 rounded-lg w-1/6 backdrop-blur-sm text-center absolute bottom-4 left-1/2 -translate-x-1/2 text-black">
+                        {idx + 1}
+                      </span>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
           )}
           {!isMultipleFile && !imageUrl && (
             <div className="h-full w-full grid place-items-center">
@@ -399,18 +456,49 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
               </div>
             )
           )}
-          {isMultipleFile && multipleFiles.length > 1 && (
-            <Button
-              className="w-full flex align-middle justify-center gap-1 mt-1.5"
-              onClick={() => {
-                uploadMultipleFiles();
-              }}
-            >
-              Send{" "}
-              <div className="text-[12px] bg-white/30 rounded-full w-5 h-5 grid place-items-center align-middle">
-                <span>{multipleFiles.length}</span>
-              </div>
-            </Button>
+          {isMultipleFile && multipleFiles.length > 0 && (
+            <div className="flex align-middle place-items-center justify-between gap-2 mt-1.5">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className="w-full"
+                    title="Delete all pictures"
+                  >
+                    Cancel
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    All pictures will be deleted.
+                  </AlertDialogDescription>
+
+                  <AlertDialogCancel>Close</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      setMultipleFiles([]);
+                      setImageUrl("");
+                      setIsMultipleFile(false);
+                    }}
+                  >
+                    Delete all
+                  </AlertDialogAction>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <Button
+                className="w-full flex align-middle justify-center gap-1"
+                onClick={() => {
+                  uploadMultipleFiles();
+                }}
+              >
+                Send{" "}
+                <div className="text-[12px] bg-white/30 rounded-full w-5 h-5 grid place-items-center align-middle">
+                  <span>{multipleFiles.length}</span>
+                </div>
+              </Button>
+            </div>
           )}
         </div>
       </DialogContent>

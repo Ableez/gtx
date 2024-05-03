@@ -56,6 +56,11 @@ export const MessageForm = ({
   const chatId = usePathname().split("/")[usePathname().split("/").length - 1];
 
   const sendImageAction = async () => {
+    scrollToBottom.current?.lastElementChild?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+
     if (!imageUrl) {
       postToast("Error", { description: "Image is required." });
       return;
@@ -130,10 +135,6 @@ export const MessageForm = ({
       setEdit(false);
       setCaption("");
       cropperRef.current?.destroy();
-      scrollToBottom.current?.lastElementChild?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
     } catch (error) {
       error instanceof Error && console.error(error.message);
     } finally {
