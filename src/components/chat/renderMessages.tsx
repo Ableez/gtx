@@ -49,6 +49,7 @@ const RenderMessages = memo(function RenderMessages({
           setCurrId={setCurrId}
           setOpenSlide={setOpenSlide}
           key={idx}
+          scrollToBottom={scrollToBottom}
         />
       );
     }

@@ -1,9 +1,6 @@
 "use server";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { cookies } from "next/headers";
-import { storage } from "../firebase";
 import { randomUUID } from "crypto";
-import { fileToArrayBuffer, fileToBlob } from "../fileConverter";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
@@ -20,8 +17,6 @@ export const sendImageA = async (formData: FormData) => {
   const user = JSON.parse(uc);
 
   try {
-    const caption = formData.get("caption")?.toString();
-    const owns = formData.get("owns")?.toString();
     const chatId = formData.get("chatId")?.toString();
     const metadata = JSON.parse(
       formData.get("metadata")?.toString() ?? "{}"
@@ -33,7 +28,6 @@ export const sendImageA = async (formData: FormData) => {
     const url = `/chatImages/${chatId}/greatexchange.co__${randomUUID()}__${
       image.name
     }__${user.uid}`;
-    
 
     const res = await fetch(`${baseUrl}/api/sendimage`, {
       body: JSON.stringify({ image, metadata, url, uid: user.uid }),

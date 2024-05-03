@@ -29,9 +29,6 @@ const ImagesCarousel = ({
   const [current, setCurrent] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
 
-  console.log(currId, "currId");
-  console.log(currentImage, "currentImage");
-
   useEffect(() => {
     if (!slideApi) {
       return;

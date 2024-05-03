@@ -9,12 +9,18 @@ type Props = {
   message: Message;
   setCurrId: React.Dispatch<React.SetStateAction<string>>;
   setOpenSlide: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
 const cachedUser = Cookies.get("user");
 const user = JSON.parse(cachedUser || "{}");
 
-const ImageBubble = ({ message, setCurrId, setOpenSlide, }: Props) => {
+const ImageBubble = ({
+  message,
+  setCurrId,
+  setOpenSlide,
+  scrollToBottom,
+}: Props) => {
   if (message.content.media.url)
     return (
       <>
@@ -57,6 +63,12 @@ const ImageBubble = ({ message, setCurrId, setOpenSlide, }: Props) => {
                   width={220}
                   height={220}
                   priority={true}
+                  onLoad={() => {
+                    scrollToBottom.current?.lastElementChild?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "end",
+                    });
+                  }}
                   className="w-full max-h-[420px] bg-slate-200 dark:bg-neutral-800"
                 />
               ) : (
