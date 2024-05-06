@@ -363,7 +363,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                       <Image
                         src={url}
                         alt={file.name}
-                        className="object-contain h-[75dvh] w-full rounded-xl"
+                        className="object-contain max-h-fit h-[60dvh] w-full rounded-xl"
                         width={300}
                         height={300}
                       />
@@ -427,12 +427,12 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             </div>
           ) : (
             imageUrl && (
-              <div className="md:max-h-[400px] max-h-screen h-fit grid gap-2 place-items-center align-middle">
+              <div className="md:max-h-[400px] max-h-[95dvh] h-fit grid gap-2 place-items-center align-middle">
                 <Image
                   src={imageUrl}
                   blurDataURL={imageUrl}
                   alt="Cropper Preview"
-                  className="w-fit md:h-[350px]"
+                  className="w-fit h-[500px]"
                   width={100}
                   height={100}
                   onLoad={(e) => {}}
