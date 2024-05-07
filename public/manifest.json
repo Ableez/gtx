@@ -1,0 +1,108 @@
+{
+  "protocol_handlers": [
+    { "protocol": "mailto", "url": "/newEmail?to=%s" },
+    {
+      "protocol": "web+music",
+      "url": "/play?track=%s"
+    }
+  ],
+  "description": "Welcome to Great Exchange, where turning your unwanted gift cards into instant cash is as easy as a few clicks! Say goodbye to the hassle of holding onto gift cards you'll never use. With Great Exchange, you can seamlessly exchange any type of gift card for cash, instantly. Whether it's from your favorite clothing store, a popular restaurant, or even a niche boutique, we've got you covered. Unlock the value of those forgotten gift cards today with Great Exchange, your go-to platform for fast and convenient cash exchanges!",
+  "screenshots": [
+    {
+      "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
+      "sizes": "2880x1800",
+      "type": "image/png",
+      "description": "purp Home Screen"
+    },
+    {
+      "src": "https://www.pwabuilder.com/assets/screenshots/screen2.png",
+      "sizes": "2880x1800",
+      "type": "image/png",
+      "description": "purp Report Card"
+    },
+    {
+      "src": "https://www.pwabuilder.com/assets/screenshots/screen3.png",
+      "sizes": "2880x1800",
+      "type": "image/png",
+      "description": "Manifest information on the Report Card"
+    }
+  ],
+  "name": "Great Exchange",
+  "short_name": "Greatex",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "display_override": ["window-controls-overlay"],
+  "scope": "/",
+  "start_url": "/",
+  "categories": ["Finance", "Money", "Gift cards"],
+  "shortcuts": [
+    {
+      "name": "Sell an Apple iTunes Card",
+      "short_name": "iTunes Card",
+      "description": "Sell an iTunes card to us at the best rates.",
+      "url": "/sell/iTunes",
+      "icons": [{ "src": "/cards/iTunes.jpg", "sizes": "192x192" }]
+    }
+  ],
+  "lang": "en-us",
+  "id": "purpid_1221",
+  "splash_pages": null,
+  "theme_color": "#F5148C",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "icons/g48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/g512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
