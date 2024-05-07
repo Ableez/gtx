@@ -15,7 +15,7 @@ const TransactionCard = ({ idx, transaction }: Props) => {
     <Link
       href={`transactions/${transaction.id}`}
       key={idx}
-      className="flex gap-4 align-middle place-items-center justify-between py-3 px-4 hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-100 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto"
+      className="flex gap-4 align-middle place-items-center justify-between py-3 px-4 hover:bg-neutral-200 dark:hover:bg-black duration-100 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto"
     >
       <Image
         className="self-center"

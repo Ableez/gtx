@@ -65,7 +65,7 @@
 //         filteredStatus={filteredStatus}
 //         setFilteredStatus={setFilteredStatus}
 //       />
-//       <div className="bg-white dark:bg-neutral-800 flex-col divide-y divide-neutral-200 dark:divide-neutral-700v pb-4 max-w-md mx-auto">
+//       <div className="bg-white dark:bg-black flex-col divide-y divide-neutral-200 dark:divide-neutral-700v pb-4 max-w-md mx-auto">
 //         {loading ? (
 //           <Loading />
 //         ) : (
@@ -107,7 +107,7 @@ const UserTransactionsPage = async (props: Props) => {
 
   if (!transaction || !transaction.success || !transaction.data) {
     return (
-      <section className="bg-white dark:bg-neutral-900">
+      <section className="bg-white dark:bg-black">
         <h4>Oops, something went wrong!</h4>
         <p>
           We&apos;re having trouble fetching your transactions at the moment.

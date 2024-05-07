@@ -40,7 +40,7 @@ const CardMessage = ({
     <>
       <div
         key={idx}
-        className={`my-3 relative md:max-w-[350px] max-w-[260px] min-w-[200px] transition-all duration-500 flex align-middle place-items-end rounded-b-2xl justify-between gap-2 bg-purple-200/50 dark:bg-neutral-900 shadow-s ${
+        className={`my-3 relative md:max-w-[350px] max-w-[260px] min-w-[200px] transition-all duration-500 flex align-middle place-items-end rounded-b-2xl justify-between gap-2 bg-purple-200/50 dark:bg-black shadow-s ${
           message.sender.uid === user.uid
             ? "justify-self-end rounded-tl-2xl rounded-tr-[3px] mr-2"
             : "justify-self-start rounded-tr-2xl rounded-tl-[3px] ml-2"
@@ -179,7 +179,7 @@ const CardMessage = ({
               <div
                 className={`${
                   !hideCode ? "text-[1.1em]" : " dark:text-neutral-600"
-                } select-none py-1.5 px-2.5 rounded-lgst duration-50 bg-neutral-100 dark:bg-neutral-800`}
+                } select-none py-1.5 px-2.5 rounded-lgst duration-50 bg-neutral-100 dark:bg-black`}
               >
                 {!hideCode
                   ? message.card.data?.value.replace(/(.{4})/g, "$1 ")

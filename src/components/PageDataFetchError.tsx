@@ -26,7 +26,7 @@ const PageDataFetchError = ({ error }: Props) => {
         </div>
       </div>
       <div className="w-full grid place-items-center">
-        <p className="p-4 rounded-xl md:m-8 m-2 max-w-md text-neutral-800 dark:text-neutral-400 mx-auto bg-neutral-200/70 dark:bg-neutral-800 font-mono text-left max-h-[35dvh] overflow-scroll">
+        <p className="p-4 rounded-xl md:m-8 m-2 max-w-md text-neutral-800 dark:text-neutral-400 mx-auto bg-neutral-200/70 dark:bg-black font-mono text-left max-h-[35dvh] overflow-scroll">
           {error}
         </p>
       </div>

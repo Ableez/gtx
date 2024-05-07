@@ -66,7 +66,7 @@ const AdminTransactions = (props: Props) => {
         filteredStatus={filteredStatus}
         setFilteredStatus={setFilteredStatus}
       />
-      <div className="bg-white dark:bg-neutral-800 flex-col divide-y divide-neutral-100 pb-4">
+      <div className="bg-white dark:bg-neutral-900 flex-col divide-y divide-neutral-100 pb-4">
         {loading ? (
           <Loading />
         ) : (

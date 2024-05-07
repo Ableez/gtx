@@ -16,11 +16,11 @@ const QuickView = () => {
     return (
       // <div
       //   key={idx}
-      //   className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-screen-md min-w-fit hover:bg-neutral-200 dark:hover:bg-neutral-700 mx-auto"
+      //   className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-screen-md min-w-fit hover:bg-neutral-200 dark:hover:bg-black mx-auto"
       // >
       //   <Link
       //     href={`/admin/chat/${chat?.id}`}
-      //     className="grid grid-flow-col align-middle place-items-top gap-3 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
+      //     className="grid grid-flow-col align-middle place-items-top gap-3 dark:bg-opacity-10 dark:active:bg-black px-2 py-3 duration-300 dark:text-white w-full h-fit"
       //     onClick={() => markRead(chat.data.lastMessage, chat.id)}
       //   >
       //     <div className="flex align-middle place-items-center justify-between gap-3 w-fit">
@@ -71,7 +71,7 @@ const QuickView = () => {
   });
 
   return (
-    <div className="my-8 bg-white border dark:bg-neutral-800 rounded-2xl z-40">
+    <div className="my-8 bg-white border dark:bg-black rounded-2xl z-40">
       <div className="dark:text-neutral-400 border-b dark:border-b-neutral-700 overflow-clip flex align-middle place-items-center justify-between p-2.5">
         <h4 className="font-semibold text-neutral-500 text-xs">
           Latest Messages

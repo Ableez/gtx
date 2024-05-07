@@ -111,7 +111,7 @@ const TicketPage = (props: Props) => {
       <div className="grid grid-flow-row gap-8">
         <div className="grid grid-flow-row gap-4">
           <Drawer>
-            <DrawerTrigger className="bg-neutral-200 dark:bg-neutral-800 bg-opacity-60  p-3 rounded-md flex align-middle place-items-center justify-between">
+            <DrawerTrigger className="bg-neutral-200 dark:bg-black bg-opacity-60  p-3 rounded-md flex align-middle place-items-center justify-between">
               <div className="text-left">
                 <h6 className="text-[10px] text-neutral-500">Ticket type</h6>
                 <h4 className="font-medium">{ticketType}</h4>
@@ -177,7 +177,7 @@ const TicketPage = (props: Props) => {
               </div>
             </DrawerContent>
           </Drawer>
-          <div className="relative rounded-md bg-neutral-200 dark:bg-neutral-800 bg-opacity-60 dark:text-neutral-200 pt-6 px-2 pb-1 flex align-middle place-items-center justify-between outline-none caret-black w-full">
+          <div className="relative rounded-md bg-neutral-200 dark:bg-black bg-opacity-60 dark:text-neutral-200 pt-6 px-2 pb-1 flex align-middle place-items-center justify-between outline-none caret-black w-full">
             <label
               className="z-10 absolute text-[10px] left-4 top-2 text-neutral-500"
               htmlFor="ticketType"
@@ -237,9 +237,9 @@ const TicketPage = (props: Props) => {
             {images.length < 3 && (
               <Label
                 htmlFor="image"
-                className="p-6 aspect-[5/8] border-2 border-dashed border-neutral-200 hover:border-neutral-300 dark:border-neutral-600 hover:dark:border-neutral-500 w-fit grid place-items-center align-middle justify-center rounded-md bg-neutral-100  dark:bg-neutral-800 bg-opacity-60 hover:bg-opacity-100 duration-200"
+                className="p-6 aspect-[5/8] border-2 border-dashed border-neutral-200 hover:border-neutral-300 dark:border-neutral-600 hover:dark:border-neutral-500 w-fit grid place-items-center align-middle justify-center rounded-md bg-neutral-100  dark:bg-black bg-opacity-60 hover:bg-opacity-100 duration-200"
               >
-                <div className="p-2 w-fit rounded-full bg-neutral-200 dark:bg-neutral-700">
+                <div className="p-2 w-fit rounded-full bg-neutral-200 dark:bg-black">
                   <PlusIcon width={16} />
                 </div>
 

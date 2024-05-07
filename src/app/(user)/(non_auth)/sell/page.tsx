@@ -32,7 +32,7 @@ const SellPage = () => {
       localStorage.setItem("card_page", currPage.toString());
       Cookies.set("card_page", currPage.toString());
     }
-    container.current?.scrollIntoView({ behavior: "smooth", block:"start" });
+    container.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [currCards, tabTitle, currPage]);
 
   return (
@@ -41,7 +41,7 @@ const SellPage = () => {
 
       {!currCards || !cardsToShow ? (
         <div className="h-[50vh] grid place-items-center align-middle justify-center">
-          <div className="p-4 rounded-lg bg-white dark:bg-neutral-900 shadow-2xl dark:shadow-lg dark: shadow-pink-200 dark:shadow-[#43262f60] ">
+          <div className="p-4 rounded-lg bg-white dark:bg-black shadow-2xl dark:shadow-lg shadow-pink-200 dark:shadow-[#43262f60] ">
             <Loader />
           </div>
         </div>
@@ -88,12 +88,12 @@ const SellPage = () => {
         </>
       )}
 
-      <div className="bg-neutral-100 dark:bg-neutral-800 w-full p-8 place-items-center grid text-sm text-left border-t dark:rounded-2xl">
+      {/* <div className="bg-neutral-100 dark:bg-black w-full p-8 place-items-center grid text-sm text-left border-t dark:rounded-2xl">
         <div className="max-w-screen-lg mx-auto">
           <h4 className="font-bold text-neutral-500 w-full">
             Beware of gift card scams. Do not share your code.
           </h4>
-          <p className="my-4 text-neutral-400 text-[10px] leading-5">
+          <p className="my-4 text-neutral-400 text-[12px]">
             Protecting Your Gift Card: To safeguard your gift card from fraud,
             we recommend treating it like cash. Keep the card&apos;s details
             confidential and never share them online or over the phone. Only
@@ -106,12 +106,12 @@ const SellPage = () => {
             </b>{" "}
             We will only ask for your card&apos;s PIN when we are ready to
             process your transaction. Be cautious of anyone claiming to
-            represent our company who asks for this information. Remember, your
-            gift card&apos;s security is in your hands. Stay vigilant to enjoy a
-            worry-free exchange experience.
+            represent our <b>Greatex</b> or <b>Great Exchange</b> who asks for
+            this information. Remember, your gift card&apos;s security is in
+            your hands. Stay vigilant to enjoy a worry-free exchange experience.
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

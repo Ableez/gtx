@@ -60,11 +60,11 @@ const ChatNavDropdown = (props: Props) => {
   };
 
   return (
-    <nav className="fixed top-0 flex align-middle justify-center place-items-center py-4 w-full z-[999999] px-2 bg-neutral-100 dark:bg-neutral-800">
+    <nav className="fixed top-0 flex align-middle justify-center place-items-center py-4 w-full z-[999999] px-2 bg-neutral-100 dark:bg-black">
       <Button
         onClick={() => router.back()}
         variant={"ghost"}
-        className="hover:bg-white border p-3 bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-600 dark:border-neutral-700 dark:text-white absolute left-4 top-1/2 -translate-y-1/2"
+        className="hover:bg-white border p-3 bg-neutral-100 dark:bg-black dark:hover:bg-black text-neutral-600 dark:border-neutral-700 dark:text-white absolute left-4 top-1/2 -translate-y-1/2"
       >
         <ArrowLeftIcon width={24} />
       </Button>
@@ -74,7 +74,7 @@ const ChatNavDropdown = (props: Props) => {
         <DropdownMenuTrigger asChild>
           <Button
             variant={"ghost"}
-            className="hover:bg-white border p-3 bg-neutral-100 dark:hover:bg-neutral-700 dark:bg-neutral-800 text-neutral-600 dark:text-white"
+            className="hover:bg-white border p-3 bg-neutral-100 dark:hover:bg-black dark:bg-black text-neutral-600 dark:text-white"
           >
             <EllipsisVerticalIcon width={25} />
           </Button>

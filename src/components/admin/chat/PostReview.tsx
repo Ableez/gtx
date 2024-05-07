@@ -85,7 +85,7 @@ const PostReview = (props: Props) => {
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-800 mb-6 rounded-lg p-8">
+    <div className="bg-white dark:bg-black mb-6 rounded-lg p-8">
       <div className="">
         <p className="text-xs mb-3">Have a review from a customer?</p>
         <Dialog>

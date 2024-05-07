@@ -208,7 +208,7 @@ export const MessageForm = ({
         e.preventDefault();
         sendImageAction();
       }}
-      className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-lg max-w-md mx-auto w-full"
+      className="grid grid-flow-col align-middle place-items-center justify-between bg-neutral-200 dark:bg-black rounded-lg max-w-md mx-auto w-full"
     >
       <input
         id="message"
@@ -218,7 +218,7 @@ export const MessageForm = ({
         onChange={(e) => setCaption(e.target.value)}
         autoCorrect="true"
         autoComplete="off"
-        className={`font-normal transition-all duration-300 resiL-none leading-4 text-xs md:text-sm antialiased focus:outline-none col-span-10 w-full h-fit p-3 bg-neutral-200 dark:bg-neutral-800 outline-none rounded-l-lg disabled:cursor-not-allowed disabled:bg-opacity-50`}
+        className={`font-normal transition-all duration-300 resiL-none leading-4 text-xs md:text-sm antialiased focus:outline-none col-span-10 w-full h-fit p-3 bg-neutral-200 dark:bg-black outline-none rounded-l-lg disabled:cursor-not-allowed disabled:bg-opacity-50`}
         placeholder="Caption (optional)"
         data-gramm="false"
         data-gramm_editor="false"

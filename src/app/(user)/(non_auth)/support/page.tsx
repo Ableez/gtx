@@ -49,7 +49,7 @@ const UserSupportPage = async (props: Props) => {
           </p>
         </div>
 
-        <div className="bg-neutral-200 dark:bg-neutral-800 bg-opacity-60 rounded-md grid grid-flow-row ">
+        <div className="bg-neutral-200 dark:bg-black bg-opacity-60 rounded-md grid grid-flow-row ">
           <Link
             href={"/support/ticket"}
             className="flex align-middle justify-start gap-4 place-items-center w-full p-3"

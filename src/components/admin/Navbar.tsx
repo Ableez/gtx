@@ -55,7 +55,7 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
   }, [pathName]);
 
   return (
-    <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-[#222222db] z-50 max-w-screen-md mx-auto">
+    <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-black z-50 max-w-screen-md mx-auto">
       <NavigationMenu>
         {pathName === "/admin" ? (
           <Link href={"/"} className="p-3">

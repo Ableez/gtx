@@ -140,7 +140,7 @@ const StartAdminTransaction = ({
                         <DialogClose onClick={() => setOpenRate(true)}>
                           <Button
                             variant={"ghost"}
-                            className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300 border"
+                            className="hover:bg-neutral-200 dark:hover:bg-black duration-300 border"
                           >
                             {card?.transaction.cardDetails.rate ? (
                               <div className="flex align-middle place-items-center justify-between gap-1">
@@ -197,7 +197,7 @@ const StartAdminTransaction = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-        <SetRateComp
+      <SetRateComp
         edit={card?.transaction?.cardDetails.rate ? true : false}
         chatId={chatId}
         openRate={openRate}

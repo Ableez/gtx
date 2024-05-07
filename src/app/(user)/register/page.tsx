@@ -132,7 +132,7 @@ const RegisterPage = (props: Props) => {
 
         <h4 className="w-fit mx-auto">Or</h4>
 
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-800 p-4 rounded-2xl">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-black p-4 rounded-2xl">
           <div>
             <form action={signup} className="space-y-4">
               <div>
@@ -200,7 +200,7 @@ const RegisterPage = (props: Props) => {
                       onClick={() => setView((prev) => !prev)}
                       type="button"
                       variant={"ghost"}
-                      className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300"
+                      className="hover:bg-neutral-200 dark:hover:bg-black duration-300"
                       size={"icon"}
                     >
                       {view ? (

@@ -92,7 +92,7 @@ const IforgotReset = (props: Props) => {
         </div>
       </Link>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm dark:bg-neutral-700 dark:bg-opacity-70 bg-white p-3 rounded-2xl">
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm dark:bg-black dark:bg-opacity-70 bg-white p-3 rounded-2xl">
         {!sent ? (
           <>
             <h2 className="mb-2 text-center text-xl font-bold leading-9 tracking-tight text-neutral-900 dark:text-white">

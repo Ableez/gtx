@@ -1,4 +1,4 @@
-const version = "v2:";
+const version = "v1:";
 const cacheNames = {
   assets: `${version}assets`,
   pages: `${version}pages}`,
@@ -22,10 +22,10 @@ async function trimCache(cacheName, limit) {
 }
 
 self.addEventListener("push", (event) => {
-  const title = event.data.title();
+  const title = event.data.title;
   const options = {
-    body: event.data.body(),
-    icon: event.data.icon() || "/public/icons/g192.png",
+    body: event.data.body,
+    icon: event.data.icon || "/greatexc.svg",
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
@@ -44,14 +44,6 @@ self.addEventListener("install", (event) => {
     caches.open(cacheNames.assets).then((cache) => {
       console.log("Adding all caches");
       return cache.addAll([
-        "/favicon.ico",
-        "/cards/*.png",
-        "/icons/*.svg",
-        "/logoplace.svg",
-        "/logo.svg",
-        "/greatexc.svg",
-        "/favicon.png",
-        "/src/css/global.css",
         // Add more essential assets here
       ]);
     })
@@ -60,97 +52,62 @@ self.addEventListener("install", (event) => {
 
 // Activate event: Cleanup old caches
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (!key.startsWith(version)) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
-  );
-
+  console.log("[ServiceWorker] Activate");
   event.waitUntil(self.clients.claim());
 });
 
 // Fetch event: Serve assets from cache or network
-// self.addEventListener("fetch", (event) => {
-//   const request = event.request;
-//   const url = new URL(request.url);
-
-//   console.log("FETCH EVENT:", url);
-
-//   // Determine cache strategy based on request destination
-//   if (url.origin === location.origin) {
-//     // Serve assets from cache
-//     if (url.pathname.startsWith("/images/")) {
-//       event.respondWith(
-//         caches.match(request).then((cachedResponse) => {
-//           return cachedResponse ?? fetch(request);
-//         })
-//       );
-//     }
-
-//     // Serve podcast episodes from cache with trimming
-//     else if (url.pathname.startsWith("/posts/")) {
-//       event.respondWith(
-//         caches.open(cacheNames.posts).then(async (cache) => {
-//           const cachedResponse = await cache.match(request);
-//           if (cachedResponse) {
-//             return cachedResponse;
-//           } else {
-//             const networkResponse = await fetch(request);
-//             await cache.put(request, networkResponse.clone());
-//             await trimCache(cacheNames.posts, cacheLimits.posts);
-//             return networkResponse;
-//           }
-//         })
-//       );
-//     }
-//   }
-// });
-
 self.addEventListener("fetch", (event) => {
-  event.respondWith(async () => {
-    const cache = await caches.open(cacheNames.assets);
+  const request = event.request;
+  const url = new URL(request.url);
 
-    // match the request to our cache
-    const cachedResponse = await cache.match(event.request);
-
-    // check if we got a valid response
-    if (cachedResponse !== undefined) {
-      // Cache hit, return the resource
-      return cachedResponse;
-    } else {
-      // Otherwise, go to the network
-      return fetch(event.request);
+  // Determine cache strategy based on request destination
+  if (url.origin === location.origin) {
+    // Serve assets from cache
+    if (url.pathname.startsWith("/images/")) {
+      event.respondWith(
+        caches.match(request).then((cachedResponse) => {
+          return cachedResponse ?? fetch(request);
+        })
+      );
     }
-  });
+
+    // Serve podcast episodes from cache with trimming
+    else if (url.pathname.startsWith("/api")) {
+      event.respondWith(
+        caches.open(cacheNames.posts).then(async (cache) => {
+          const cachedResponse = await cache.match(request);
+          if (cachedResponse) {
+            return cachedResponse;
+          } else {
+            const networkResponse = await fetch(request);
+            await cache.put(request, networkResponse.clone());
+            await trimCache(cacheNames.posts, cacheLimits.posts);
+            cache.put(request, networkResponse);
+            return networkResponse;
+          }
+        })
+      );
+    }
+  }
 });
 
-
-
 // Add an event listener for the `sync` event in your service worker.
-self.addEventListener('sync', event => {
+self.addEventListener("sync", (event) => {
   // Check for correct tag on the sync event.
-  if (event.tag === 'database-sync') {
-
+  if (event.tag === "database-sync") {
     // Execute the desired behavior with waitUntil().
     event.waitUntil(
       // This is just a hypothetical function for the behavior we desire.
       pushLocalDataToDatabase()
     );
-    }
+  }
 });
-
 
 const pushLocalDataToDatabase = async () => {
   try {
-   fetch("/api")
-
- } catch (error) {
-  console.log("PUSH DATABASE TO SERVER FAILED", error)
- }
-}
+    fetch("/api");
+  } catch (error) {
+    console.log("PUSH DATABASE TO SERVER FAILED", error);
+  }
+};

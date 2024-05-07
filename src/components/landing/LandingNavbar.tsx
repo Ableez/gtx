@@ -21,7 +21,7 @@ export default function LandingNavbar() {
   const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
   return (
-    <div className="bg-white bg-opacity-80 dark:bg-neutral-800 dark:bg-opacity-70 backdrop-blur-md border-b border-b-neutral-100 dark:border-neutral-700 py-3 sticky top-0 z-[99999]">
+    <div className="bg-white bg-opacity-80 dark:bg-black dark:bg-opacity-70 backdrop-blur-md border-b border-b-neutral-100 dark:border-neutral-700 py-3 sticky top-0 z-[99999]">
       <NavigationMenu className="max-w-screen-lg mx-auto relative">
         <button
           title="open side menu"
@@ -46,19 +46,19 @@ export default function LandingNavbar() {
         <NavigationMenuList className="hidden md:flex">
           <Link
             href="/"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
+            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             Services
           </Link>
           <Link
             href="/"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
+            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             About Us
           </Link>
           <Link
             href="/"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-neutral-800 hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
+            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             Policies
           </Link>
@@ -119,7 +119,7 @@ export default function LandingNavbar() {
               </Link>
               <Link
                 onClick={() => setOpen(false)}
-                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-800 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                 href={"/sell"}
               >
                 <li>Crypto currencies</li>
@@ -131,7 +131,7 @@ export default function LandingNavbar() {
               </Link>
               <Link
                 onClick={() => setOpen(false)}
-                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-800 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                 href={""}
               >
                 <li>About Us</li>
@@ -144,7 +144,7 @@ export default function LandingNavbar() {
 
               <Link
                 onClick={() => setOpen(false)}
-                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-800 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                 href={"/"}
               >
                 <li>Policies</li>
@@ -157,7 +157,7 @@ export default function LandingNavbar() {
 
               <Link
                 onClick={() => setOpen(false)}
-                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-neutral-800 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                 href={"/login"}
               >
                 <li>Login</li>

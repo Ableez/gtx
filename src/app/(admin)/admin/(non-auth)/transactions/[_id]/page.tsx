@@ -250,7 +250,7 @@ const TransactionDetail = ({ params }: Props) => {
                       });
                   }}
                   variant={"ghost"}
-                  className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 aspect-square p-0 border ${
+                  className={`hover:bg-neutral-200 dark:hover:bg-black aspect-square p-0 border ${
                     copied
                       ? "bg-purple-300 hover:bg-purple-300 dark:bg-purple-800 dark:hover:bg-purple-800"
                       : ""
@@ -302,7 +302,7 @@ const TransactionDetail = ({ params }: Props) => {
                   }
                 }}
               >
-                <DialogTrigger className="flex align-middle place-items-center justify-between w-full p-4 border-pink-100 dark:border-neutral-600 bg-white dark:bg-neutral-800 dark:border-opacity-40 hover:shadow-sm group text-orange-700">
+                <DialogTrigger className="flex align-middle place-items-center justify-between w-full p-4 border-pink-100 dark:border-neutral-600 bg-white dark:bg-black dark:border-opacity-40 hover:shadow-sm group text-orange-700">
                   <div className="flex align-middle place-items-center justify-between gap-4">
                     <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-red-400 bg-red-100 dark:bg-red-950 dark:bg-opacity-40 dark:border-red-700 dark:text-red-500">
                       <TrashIcon width={22} />

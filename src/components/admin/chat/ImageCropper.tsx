@@ -85,7 +85,7 @@ const ImageCropper = ({
   return (
     <div className=" w-fit mx-auto">
       <div className="relative w-fit ">
-        <div className="absolute top-2 right-2 z-50 bg-white dark:bg-neutral-700 bg-opacity-50 backdrop-blur-md rounded-sm">
+        <div className="absolute top-2 right-2 z-50 bg-white dark:bg-black bg-opacity-50 backdrop-blur-md rounded-sm">
           {edit ? (
             <div className="flex align-middle place-items-center justify-between">
               <button

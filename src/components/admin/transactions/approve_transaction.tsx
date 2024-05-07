@@ -70,7 +70,7 @@ const ApproveTransaction = ({ id, transaction, reval }: Props) => {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger className="flex align-middle place-items-center justify-between w-full p-4 bg-white dark:bg-neutral-800 border-y border-pink-100 dark:border-neutral-600 dark:border-opacity-40 hover:shadow-sm group text-emerald-700">
+      <DrawerTrigger className="flex align-middle place-items-center justify-between w-full p-4 bg-white dark:bg-black border-y border-pink-100 dark:border-neutral-600 dark:border-opacity-40 hover:shadow-sm group text-emerald-700">
         <div className="flex align-middle place-items-center justify-between gap-4">
           <div className="hover:bg-text-neutral-800 px-4 py-2.5 rounded-md border border-green-400 bg-green-100 dark:bg-green-950 dark:bg-opacity-40 dark:border-green-700 dark:text-green-500">
             <CheckIcon width={14} strokeWidth={2} />

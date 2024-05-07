@@ -46,7 +46,7 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
     console.log(chat.data);
     return (
       <div
-        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-neutral-700/20"
+        className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-black/20"
         onClick={() => {
           if (chat.data.messages[idx as number]?.sender?.uid !== user.uid) {
             // console.log("will mark read");
@@ -57,7 +57,7 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
       >
         <Link
           href={`${isIn ? "/admin" : ""}/chat/${chat?.id}`}
-          className="flex align-middle place-items-center justify-between dark:bg-opacity-10 dark:active:bg-neutral-700 px-4 py-3 duration-300 dark:text-white w-full h-fit"
+          className="flex align-middle place-items-center justify-between dark:bg-opacity-10 dark:active:bg-black px-4 py-3 duration-300 dark:text-white w-full h-fit"
         >
           <div className="flex align-middle place-items-center justify-between gap-4 w-full">
             {chat.data.user.photoUrl ? (
@@ -112,7 +112,7 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
       <div className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200">
         <Link
           href={`/admin/chat/${chat2?.id}`}
-          className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
+          className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-black px-2 py-3 duration-300 dark:text-white w-full h-fit"
           onClick={() =>
             markRead(chat2?.lastMessage as LastMessage, chat2?.id as string)
           }

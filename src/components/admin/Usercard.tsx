@@ -66,9 +66,9 @@ const Usercard = ({ user }: Props) => {
         <AccordionTrigger
           className={`${
             shine && "bg-pink-300 dark:bg-pink-900 dark:bg-opacity-20"
-          } flex gap-4 py-3 px-4 hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-200 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto hover:no-underline`}
+          } flex gap-4 py-3 px-4 hover:bg-neutral-200 dark:hover:bg-black duration-200 ease-in cursor-pointer h-fit max-w-lg w-full mx-auto hover:no-underline`}
         >
-          <div className="rounded-full aspect-square grid place-items-center object-fill border-2 border-white dark:border-neutral-700 overflow-clip bg-white dark:bg-neutral-700">
+          <div className="rounded-full aspect-square grid place-items-center object-fill border-2 border-white dark:border-neutral-700 overflow-clip bg-white dark:bg-black">
             <Image
               className="self-center dark:opacity-40 aspect-square object-cover"
               src={user.imageUrl || "/logoplace.svg"}
@@ -89,7 +89,7 @@ const Usercard = ({ user }: Props) => {
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          <div className="px-6 py-2 bg-white dark:bg-neutral-800">
+          <div className="px-6 py-2 bg-white dark:bg-black">
             <div className="flex align-baseline place-items-baseline justify-start gap-3 pb-4">
               {user.disabled ? (
                 <div className="px-1.5 py-[0.5px] mb-2 w-fit rounded-full bg-red-100  dark:bg-red-400/20 border dark:text-white border-red-800 font-semibold text-red-800">
@@ -131,7 +131,7 @@ const Usercard = ({ user }: Props) => {
                               >
                                 <Link
                                   href={`/admin/chat/${chat?.id}`}
-                                  className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-neutral-700 px-2 py-3 duration-300 dark:text-white w-full h-fit"
+                                  className="grid grid-flow-col align-middle place-items-top gap-3 md:gap-10 dark:bg-opacity-10 dark:active:bg-black px-2 py-3 duration-300 dark:text-white w-full h-fit"
                                   onClick={async () => {
                                     const chatRef = doc(
                                       db,

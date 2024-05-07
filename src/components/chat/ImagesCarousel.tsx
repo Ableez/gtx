@@ -71,9 +71,7 @@ const ImagesCarousel = ({
                 priority
                 className="max-h-[90vh] object-contain "
               />
-              <h4 className="border bg-neutral-800">
-                {message.content.media.text}
-              </h4>
+              <h4 className="border bg-black">{message.content.media.text}</h4>
             </TransformComponent>
           </TransformWrapper>
         </CarouselItem>

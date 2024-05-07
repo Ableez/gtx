@@ -7,6 +7,7 @@ import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
 import PromptInstall from "@/components/PromptInstall";
 import Script from "next/script";
+import RequestNotification from "@/components/RequestNotification";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -39,17 +40,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Head />
-      <body className={`bg-[#f5f5f5] dark:bg-[#222] ${openSans.className}`}>
+      <body className={`bg-[#f5f5f5] dark:bg-black ${openSans.className}`}>
         <ThemeProvider
           disableTransitionOnChange
           attribute="class"
           defaultTheme="system"
           enableSystem
         >
+          <PromptInstall />
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </ThemeProvider>
         <Toaster />
-        <PromptInstall />
+        <RequestNotification />
       </body>
     </html>
   );
@@ -76,6 +78,7 @@ const Head = () => {
       <meta name="msapplication-tap-highlight" content="no" />
       <link rel="manifest" href="/manifest.json" />
       <link rel="shortcut icon" href="/icons/g384.png" />
+      <Script src="../../install-pwa.js" />
     </head>
   );
 };

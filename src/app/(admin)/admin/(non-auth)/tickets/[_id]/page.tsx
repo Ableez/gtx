@@ -132,7 +132,7 @@ const AdminTicketView = async ({ params }: Props) => {
           </h4>
         </div>
 
-        <div className="text-sm p-4 rounded-md bg-neutral-200 bg-opacity-50 dark:bg-neutral-800">
+        <div className="text-sm p-4 rounded-md bg-neutral-200 bg-opacity-50 dark:bg-neutral-900">
           <h5 className="font-medium text-[10px] text-neutral-500">
             Description:{" "}
           </h5>
@@ -143,7 +143,7 @@ const AdminTicketView = async ({ params }: Props) => {
 
         <div className="my-8">
           <h4 className="text-sm text-neutral-500 mb-2">Gallery</h4>
-          <div className="rounded-md p-4 bg-neutral-200 bg-opacity-50 dark:bg-neutral-800">
+          <div className="rounded-md p-4 bg-neutral-200 bg-opacity-50 dark:bg-neutral-900">
             {data.content.images.length === 0 ? (
               <div className="text-center p-8">
                 <p className="text-sm text-neutral-500">No images</p>
@@ -174,7 +174,7 @@ const AdminTicketView = async ({ params }: Props) => {
           <ReplyTicketDialog ticket={JSON.parse(JSON.stringify(data))} />
         </div>
 
-        <div className="rounded-md p-4 bg-neutral-200 bg-opacity-50 dark:bg-neutral-800 mb-6">
+        <div className="rounded-md p-4 bg-neutral-200 bg-opacity-50 dark:bg-neutral-900 mb-6">
           {data.adminReply?.length === 0 ? (
             <div>
               <h6>No replies yet</h6>

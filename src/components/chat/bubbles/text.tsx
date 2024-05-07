@@ -28,7 +28,7 @@ const TextMessage = ({ idx, message }: Props) => {
         className={`${
           message.sender.uid === user.uid
             ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-            : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200/50 dark:bg-neutral-800"
+            : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200/50 dark:bg-black"
         } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
       >
         <div className="flex align-middle place-items-end gap-4">

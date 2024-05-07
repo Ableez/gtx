@@ -95,7 +95,7 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
   };
 
   return (
-    <div className="bg-neutral-50 dark:bg-neutral-800 w-screen py-2 border px-2 shadow-xl fixed bottom-0 translate-x-1/2 -left-1/2">
+    <div className="bg-neutral-50 dark:bg-black w-screen py-2 border px-2 shadow-xl fixed bottom-0 translate-x-1/2 -left-1/2">
       <form
         ref={formRef}
         onSubmit={() => submitForm()}
@@ -116,7 +116,7 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
           onChange={(e) => setMessage(e.target.value)}
           autoCorrect="true"
           autoComplete="off"
-          className={`transition-all duration-300 bg-neutral-200 dark:bg-neutral-800 resize-none leading-4 text-sm focus:outline-none col-span-9 md:col-span-10 w-full p-3 rounded-xl scroll`}
+          className={`transition-all duration-300 bg-neutral-200 dark:bg-black resize-none leading-4 text-sm focus:outline-none col-span-9 md:col-span-10 w-full p-3 rounded-xl scroll`}
           placeholder="Enter a message..."
           data-gramm="false"
           data-gramm_editor="false"

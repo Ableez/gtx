@@ -82,7 +82,7 @@ const SupportPage = (props: Props) => {
       </AlertDialog>
       <form
         onSubmit={submitReport}
-        className="mt-8 max-w-xl dark:bg-neutral-800 dark:border dark:border-neutral-700 bg-neutral-100 container rounded-lg py-8 px-4"
+        className="mt-8 max-w-xl dark:bg-black dark:border dark:border-neutral-700 bg-neutral-100 container rounded-lg py-8 px-4"
       >
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div className="">
@@ -101,19 +101,16 @@ const SupportPage = (props: Props) => {
               name="reason"
               className="mt-1.5 border p-2 border-neutral-600 rounded-lg w-full bg-transparent"
             >
-              <option
-                value={""}
-                className="dark:bg-neutral-700 text-neutral-500"
-              >
+              <option value={""} className="dark:bg-black text-neutral-500">
                 Select a reason...
               </option>
-              <option className="dark:bg-neutral-700" value="transactional">
+              <option className="dark:bg-black" value="transactional">
                 Transactional
               </option>
-              <option className="dark:bg-neutral-700" value="technical">
+              <option className="dark:bg-black" value="technical">
                 Technical
               </option>
-              <option className="dark:bg-neutral-700" value="feedback">
+              <option className="dark:bg-black" value="feedback">
                 Feedback
               </option>
             </select>

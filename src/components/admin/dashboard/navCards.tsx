@@ -57,7 +57,7 @@ const NavCards = () => {
           <Link
             href={box.link}
             key={idx}
-            className="rounded-3xl dark:shadow-lg py-6 ring-4 ring-transparent hover:ring-pink-400/20 duration-300 bg-neutral-300/20 dark:bg-neutral-700/20"
+            className="rounded-3xl dark:shadow-lg py-6 ring-4 ring-transparent hover:ring-pink-400/20 duration-300 bg-neutral-300/20 dark:bg-black/20"
           >
             <div className="grid align-middle place-items-center justify-center">
               <div

@@ -12,7 +12,7 @@ const LandingLayout = (props: Props) => {
     <>
       <LandingNavbar />
       {props.children}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

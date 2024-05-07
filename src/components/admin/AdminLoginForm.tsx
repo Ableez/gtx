@@ -178,7 +178,7 @@ const AdminLoginForm = (props: Props) => {
                   onClick={() => setView((prev) => !prev)}
                   type="button"
                   variant={"ghost"}
-                  className="hover:bg-neutral-200 dark:hover:bg-neutral-700 duration-300"
+                  className="hover:bg-neutral-200 dark:hover:bg-black duration-300"
                   size={"icon"}
                 >
                   {view ? <EyeIcon width={16} /> : <EyeSlashIcon width={16} />}

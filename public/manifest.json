@@ -1,24 +1,18 @@
 {
-  "protocol_handlers": [
-    { "protocol": "mailto", "url": "/newEmail?to=%s" },
-    {
-      "protocol": "web+music",
-      "url": "/play?track=%s"
-    }
-  ],
-  "description": "Welcome to Great Exchange, where turning your unwanted gift cards into instant cash is as easy as a few clicks! Say goodbye to the hassle of holding onto gift cards you'll never use. With Great Exchange, you can seamlessly exchange any type of gift card for cash, instantly. Whether it's from your favorite clothing store, a popular restaurant, or even a niche boutique, we've got you covered. Unlock the value of those forgotten gift cards today with Great Exchange, your go-to platform for fast and convenient cash exchanges!",
+  "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
+  "description": "Install greatexchange app on your device for the best experience trading with Great Exchange.",
   "screenshots": [
     {
       "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
       "sizes": "2880x1800",
       "type": "image/png",
-      "description": "purp Home Screen"
+      "description": "Greatex Home Screen"
     },
     {
       "src": "https://www.pwabuilder.com/assets/screenshots/screen2.png",
       "sizes": "2880x1800",
       "type": "image/png",
-      "description": "purp Report Card"
+      "description": "Greatex Report Card"
     },
     {
       "src": "https://www.pwabuilder.com/assets/screenshots/screen3.png",
@@ -33,76 +27,84 @@
   "orientation": "portrait-primary",
   "display_override": ["window-controls-overlay"],
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/sell",
   "categories": ["Finance", "Money", "Gift cards"],
   "shortcuts": [
     {
-      "name": "Sell an Apple iTunes Card",
+      "name": "Sell a Card",
+      "short_name": "iTunes Card",
+      "description": "Sell an iTunes card to us at the best rates.",
+      "url": "/sell",
+      "icons": [{ "src": "/cards/iTunes.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "View Conversations",
+      "short_name": "Conversations",
+      "description": "View all in-app conversations",
+      "url": "/conversations",
+      "icons": [{ "src": "/cards/iTunes.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sell iTunes Card",
       "short_name": "iTunes Card",
       "description": "Sell an iTunes card to us at the best rates.",
       "url": "/sell/iTunes",
       "icons": [{ "src": "/cards/iTunes.jpg", "sizes": "192x192" }]
     }
   ],
-  "lang": "en-us",
-  "id": "purpid_1221",
-  "splash_pages": null,
-  "theme_color": "#F5148C",
+  "lang": "en-US",
+  "id": "greatex_1221",
+  "splash_pages": "/splash",
+  "theme_color": "#fff",
   "background_color": "#fff",
   "icons": [
     {
-      "src": "icons/g48.png",
+      "src": "icons/maskable_icon_x48.png",
       "sizes": "48x48",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g72.png",
+      "src": "icons/maskable_icon_x72.png",
       "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g96.png",
+      "src": "icons/maskable_icon_x96.png",
       "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g128.png",
+      "src": "icons/maskable_icon_x128.png",
       "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icons/g152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icons/g192.png",
+      "src": "icons/maskable_icon_x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g384.png",
+      "src": "icons/maskable_icon_x384.png",
       "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable any",
+      "type": "image/png"
     },
     {
-      "src": "icons/g512.png",
+      "src": "icons/maskable_icon_x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "chrome_web_store",
+      "url": "https://greatexc.vercel.app/manifest.json"
     }
   ]
 }

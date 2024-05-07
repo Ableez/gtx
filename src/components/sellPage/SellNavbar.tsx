@@ -14,6 +14,7 @@ import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import BackButton from "./BackButton";
@@ -37,7 +38,7 @@ export default function SellNavbar({ pageTitle }: Props) {
 
   return (
     <>
-      <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-[#f5f5f56f] dark:bg-[#2222226d] z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4">
+      <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-neutral-100 dark:bg-black z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 px-4">
         {pageTitle === "sell" ? (
           <Link
             href={"/"}
@@ -64,14 +65,23 @@ export default function SellNavbar({ pageTitle }: Props) {
           <DropdownMenuTrigger asChild>
             <div className="bg-neutral-200 dark:bg-neutral-600 aspect-square w-12 h-12 shadow-md rounded-full border-2 grid place-items-center align-middle text-center font-medium text-md text-opacity-20 dark:text-white leading-none border-white dark:border-neutral-500 uppercase text-base">
               {user ? (
-                <Image
-                  src={user?.photoURL || "/logoplace.svg"}
-                  width={55}
-                  height={55}
-                  alt={user?.displayName}
-                  priority
-                  className="w-full rounded-full aspect-square object-cover text-[10px]"
-                />
+                <>
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      width={55}
+                      height={55}
+                      alt={user?.displayName}
+                      priority
+                      className="w-full rounded-full aspect-square object-cover text-[10px]"
+                    />
+                  ) : (
+                    <UserIcon
+                      width={20}
+                      className="text-neutral-400 dark:text-white"
+                    />
+                  )}
+                </>
               ) : (
                 <Button
                   asChild

@@ -1,48 +1,19 @@
-"use client";
-
-import React, { useEffect, useRef, useState } from "react";
-import { Drawer, DrawerContent, DrawerDescription } from "./ui/drawer";
 import { Button } from "./ui/button";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
-type Props = {};
-
-const PromptInstall = (props: Props) => {
-  //   let eventPrompt = useRef<Event>(null);
-  const [open, setOpen] = useState(false);
-  const installButton = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (window) {
-      let eventPrompt: BeforeInstallPromptEvent | null = null;
-
-      window.addEventListener("beforeinstallprompt", (event) => {
-        event.preventDefault();
-        alert("install pwa");
-        eventPrompt = event as BeforeInstallPromptEvent;
-      });
-
-      installButton.current?.addEventListener("click", async () => {
-        if (!eventPrompt) {
-          return;
-        }
-        const result = await eventPrompt.prompt()!;
-        console.log(`Install prompt was: ${result.outcome}`);
-        disableInAppEventPrompt();
-      });
-    }
-  }, []);
-
-  function disableInAppEventPrompt() {
-    setOpen(false);
-  }
-
+const PromptInstall = () => {
   return (
-    <Drawer open={open} onClose={() => setOpen(false)}>
-      <DrawerContent>
-        <DrawerDescription>nstall Greatex on to your devic</DrawerDescription>
-        <Button ref={installButton}>Install</Button>
-      </DrawerContent>
-    </Drawer>
+    <div
+      id="installContainer"
+      className="hidden place-items-center bg-purple-300 font-medium text-[14px] dark:from-purple-500/5 dark:to-pink-600/20 bg-gradient-to-tr dark:bg-black "
+    >
+      <div className="p-2 flex align-middle place-items-center justify-between sticky top-0 max-w-md w-full mx-auto">
+        <h4>Install Greatex to your device</h4>
+        <Button id={"installButton"} className="flex gap-1">
+          <ArrowDownTrayIcon width={16} /> Install
+        </Button>
+      </div>
+    </div>
   );
 };
 

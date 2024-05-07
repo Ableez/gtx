@@ -32,7 +32,7 @@ const TicketCard = ({ ticket, idx, link }: Props) => {
     <Link
       href={link}
       key={ticket.id}
-      className="p-3 hover:bg-neutral-200 hover:bg-opacity-50 dark:hover:bg-neutral-800 flex align-middle place-items-center justify-between relative"
+      className="p-3 hover:bg-neutral-200 hover:bg-opacity-50 dark:hover:bg-black flex align-middle place-items-center justify-between relative"
     >
       {!ticket.status.seen && !ticket.status.addressed ? (
         <div className="h-2 w-2 bg-red-500 rounded-full absolute right-4 top-1/2 -translate-y-1/2" />

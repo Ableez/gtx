@@ -20,7 +20,7 @@ const TransactionsNav = ({ filteredStatus, setFilteredStatus }: Props) => {
       <DropdownMenu>
         {filteredStatus !== "all" ? (
           <Button
-            className="flex align-middle place-items-center font-light text-xs text-neutral-00 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-700 group bg-neutral-200 capitalize gap-2"
+            className="flex align-middle place-items-center font-light text-xs text-neutral-00 rounded-lg hover:bg-neutral-300 dark:hover:bg-black group bg-neutral-200 capitalize gap-2"
             variant={"ghost"}
             onClick={() => setFilteredStatus("all")}
           >
@@ -33,10 +33,8 @@ const TransactionsNav = ({ filteredStatus, setFilteredStatus }: Props) => {
           </Button>
         ) : (
           <DropdownMenuTrigger
-            className={`flex align-middle place-items-center font-light text-xs text-neutral-00 py-2 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-700 border ${
-              filteredStatus !== "all"
-                ? "bg-neutral-200 dark:bg-neutral-800"
-                : ""
+            className={`flex align-middle place-items-center font-light text-xs text-neutral-00 py-2 px-4 rounded-lg hover:bg-neutral-300 dark:hover:bg-black border ${
+              filteredStatus !== "all" ? "bg-neutral-200 dark:bg-black" : ""
             }  focus-visible:outline-none group duration-150`}
           >
             <Button

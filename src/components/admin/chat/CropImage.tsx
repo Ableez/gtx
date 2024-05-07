@@ -233,7 +233,7 @@ const CropImage = ({
             {imgSrc && (
               <button
                 disabled={loading}
-                className="absolute left-2 md:left-1/2 md:-translate-x-1/2 bg-white py-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-700 bg-opacity-30 backdrop-blur-lg rounded-md border px-2 flex align-middle place-items-center gap-1.5"
+                className="absolute left-2 md:left-1/2 md:-translate-x-1/2 bg-white py-1.5 hover:bg-neutral-200 dark:hover:bg-black bg-opacity-30 backdrop-blur-lg rounded-md border px-2 flex align-middle place-items-center gap-1.5"
                 onClick={() => {
                   setImgSrc("");
                   setImage(null);
@@ -273,7 +273,7 @@ const CropImage = ({
                 {progress > 0 && <Progress value={progress} />}
               </div>
               <div
-                className={`text-red-500 text-xs text-center mb-1 transition-all duration-100 font-bold dark:bg-neutral-900 rounded-xl overflow-clip text-clip absolute  px-2 top-10 left-1/2 -translate-x-1/2 delay-100 opacity-0 ${
+                className={`text-red-500 text-xs text-center mb-1 transition-all duration-100 font-bold dark:bg-black rounded-xl overflow-clip text-clip absolute  px-2 top-10 left-1/2 -translate-x-1/2 delay-100 opacity-0 ${
                   error ? "h-fit w-fit p-0.5 opacity-80" : "h-0 w-0 p-0"
                 }`}
               >

@@ -65,7 +65,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
   });
 
   return (
-    <div className="sticky px-4 top-0 z-[50] bg-white dark:bg-neutral-800 py-4 shadow-sm dark:rounded-2xl">
+    <div className="sticky px-4 top-0 z-[50] bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -99,14 +99,16 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
           );
         })}
       </div>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search..." />
-        <CommandList className=" max-h-full">
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandSeparator />
-          <CommandGroup heading="Gift cards">{renderCards}</CommandGroup>
-        </CommandList>
-      </CommandDialog>
+      <div className="px-2">
+        <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandInput placeholder="Search..." />
+          <CommandList className="max-h-full">
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandSeparator />
+            <CommandGroup heading="Gift cards">{renderCards}</CommandGroup>
+          </CommandList>
+        </CommandDialog>
+      </div>
     </div>
   );
 };

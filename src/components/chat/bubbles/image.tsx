@@ -119,7 +119,7 @@ const ImageBubble = ({
             className={`${
               message.sender.uid === user.uid
                 ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
+                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-black"
             } grid align-middle place-items-center justify-between px-1 gap-2 py-1 min-w-[100px] min-h-[100px]`}
           >
             <div className="rounded-sm overflow-clip shadow-md bg-white relative">
@@ -156,7 +156,7 @@ const ImageBubble = ({
                         block: "end",
                       });
                     }}
-                    className="w-full max-h-[420px] bg-slate-200 dark:bg-neutral-800 select-all"
+                    className="w-full max-h-[420px] bg-slate-200 dark:bg-black select-all"
                   />
                 </div>
               ) : (

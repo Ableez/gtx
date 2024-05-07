@@ -41,7 +41,7 @@ const AdminLogin = (props: Props) => {
           </Button>
         </div> */}
 
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-800 p-4 rounded-2xl">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-neutral-900 p-4 rounded-2xl">
           <AdminLoginForm />
 
           <p className="mt-10 text-center text-sm text-neutral-500">

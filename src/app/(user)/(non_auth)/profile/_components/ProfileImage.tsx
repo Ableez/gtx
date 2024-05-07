@@ -135,7 +135,7 @@ const ProfileImage = ({ user }: Props) => {
             type="button"
             variant={"outline"}
             title="Cancel"
-            className="absolute -right-8 bg-white dark:bg-neutral-800 rounded-full top-0 z-50"
+            className="absolute -right-8 bg-white dark:bg-black rounded-full top-0 z-50"
           >
             <XMarkIcon width={16} />
           </Button>
@@ -155,7 +155,7 @@ const ProfileImage = ({ user }: Props) => {
             priority
             className={`${
               loading && "opacity-40"
-            } rounded-full overflow-clip aspect-square object-cover bg-white/40 dark:bg-neutral-700 animate-appear-in relative`}
+            } rounded-full overflow-clip aspect-square object-cover bg-white/40 dark:bg-black animate-appear-in relative`}
           />
           {loading && (
             <span className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white rounded-full p-4">

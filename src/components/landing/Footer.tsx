@@ -7,12 +7,12 @@ type Props = {};
 const Footer = (props: Props) => {
   return (
     <div>
-      <div className="bg-neutral-100 dark:bg-neutral-800 w-full px-8 py-8 place-items-center grid text-sm text-left">
+      <div className="bg-neutral-100 dark:bg-black w-full px-8 py-8 place-items-center grid text-sm text-left">
         <div className="max-w-screen-lg mx-auto">
           <h4 className="font-bold text-neutral-500 w-full">
             Beware of gift card scams. Do not share your code.
           </h4>
-          <p className="my-4 text-neutral-400 text-[10px] leading-8">
+          <p className="my-4 text-neutral-400 text-[12px]">
             Protecting Your Gift Card: To safeguard your gift card from fraud,
             we recommend treating it like cash. Keep the card&apos;s details
             confidential and never share them online or over the phone. Only
@@ -27,7 +27,7 @@ const Footer = (props: Props) => {
           </p>
         </div>
       </div>
-      <footer className="bg-neutral-100 md:p-6 dark:bg-neutral-900 py-16 border-t">
+      <footer className="bg-neutral-100 md:p-6 dark:bg-black py-16 border-t">
         <div className="max-w-screen-lg mx-auto">
           <div className="mx-auto max-w-screen-xl">
             <div className="md:flex md:justify-between gap-[2em]">
