@@ -59,6 +59,7 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: false,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.module.rules.forEach((rule) => {

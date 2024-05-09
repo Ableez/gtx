@@ -432,7 +432,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
                   src={imageUrl}
                   blurDataURL={imageUrl}
                   alt="Cropper Preview"
-                  className="w-fit h-[500px]"
+                  className="w-fit h-[500px] object-contain"
                   width={100}
                   height={100}
                   onLoad={(e) => {}}

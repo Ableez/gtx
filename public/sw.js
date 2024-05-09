@@ -2,12 +2,12 @@ const version = "v1:";
 const cacheNames = {
   assets: `${version}assets`,
   pages: `${version}pages}`,
-  posts: `${version}posts`,
+  requests: `${version}requests`,
 };
 
 const cacheLimits = {
-  pages: 100,
-  posts: 100,
+  pages: 150,
+  requests: 150,
 };
 
 // Function to trim cache based on specified limit
@@ -75,15 +75,15 @@ self.addEventListener("fetch", (event) => {
     // Serve podcast episodes from cache with trimming
     else if (url.pathname.startsWith("/api")) {
       event.respondWith(
-        caches.open(cacheNames.posts).then(async (cache) => {
+        caches.open(cacheNames.requests).then(async (cache) => {
           const cachedResponse = await cache.match(request);
           if (cachedResponse) {
             return cachedResponse;
           } else {
             const networkResponse = await fetch(request);
-            await cache.put(request, networkResponse.clone());
-            await trimCache(cacheNames.posts, cacheLimits.posts);
-            cache.put(request, networkResponse);
+            void cache.put(request, networkResponse.clone());
+            void trimCache(cacheNames.requests, cacheLimits.requests);
+            void cache.put(request, networkResponse);
             return networkResponse;
           }
         })

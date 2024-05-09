@@ -1,24 +1,34 @@
 {
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
   "description": "Install greatexchange app on your device for the best experience trading with Great Exchange.",
-  "screenshots": [
+  "gcm_sender_id": "ableez123",
+  "screenshot": [
     {
-      "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
+      "src": "/screenshot/screen1.jpg",
       "sizes": "2880x1800",
-      "type": "image/png",
-      "description": "Greatex Home Screen"
+      "type": "image/jpg"
     },
     {
-      "src": "https://www.pwabuilder.com/assets/screenshots/screen2.png",
+      "src": "/screenshot/screen2.jpg",
       "sizes": "2880x1800",
-      "type": "image/png",
-      "description": "Greatex Report Card"
+      "type": "image/jpg"
     },
     {
-      "src": "https://www.pwabuilder.com/assets/screenshots/screen3.png",
+      "src": "/screenshot/screen3.jpg",
       "sizes": "2880x1800",
-      "type": "image/png",
-      "description": "Manifest information on the Report Card"
+      "type": "image/jpg"
+    },
+    {
+      "src": "/screenshot/screen4.jpg",
+      "sizes": "2880x1800",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/screenshot/screen5.jpg",
+      "sizes": "2880x1800",
+      "form_factor": "wide",
+      "type": "image/jpg"
     }
   ],
   "name": "Great Exchange",
@@ -35,7 +45,7 @@
       "short_name": "iTunes Card",
       "description": "Sell an iTunes card to us at the best rates.",
       "url": "/sell",
-      "icons": [{ "src": "/cards/iTunes.jpg", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/sell.svg", "sizes": "192x192" }]
     },
     {
       "name": "View Conversations",
@@ -61,44 +71,38 @@
     {
       "src": "icons/maskable_icon_x48.png",
       "sizes": "48x48",
-      "purpose": "maskable any",
       "type": "image/png"
     },
     {
       "src": "icons/maskable_icon_x72.png",
       "sizes": "72x72",
-      "purpose": "maskable any",
       "type": "image/png"
     },
     {
       "src": "icons/maskable_icon_x96.png",
       "sizes": "96x96",
-      "purpose": "maskable any",
       "type": "image/png"
     },
     {
       "src": "icons/maskable_icon_x128.png",
       "sizes": "128x128",
-      "purpose": "maskable any",
       "type": "image/png"
     },
     {
       "src": "icons/maskable_icon_x192.png",
       "sizes": "192x192",
-      "purpose": "maskable any",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable any"
     },
     {
       "src": "icons/maskable_icon_x384.png",
       "sizes": "384x384",
-      "purpose": "maskable any",
       "type": "image/png"
     },
     {
       "src": "icons/maskable_icon_x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     }
   ],
   "related_applications": [

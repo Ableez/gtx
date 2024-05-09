@@ -1,35 +1,32 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+// import runOneSignal from "./Onesignal";
 
 type Props = {};
 
 const RequestNotification = (props: Props) => {
+  // Implement your logic here
   useEffect(() => {
-    function notifyMe() {
-      if (!("Notification" in window)) {
-        // Check if the browser supports notifications
-        alert("This browser does not support notification");
-      }
-
-      //   if (Notification.permission === "granted") {
-      //     const notification = new Notification("Message", {
-      //       icon: "/greatexc.svg",
-      //       body: "This is just to say hi to you",
-      //     });
-      //     notification.addEventListener("click", () => {
-      //       // …
-      //       console.log("user clicked it");
-      //       notification.close();
-      //     });
-      //   }
-
-      if (Notification.permission !== "denied") {
-        Notification.requestPermission();
-      }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager.getSubscription().then((sub) => {
+          if (sub == undefined) {
+            if (reg) {
+              reg.pushManager
+                .subscribe({
+                  userVisibleOnly: true,
+                })
+                .then((sub) => {
+                  console.log("sub", sub.toJSON());
+                });
+            }
+          } else {
+            console.log("sub", sub.toJSON());
+          }
+        });
+      });
     }
-
-    notifyMe();
   }, []);
 
   return null;

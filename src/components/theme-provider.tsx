@@ -13,9 +13,10 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
           .then((reg) => {
             console.log("Registration successful", reg);
           })
-          .catch((e) =>
-            console.error("Error during service worker registration:", e)
-          );
+          .catch((e) => {
+            console.error("Error during service worker registration:", e);
+            alert("sw ERROR!");
+          });
       } else {
         console.warn("Service Worker is not supported");
       }
