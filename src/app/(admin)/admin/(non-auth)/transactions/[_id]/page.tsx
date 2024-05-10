@@ -103,7 +103,7 @@ const TransactionDetail = ({ params }: Props) => {
   );
 
   return (
-    <div className="relative max-w-screen-sm py-8 mx-auto">
+    <div className="relative max-w-screen-md py-8 mx-auto">
       {loading ? (
         <Loading />
       ) : (

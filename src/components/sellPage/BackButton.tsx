@@ -10,7 +10,7 @@ const BackButton = (props: Props) => {
   const router = useRouter();
   return (
     <Button size={"icon"} onClick={() => router.back()} variant={"ghost"}>
-      <ArrowLeftIcon width={24} />
+      <ArrowLeftIcon width={20} />
     </Button>
   );
 };

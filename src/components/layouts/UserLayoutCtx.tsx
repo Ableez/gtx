@@ -16,7 +16,12 @@ const UserLayoutCtx: React.FC<UserLayoutCtxProps> = ({ children }) => {
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      {!isChatPage && <SellNavbar pageTitle={pageTitle} />}
+      {!isChatPage && (
+        <SellNavbar
+          pathLen={pathName.split("/")[2]}
+          pageTitle={pageTitle}
+        />
+      )}
       <div>{children}</div>
     </div>
   );
