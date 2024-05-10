@@ -13,7 +13,7 @@ type Props = {};
 
 const UserProfile = (props: Props) => {
   return (
-    <div className="px-4 grid gap-6 grid-flow-row pb-8 py-4 max-w-screen-sm mx-auto">
+    <div className="px-4 grid gap-6 grid-flow-row pb-8 py-4 max-w-screen-md mx-auto">
       <UserInfoForm />
       <div>
         <Link href={"/chat"}>

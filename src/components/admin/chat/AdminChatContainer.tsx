@@ -11,7 +11,7 @@ const AdminChatContainer = ({ chatId, scrollToBottom }: Props) => {
   const { conversation } = adminCurrConversationStore();
 
   return (
-    <div className="max-w-screen-sm mx-auto" ref={scrollToBottom}>
+    <div className="max-w-screen-md mx-auto" ref={scrollToBottom}>
       {conversation ? (
         <AdminRenderMessages
           scrollToBottom={scrollToBottom}

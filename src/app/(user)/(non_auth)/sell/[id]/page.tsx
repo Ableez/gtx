@@ -46,10 +46,8 @@ const GiftCardPage = ({ params }: Props) => {
 
   return (
     <>
-      <div className="container font-bold text-lg relative max-w-screen-sm pb-6">
-        {/* {loading && <Loading />} */}
-
-        <Button
+      <div className="container font-bold text-lg relative max-w-screen-md pb-6">
+        {/* <Button
           variant={"outline"}
           size={"icon"}
           className="hover:ring-4 absolute -top-2"
@@ -57,7 +55,7 @@ const GiftCardPage = ({ params }: Props) => {
           <Link href={"/sell"}>
             <ArrowLeftIcon width={20} />
           </Link>
-        </Button>
+        </Button> */}
 
         <CardSelector id={card_id} />
 

@@ -12,7 +12,7 @@ const UserChatContainer = ({ chatId, scrollToBottom }: Props) => {
   const { conversation } = useMessagesStore();
 
   return (
-    <div className="max-w-screen-sm mx-auto" ref={scrollToBottom}>
+    <div className="max-w-screen-md mx-auto" ref={scrollToBottom}>
       <UserChatNav />
       <p className="text-xs text-center text-neutral-400 dark:text-neutral-500 py-4 mt-10 mb-4 pb-10 px-8 leading-4 border-b max-w-md mx-auto">
         Secure your transaction & chat directly with our expert agents. Get

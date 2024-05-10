@@ -123,7 +123,7 @@ const CardSelector = ({ id }: Props) => {
   };
 
   return (
-    <div className="duration-300">
+    <div className="duration-300 max-w-screen-sm mx-auto">
       <div className="grid place-items-center justify-center gap-6">
         <h5 className="text-center text-base w-[60vw]">{data.name} Giftcard</h5>
         <Image
