@@ -9,14 +9,24 @@ const installContainer = document.getElementById("installContainer");
 // Handle install available
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
+  console.log(e);
   console.log("beforeinstallprompt");
   showInstallPromo(e);
+  deferredPrompt = e;
 });
 
 // Handle user request to install
 btnAdd.addEventListener("click", (e) => {
-  deferredPrompt.prompt();
-  console.log("button clicked");
+  console.log(deferredPrompt);
+  deferredPrompt?.prompt();
+  deferredPrompt?.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === "accepted") {
+      console.log("User accepted the A2HS prompt");
+    } else {
+      console.log("User dismissed the A2HS prompt");
+    }
+    deferredPrompt = null;
+  });
 });
 
 // Hide the install button
@@ -32,7 +42,6 @@ window.addEventListener("appinstalled", (evt) => {
 
 // Show the install button
 function showInstallPromo(e) {
-  deferredPrompt = e;
   installContainer.classList.add("flex");
   installContainer.classList.remove("hidden");
   // divInstallStatus.textContent = 'true';

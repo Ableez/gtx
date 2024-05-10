@@ -24,5 +24,6 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
     registerServiceWorker();
   }, []);
+
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

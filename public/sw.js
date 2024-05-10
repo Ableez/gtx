@@ -34,7 +34,6 @@ self.addEventListener("activate", async (event) => {
       );
     })
   );
-  event.waitUntil(self.clients.claim());
 });
 
 // Fetch event
@@ -49,6 +48,10 @@ self.addEventListener("fetch", async (event) => {
         ignoreVary: true,
       })
       .then(async (cacheResponse) => {
+        if (cacheResponse) {
+          return cacheResponse;
+        }
+
         const fetchDirectly = async () => {
           // If not in cache, fetch from network
           try {
@@ -63,23 +66,25 @@ self.addEventListener("fetch", async (event) => {
             // Cache js assets
             if (
               url.pathname.includes(".png") ||
+              url.pathname.includes(".woff2") ||
               url.pathname.includes(".jpg") ||
-              url.pathname.includes(".svg") ||
-              url.pathname.startsWith("/_next/image")
+              url.pathname.startsWith("image") ||
+              url.pathname.startsWith("css") ||
+              url.pathname.includes(".svg")
             ) {
               const staticCache = await caches.open(staticCacheName);
               staticCache.put(request, networkResponse.clone());
             }
 
             // // For pages, cache separately for offline navigation
-            if (
-              request.mode === "navigate" ||
-              (request.method === "GET" &&
-                request.headers.get("accept").includes("text/html"))
-            ) {
-              const pagesCache = await caches.open(pagesCacheName);
-              pagesCache.put(request, networkResponse.clone());
-            }
+            // if (
+            //   request.mode === "navigate" ||
+            //   (request.method === "GET" &&
+            //     request.headers.get("accept").includes("text/html"))
+            // ) {
+            //   const pagesCache = await caches.open(pagesCacheName);
+            //   pagesCache.put(request, networkResponse.clone());
+            // }
 
             return networkResponse;
           } catch (error) {
@@ -89,9 +94,7 @@ self.addEventListener("fetch", async (event) => {
         };
 
         // If cache hit, return cached response
-        if (cacheResponse) {
-          return cacheResponse;
-        }
+
         await fetchDirectly();
       })
   );

@@ -44,7 +44,7 @@ export default function RootLayout({
         <ThemeProvider
           disableTransitionOnChange
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
         >
           <PromptInstall />

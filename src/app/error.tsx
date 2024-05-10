@@ -1,7 +1,6 @@
 "use client";
 
 import PageDataFetchError from "@/components/PageDataFetchError";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
 export default function Error({

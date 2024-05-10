@@ -15,7 +15,7 @@ const CardDisplay = ({ filteredCards }: Props) => {
           <Link
             href={`/sell/${giftCard.id}`}
             key={idx}
-            className="p-3 bg-white dark:bg-neutral-900 rounded-2xl shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] grid place-items-center gap-4 border dark:border-neutral-800 hover:border-transparent dark:hover:border-transparent ring-4 ring-transparent hover:ring-pink-400/10"
+            className="p-3 bg-white dark:bg-neutral-900 rounded-[1.3rem] shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] grid place-items-center gap-4 border dark:border-neutral-800 hover:border-transparent dark:hover:border-transparent ring-4 ring-transparent hover:ring-pink-400/10"
           >
             <Image
               src={giftCard.image}
