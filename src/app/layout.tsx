@@ -73,7 +73,11 @@ const Head = () => {
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="apple-mobile-web-app-title" content="Greatex" />
-      <link rel="icon" type="image/x-icon" href="/src/app/favicon.png"></link>
+      <link
+        rel="icon"
+        type="image/x-icon"
+        href="/icons/maskable_icon_x192.png"
+      ></link>
       <meta
         name="description"
         content="Welcome to Great Exchange, where turning your unwanted gift cards into instant cash is as easy as a few clicks! Say goodbye to the hassle of holding onto gift cards you'll never use. With Great Exchange, you can seamlessly exchange any type of gift card for cash, instantly. Whether it's from your favorite clothing store, a popular restaurant, or even a niche boutique, we've got you covered. Unlock the value of those forgotten gift cards today with Great Exchange, your go-to platform for fast and convenient cash exchanges!"
@@ -83,7 +87,7 @@ const Head = () => {
       <meta name="msapplication-config" content="/icons/browserconfig.xml" />
       <meta name="msapplication-tap-highlight" content="no" />
       <link rel="manifest" href="/manifest.json" />
-      <link rel="shortcut icon" href="/icons/g384.png" />
+      <link rel="shortcut icon" href="/icons/maskable_icon_x192.png" />
       <Script src="../../install-pwa.js" />
     </head>
   );

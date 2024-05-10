@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { formatTime } from "@/lib/utils/formatTime";
-import { giftcards } from "@/lib/data/giftcards";
+import { giftcards } from "../../../../../../public/data/giftcards";
 import {
   Dialog,
   DialogClose,

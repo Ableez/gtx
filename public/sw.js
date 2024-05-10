@@ -1,25 +1,101 @@
 const version = "v1:";
-const cacheNames = {
-  assets: `${version}assets`,
-  pages: `${version}pages}`,
-  requests: `${version}requests`,
-};
 
-const cacheLimits = {
-  pages: 150,
-  requests: 150,
-};
+// Define cache names
+const staticCacheName = `${version}:appstatic`;
+const dynamicCacheName = `${version}:appdynamic`;
+const pagesCacheName = `${version}:apppages`;
 
-// Function to trim cache based on specified limit
-async function trimCache(cacheName, limit) {
-  const cache = await caches.open(cacheName);
-  const keys = await cache.keys();
-  if (keys.length > limit) {
-    for (let i = 0; i < keys.length - limit; i++) {
-      if (keys[i]) await cache.delete(keys[i]);
-    }
-  }
-}
+const assets = [
+  "/data/cards.new.ts",
+  "/data/giftcards.ts",
+  "/data/oldCards.ts",
+  "logo.svg",
+  "/data/transactions.ts",
+];
+
+// Install Service Worker
+self.addEventListener("install", async (event) => {
+  event.waitUntil(
+    caches.open(staticCacheName).then((cache) => {
+      cache.addAll(assets);
+    })
+  );
+});
+
+// Activate Service Worker
+self.addEventListener("activate", async (event) => {
+  // Remove old caches
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys
+          .filter((key) => key !== staticCacheName)
+          .map((key) => caches.delete(key))
+      );
+    })
+  );
+  event.waitUntil(self.clients.claim());
+});
+
+// Fetch event
+self.addEventListener("fetch", async (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Serve from cache or fetch from network
+  event.respondWith(
+    caches
+      .match(request, {
+        ignoreVary: true,
+      })
+      .then(async (cacheResponse) => {
+        const fetchDirectly = async () => {
+          // If not in cache, fetch from network
+          try {
+            const networkResponse = await fetch(request);
+
+            // Cache dynamic assets
+            if (url.pathname.startsWith("/api/")) {
+              const dynamicCache = await caches.open(dynamicCacheName);
+              dynamicCache.put(request, networkResponse.clone());
+            }
+
+            // Cache js assets
+            if (
+              url.pathname.includes(".png") ||
+              url.pathname.includes(".jpg") ||
+              url.pathname.includes(".svg") ||
+              url.pathname.startsWith("/_next/image")
+            ) {
+              const staticCache = await caches.open(staticCacheName);
+              staticCache.put(request, networkResponse.clone());
+            }
+
+            // // For pages, cache separately for offline navigation
+            if (
+              request.mode === "navigate" ||
+              (request.method === "GET" &&
+                request.headers.get("accept").includes("text/html"))
+            ) {
+              const pagesCache = await caches.open(pagesCacheName);
+              pagesCache.put(request, networkResponse.clone());
+            }
+
+            return networkResponse;
+          } catch (error) {
+            // Handle fetch errors here
+            console.log("COULD NOT CACHE REQUEST: ", error);
+          }
+        };
+
+        // If cache hit, return cached response
+        if (cacheResponse) {
+          return cacheResponse;
+        }
+        await fetchDirectly();
+      })
+  );
+});
 
 self.addEventListener("push", (event) => {
   const title = event.data.title;
@@ -27,7 +103,6 @@ self.addEventListener("push", (event) => {
     body: event.data.body,
     icon: event.data.icon || "/greatexc.svg",
   };
-
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
@@ -36,60 +111,6 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   var fullPath = self.location.origin + event.notification.data.path;
   clients.openWindow(fullPath);
-});
-
-// Install event: Cache essential assets
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(cacheNames.assets).then((cache) => {
-      console.log("Adding all caches");
-      return cache.addAll([
-        // Add more essential assets here
-      ]);
-    })
-  );
-});
-
-// Activate event: Cleanup old caches
-self.addEventListener("activate", (event) => {
-  console.log("[ServiceWorker] Activate");
-  event.waitUntil(self.clients.claim());
-});
-
-// Fetch event: Serve assets from cache or network
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Determine cache strategy based on request destination
-  if (url.origin === location.origin) {
-    // Serve assets from cache
-    if (url.pathname.startsWith("/images/")) {
-      event.respondWith(
-        caches.match(request).then((cachedResponse) => {
-          return cachedResponse ?? fetch(request);
-        })
-      );
-    }
-
-    // Serve podcast episodes from cache with trimming
-    else if (url.pathname.startsWith("/api")) {
-      event.respondWith(
-        caches.open(cacheNames.requests).then(async (cache) => {
-          const cachedResponse = await cache.match(request);
-          if (cachedResponse) {
-            return cachedResponse;
-          } else {
-            const networkResponse = await fetch(request);
-            void cache.put(request, networkResponse.clone());
-            void trimCache(cacheNames.requests, cacheLimits.requests);
-            void cache.put(request, networkResponse);
-            return networkResponse;
-          }
-        })
-      );
-    }
-  }
 });
 
 // Add an event listener for the `sync` event in your service worker.
@@ -106,7 +127,7 @@ self.addEventListener("sync", (event) => {
 
 const pushLocalDataToDatabase = async () => {
   try {
-    fetch("/api");
+    console.log("REFRESH DATABASE SYNC");
   } catch (error) {
     console.log("PUSH DATABASE TO SERVER FAILED", error);
   }

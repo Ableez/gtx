@@ -1,5 +1,5 @@
 import { GiftCard } from "../../../types";
-import { giftcards } from "../data/giftcards";
+import { giftcards } from "../../../public/data/giftcards";
 
 export class Pagination {
   data: GiftCard[];

@@ -20,7 +20,7 @@ const PageDataFetchError = ({ error }: Props) => {
           <Button onClick={() => window.location.reload()}>Reload page</Button>
           <Link href={"/sell"}>
             <Button className="w-full" variant={"ghost"}>
-              Start over
+              Back to home
             </Button>
           </Link>
         </div>

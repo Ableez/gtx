@@ -1,4 +1,4 @@
-import { giftcards } from "@/lib/data/giftcards";
+import { giftcards } from "../../../public/data/giftcards";
 import {
   CommandDialog,
   CommandEmpty,

@@ -5,7 +5,6 @@
 // Note %s is where in the string (the second argument) gets injected. \x1b[0m resets the terminal color so it doesn't continue to be the chosen color anymore after this point.
 
 // Colors reference
-
 export const TERMINAL_Reset = "\x1b[0m";
 export const TERMINAL_Bright = "\x1b[1m";
 export const TERMINAL_Dim = "\x1b[2m";

@@ -14,7 +14,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { startChat } from "@/lib/utils/actions";
-import { giftcards } from "@/lib/data/giftcards";
+import { giftcards } from "../../../public/data/giftcards";
 import { useFormStatus } from "react-dom";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";

@@ -1,7 +1,7 @@
 "use client";
 import SearchBar from "@/components/sellPage/SearchBar";
 import React, { useEffect, useRef, useState } from "react";
-import { giftcards } from "@/lib/data/giftcards";
+import { giftcards } from "../../../../../public/data/giftcards";
 import CardDisplay from "@/components/sellPage/CardDisplay";
 import { Pagination } from "@/lib/utils/paginate";
 import { GiftCard } from "../../../../../types";

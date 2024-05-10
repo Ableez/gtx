@@ -2,21 +2,32 @@
 import Image from "next/image";
 import Link from "next/link";
 import LoginForm from "@/components/loginForm";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/icons/google";
 import { signInWithGoogle } from "@/lib/utils/actions/signinwithgoogle";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 type Props = {};
 
 const LoginPage = (props: Props) => {
   const params = useSearchParams();
+  const router = useRouter();
   const urlRef = params.get("referrer");
 
   return (
     <>
       <div className="grid grid-flow-row gap-6 py-6 px-2 max-w-sm mx-auto">
         <div className="flex align-middle place-items-center justify-between px-4">
+          <Button
+            variant={"outline"}
+            className="text-black dark:text-white"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            <ArrowRightIcon />
+          </Button>
           <Link href={"/"} className="py-2">
             <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
               <Image

@@ -6,7 +6,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { giftcards } from "../data/giftcards";
+import { giftcards } from "../../../public/data/giftcards";
 import { db } from "./firebase";
 import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
