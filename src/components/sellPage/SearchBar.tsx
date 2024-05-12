@@ -1,5 +1,6 @@
 import { giftcards } from "../../../public/data/giftcards";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -12,7 +13,7 @@ import {
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -78,9 +79,6 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
           </div>
           <span>Search...</span>
         </div>
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 justify-self-end">
-          <span className="text-xs">CTRL⌘</span>K
-        </kbd>
       </Button>
       <div className="mt-3 gap-2 flex">
         {TABS.map((tab, idx) => {
@@ -99,16 +97,17 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
           );
         })}
       </div>
-      <div className="px-2">
-        <CommandDialog open={open} onOpenChange={setOpen}>
-          <CommandInput placeholder="Search..." />
-          <CommandList className="max-h-full">
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandSeparator />
-            <CommandGroup heading="Gift cards">{renderCards}</CommandGroup>
-          </CommandList>
-        </CommandDialog>
-      </div>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Search..." />
+        <Button className="w-12 h-12 bg-neutral-200 z-50 dark:bg-black  rounded-full absolute top-0 right-0" onClick={() => setOpen(false)} variant={"ghost"} size={"icon"}>
+          <XMarkIcon width={18} />
+        </Button>
+        <CommandList className="max-h-full">
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandSeparator />
+          <CommandGroup heading="Gift cards">{renderCards}</CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </div>
   );
 };

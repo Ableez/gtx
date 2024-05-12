@@ -12,14 +12,23 @@ import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowDownTrayIcon,
+  ReceiptPercentIcon,
+  UserIcon as UserIconOutline,
+} from "@heroicons/react/24/outline";
+import {
+  BellIcon,
+  EllipsisVerticalIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { User } from "../../../types";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
 type Props = {
-  user: User;
+  user?: User;
 };
 
 const ProfileButton = ({ user }: Props) => {
@@ -28,12 +37,16 @@ const ProfileButton = ({ user }: Props) => {
       <DropdownMenuTrigger asChild>
         <div>
           {user ? (
-            <Button variant={"ghost"} size={"icon"}>
-              {user.photoURL ? (
+            <Button
+              className="bg-neutral-200 rounded-full"
+              variant={"ghost"}
+              size={"icon"}
+            >
+              {user.photoURL || user.imageUrl ? (
                 <Image
-                  src={user.photoURL}
-                  width={55}
-                  height={55}
+                  src={user.photoURL || (user.imageUrl as string)}
+                  width={58}
+                  height={58}
                   alt={user?.displayName}
                   priority
                   className="w-full rounded-full aspect-square object-cover text-[10px]"
@@ -48,7 +61,7 @@ const ProfileButton = ({ user }: Props) => {
           ) : (
             <Button
               variant={"ghost"}
-              className="rounded-full border"
+              className="rounded-full border bg-neutral-200 dark:bg-neutral-800"
               size={"icon"}
             >
               <EllipsisVerticalIcon width={24} />
@@ -61,18 +74,35 @@ const ProfileButton = ({ user }: Props) => {
           {user?.displayName || "NOT SIGNED IN"}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <div id="installContainer">
+          <DropdownMenuItem
+            id="installButton"
+            className="py-3 w-full juxstify-start gap-2 hidden"
+          >
+            <ArrowDownTrayIcon width={14} />
+            Install App
+          </DropdownMenuItem>
+        </div>
+
         <ToggleTheme />
 
         {user && (
           <DropdownMenuGroup className="">
             <Link className="py-3" href={"/transactions"}>
-              <DropdownMenuItem className="py-3">Transactions</DropdownMenuItem>
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
+                <ReceiptPercentIcon width={14} />
+                Transactions
+              </DropdownMenuItem>
             </Link>
             <Link className="py-3" href={"/profile"}>
-              <DropdownMenuItem className="py-3">Profile</DropdownMenuItem>
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
+                <UserIconOutline width={14} />
+                Profile
+              </DropdownMenuItem>
             </Link>
             <Link className="py-3" href={"/profile"}>
-              <DropdownMenuItem className="py-3">
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
+                <BellIcon width={14} />
                 Notifications
               </DropdownMenuItem>
             </Link>
@@ -80,11 +110,11 @@ const ProfileButton = ({ user }: Props) => {
         )}
         <DropdownMenuGroup>
           <Link className="py-3" href={"/support"}>
-            <DropdownMenuItem className="py-3">Support</DropdownMenuItem>
+            <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
+              <InformationCircleIcon width={16} />
+              Support
+            </DropdownMenuItem>
           </Link>
-          <Button variant={"ghost"} className="py-3" asChild>
-            <DropdownMenuItem className="py-3">Install App</DropdownMenuItem>
-          </Button>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {user ? (

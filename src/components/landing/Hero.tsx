@@ -39,6 +39,7 @@ const Hero = (props: Props) => {
             alt="Live chat feature"
             width={400}
             height={400}
+            priority={true}
             src={"/phone-frame.png"}
             className="w-[70vw]"
           />

@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { postToast } from "./postToast";
 
 type Props = {
   url: string | null;
@@ -122,6 +123,7 @@ const LoginForm = (props: Props) => {
     } catch (error) {
       // Handle errors
       const err = error as FirebaseError;
+
       console.log(error);
 
       // Display a toast message based on the error code
@@ -152,7 +154,7 @@ const LoginForm = (props: Props) => {
       case "auth/wrong-password":
         return "Wrong email or password";
       case "auth/network-request-failed":
-        return "Network request failed. Check your internet connection.";
+        return "No internet connection";
       case "auth/user-disabled":
         return "This account has been disabled. Contact support for help.";
       case "auth/too-many-requests":

@@ -9,7 +9,6 @@ const assets = [
   "/data/cards.new.ts",
   "/data/giftcards.ts",
   "/data/oldCards.ts",
-  "logo.svg",
   "/data/transactions.ts",
 ];
 
@@ -36,69 +35,75 @@ self.addEventListener("activate", async (event) => {
   );
 });
 
-// Fetch event
-self.addEventListener("fetch", async (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+// // Fetch event
+// self.addEventListener("fetch", async (event) => {
+//   const { request } = event;
+//   const url = new URL(request.url);
 
-  // Serve from cache or fetch from network
-  event.respondWith(
-    caches
-      .match(request, {
-        ignoreVary: true,
-      })
-      .then(async (cacheResponse) => {
-        if (cacheResponse) {
-          return cacheResponse;
-        }
+//   // Serve from cache or fetch from network
+//   event.respondWith(
+//     caches
+//       .match(request, {
+//         ignoreVary: true,
+//       })
+//       .then(async (cacheResponse) => {
+//         console.log("[SERVICE WORKER]", "[REQUEST URL]", request.url);
 
-        const fetchDirectly = async () => {
-          // If not in cache, fetch from network
-          try {
-            const networkResponse = await fetch(request);
+//         if (cacheResponse) {
+//           console.log("[SERVICE WORKER]", "[CACHE HIT]", cacheResponse);
+//           return cacheResponse;
+//         }
 
-            // Cache dynamic assets
-            if (url.pathname.startsWith("/api/")) {
-              const dynamicCache = await caches.open(dynamicCacheName);
-              dynamicCache.put(request, networkResponse.clone());
-            }
+//         const fetchDirectly = async () => {
+//           // If not in cache, fetch from network
+//           try {
+//             const networkResponse = await fetch(request);
 
-            // Cache js assets
-            if (
-              url.pathname.includes(".png") ||
-              url.pathname.includes(".woff2") ||
-              url.pathname.includes(".jpg") ||
-              url.pathname.startsWith("image") ||
-              url.pathname.startsWith("css") ||
-              url.pathname.includes(".svg")
-            ) {
-              const staticCache = await caches.open(staticCacheName);
-              staticCache.put(request, networkResponse.clone());
-            }
+//             // Cache dynamic assets
+//             if (url.pathname.startsWith("/api/")) {
+//               const dynamicCache = await caches.open(dynamicCacheName);
+//               dynamicCache.put(request, networkResponse.clone());
+//             }
 
-            // // For pages, cache separately for offline navigation
-            // if (
-            //   request.mode === "navigate" ||
-            //   (request.method === "GET" &&
-            //     request.headers.get("accept").includes("text/html"))
-            // ) {
-            //   const pagesCache = await caches.open(pagesCacheName);
-            //   pagesCache.put(request, networkResponse.clone());
-            // }
+//             // Cache js assets
+//             if (
+//               url.pathname.includes(".png") ||
+//               url.pathname.includes(".woff2") ||
+//               url.pathname.includes(".jpg") ||
+//               url.pathname.startsWith("image") ||
+//               url.pathname.includes(".css") ||
+//               url.pathname.includes(".js") ||
+//               url.pathname.includes(".svg")
+//             ) {
+//               const newResponse = new Response(networkResponse.body, {
+//                 status: networkResponse.status,
+//                 statusText: networkResponse.statusText,
+//                 headers: networkResponse.headers,
+//               });
 
-            return networkResponse;
-          } catch (error) {
-            // Handle fetch errors here
-            console.log("COULD NOT CACHE REQUEST: ", error);
-          }
-        };
+//               const staticCache = await caches.open(staticCacheName);
+//               staticCache.put(request, newResponse);
+//             }
 
-        // If cache hit, return cached response
+//             // // For pages, cache separately for offline navigation
+//             // if (request.mode === "navigate" || request.method === "GET") {
+//             //   const pagesCache = await caches.open(pagesCacheName);
+//             //   pagesCache.put(request, networkResponse.clone());
+//             // }
 
-        await fetchDirectly();
-      })
-  );
-});
+//             return networkResponse;
+//           } catch (error) {
+//             // Handle fetch errors here
+//             console.log("[SERVICE WORKER]", "COULD NOT CACHE REQUEST: ", error);
+//           }
+//         };
+
+//         // If cache hit, return cached response
+
+//         await fetchDirectly();
+//       })
+//   );
+// });
 
 self.addEventListener("push", (event) => {
   const title = event.data.title;
@@ -130,8 +135,8 @@ self.addEventListener("sync", (event) => {
 
 const pushLocalDataToDatabase = async () => {
   try {
-    console.log("REFRESH DATABASE SYNC");
+    console.log("[SERVICE WORKER]", "REFRESH DATABASE SYNC");
   } catch (error) {
-    console.log("PUSH DATABASE TO SERVER FAILED", error);
+    console.log("[SERVICE WORKER]", "PUSH DATABASE TO SERVER FAILED", error);
   }
 };

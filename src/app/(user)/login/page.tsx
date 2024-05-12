@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/icons/google";
 import { signInWithGoogle } from "@/lib/utils/actions/signinwithgoogle";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 type Props = {};
 
@@ -21,12 +21,13 @@ const LoginPage = (props: Props) => {
         <div className="flex align-middle place-items-center justify-between px-4">
           <Button
             variant={"outline"}
-            className="text-black dark:text-white"
+            size={"icon"}
+            className="text-black dark:text-neutral-400 aspect-square"
             onClick={() => {
               router.back();
             }}
           >
-            <ArrowRightIcon />
+            <ArrowLeftIcon width={"18"} />
           </Button>
           <Link href={"/"} className="py-2">
             <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">

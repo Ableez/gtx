@@ -27,8 +27,8 @@ export default function SellNavbar({ pageTitle, pathLen }: Props) {
   }, []);
 
   return (
-    <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-neutral-100 dark:bg-black z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 md:px-4 px-2 mt-2">
-      {pathLen && <BackButton />}
+    <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-neutral-100 dark:bg-black z-20 flex align-middle place-items-center justify-between sticky top-0 mb-4 md:px-4 px-4 mt-2">
+      {pathLen && pathLen !== "ticket" && <BackButton />}
 
       {user && pageTitle === "sell" && !pathLen && (
         <ProfileButton user={user as User} />
@@ -47,22 +47,21 @@ export default function SellNavbar({ pageTitle, pathLen }: Props) {
         <BackButton />
       )}
 
-      {pageTitle !== "sell" && (
+      {pageTitle !== "sell" && user ? (
         <>
           <h4 className="text-lg font-bold capitalize">{pageTitle}</h4>
           <ProfileButton user={user as User} />
         </>
-      )}
+      ) : null}
 
-      {user && pageTitle === "sell" ? (
+      {user && pageTitle === "sell" && (
         <Link href={"/chat"}>
           <Button variant={"ghost"} size={"icon"}>
             <ChatBubbleBottomCenterTextIcon width={20} />
           </Button>
         </Link>
-      ) : (
-        <ProfileButton user={user as User} />
       )}
+      {!user && <ProfileButton />}
     </div>
   );
 }

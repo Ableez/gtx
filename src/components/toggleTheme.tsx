@@ -15,7 +15,7 @@ const ToggleTheme = (props: Props) => {
     <div
       id="theme"
       onClick={() => theme.setTheme(theme.theme === "light" ? "dark" : "light")}
-      className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-500 dark:hover:border-neutral-700 px-3 py-3.5"
+      className="flex align-middle w-full place-items-center justify-start gap-2 duration-300 hover:bg-opacity-60 border-b border-neutral-200 dark:border-neutral-600 hover:border-neutral-300 dark:hover:border-neutral-700 px-2 py-3.5"
     >
       <div>
         {theme.theme === "light" && (
@@ -24,7 +24,6 @@ const ToggleTheme = (props: Props) => {
         {theme.theme === "dark" && (
           <MoonIcon className="rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
         )}
-        {theme.theme === "system" && <DesktopIcon />}
       </div>
       <Label
         className="w-full flex align-middle place-items-start justify-start gap-1"
