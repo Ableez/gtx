@@ -1,4 +1,4 @@
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserRecord } from "firebase-admin/auth";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 

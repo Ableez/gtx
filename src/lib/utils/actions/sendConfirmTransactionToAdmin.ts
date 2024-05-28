@@ -1,7 +1,12 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { db } from "../firebase"; // Importing the firebase instance
-import { Conversation } from "../../../../chat"; // Importing the Conversation type
+import {
+  Conversation,
+  MediaContent,
+  Sender,
+  ReadReceipt,
+} from "../../../../chat"; // Importing the Conversation type
 import { timeStamper } from "../timeStamper"; // Importing the timeStamper utility
 import Cookies from "js-cookie"; // Importing Cookies for managing cookies
 
@@ -47,20 +52,34 @@ export const sendConfirmTransactionToAdmin = async (
     const transactionStatus = isAccepted ? "processing" : "rejected";
     const transactionAccepted = isAccepted ? true : false;
 
-    // Updating the message at the found index
-    data.messages[index] = {
-      ...data.messages[index],
-      card: {
-        ...data.messages[index].card,
-        data: {
-          ...data.messages[index].card.data,
-          status: status,
+    if (data) {
+      const obj = {
+        ...data.messages[index],
+        id: data.messages[index]?.id as string,
+        type: data.messages[index]?.id as string,
+        deleted: data.messages[index]?.deleted as boolean,
+        content: data.messages[index]?.content as {
+          text: string;
+          media: MediaContent;
         },
-      },
-      edited: true,
-      edited_at: time,
-      timeStamp: time,
-    };
+        recipient: data.messages[index]?.recipient as string,
+        sender: data.messages[index]?.sender as Sender,
+        read_receipt: data.messages[index]?.read_receipt as ReadReceipt,
+        status: status,
+        card: {
+          title: data.messages[index]?.card.title as string,
+          data: {
+            ...data.messages[index]?.card.data,
+            status: status,
+          },
+        },
+        edited: true,
+        edited_at: time,
+        timeStamp: time,
+      };
+      // Updating the message at the found index
+      data.messages[index] = obj;
+    }
 
     // Updating the document in the Firestore with the new data
     await updateDoc(chatDocRef, {

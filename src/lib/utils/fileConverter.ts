@@ -50,7 +50,7 @@ export const objectToFile = (obj: {
   type: string;
   data: string;
 }) => {
-  const binaryString = atob(obj.data.split(",")[1]);
+  const binaryString = atob(obj.data.split(",")[1] as string);
   const arrayBuffer = new ArrayBuffer(binaryString.length);
   const uint8Array = new Uint8Array(arrayBuffer);
 
@@ -100,7 +100,7 @@ export const base64ToFile = async (
 };
 
 export const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
-  const binaryString = atob(base64.split(",")[1]);
+  const binaryString = atob(base64.split(",")[1] as string);
   const arrayBuffer = new ArrayBuffer(binaryString.length);
   const uint8Array = new Uint8Array(arrayBuffer);
 
@@ -130,8 +130,8 @@ export const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
 
 export const dataURLtoFile = (dataurl: string, filename: string) => {
   var arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)?.[1],
-    bstr = atob(arr[arr.length - 1]),
+    mime = arr[0]?.match(/:(.*?);/)?.[1],
+    bstr = atob(arr[arr.length - 1] as string),
     n = bstr.length,
     u8arr = new Uint8Array(n);
   while (n--) {

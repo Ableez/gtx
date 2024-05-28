@@ -252,17 +252,19 @@ const TicketPage = (props: Props) => {
                       return;
                     }
 
-                    if (e.target.files[0].size > 5000000) {
-                      postToast("Attention", {
-                        description: "Image size limit is 5MB",
-                      });
-                      return;
-                    }
+                    if (e.target.files && e.target.files[0]) {
+                      if (e.target.files[0].size > 5000000) {
+                        postToast("Attention", {
+                          description: "Image size limit is 5MB",
+                        });
+                        return;
+                      }
 
-                    const file = await fileToObject(e.target.files[0]);
-                    if (file) {
-                      setImages((prev) => [...(prev || []), file]);
-                      localStorage.setItem("images", JSON.stringify(images));
+                      const file = await fileToObject(e.target.files[0]);
+                      if (file) {
+                        setImages((prev) => [...(prev || []), file]);
+                        localStorage.setItem("images", JSON.stringify(images));
+                      }
                     }
                   }}
                   type="file"

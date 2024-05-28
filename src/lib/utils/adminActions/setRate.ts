@@ -2,7 +2,12 @@
 
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Conversation } from "../../../../chat";
+import {
+  Conversation,
+  MediaContent,
+  ReadReceipt,
+  Sender,
+} from "../../../../chat";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
@@ -97,6 +102,17 @@ export const setCardRate = async (
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
+            id: data.messages[index]?.id as string,
+            type: data.messages[index]?.id as string,
+            deleted: data.messages[index]?.deleted as boolean,
+            content: data.messages[index]?.content as {
+              text: string;
+              media: MediaContent;
+            },
+            recipient: data.messages[index]?.recipient as string,
+            sender: data.messages[index]?.sender as Sender,
+            read_receipt: data.messages[index]?.read_receipt as ReadReceipt,
+            // status: data.messages[index]?.status as boolean,
             card: {
               title: "rate",
               data: {

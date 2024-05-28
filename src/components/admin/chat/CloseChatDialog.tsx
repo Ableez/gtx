@@ -36,7 +36,7 @@ const CloseChatDialog = ({ confirmClose, setConfirmClose }: Props) => {
           <DialogFooter>
             <DialogClose
               onClick={() => {
-                closeChat(id);
+                closeChat(id as string);
               }}
             >
               <Button>Yes, I&apos;m sure</Button>

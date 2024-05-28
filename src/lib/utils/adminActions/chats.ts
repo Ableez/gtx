@@ -3,7 +3,7 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 } from "uuid";
 import { cookies } from "next/headers";
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserRecord } from "firebase-admin/auth"
 
 export const sendAdminMessage = async (
   data: {

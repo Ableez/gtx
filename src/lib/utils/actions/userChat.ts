@@ -4,7 +4,12 @@ import { cookies } from "next/headers";
 import { db } from "../firebase";
 import { v4 } from "uuid";
 import { User } from "firebase/auth";
-import { Conversation } from "../../../../chat";
+import {
+  Conversation,
+  MediaContent,
+  ReadReceipt,
+  Sender,
+} from "../../../../chat";
 import { timeStamper } from "../timeStamper";
 
 export const sendUserMessage = async (
@@ -201,6 +206,17 @@ export const sendEcodeToAdmin = async (
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
+            id: data.messages[index]?.id as string,
+            type: data.messages[index]?.id as string,
+            deleted: data.messages[index]?.deleted as boolean,
+            content: data.messages[index]?.content as {
+              text: string;
+              media: MediaContent;
+            },
+            recipient: data.messages[index]?.recipient as string,
+            sender: data.messages[index]?.sender as Sender,
+            read_receipt: data.messages[index]?.read_receipt as ReadReceipt,
+            // status: data.messages[index]?.status as boolean,
             card: {
               title: "e-Code",
               data: {
@@ -338,6 +354,17 @@ export const sendAccountToAdmin = async (
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
+            id: data.messages[index]?.id as string,
+            type: data.messages[index]?.id as string,
+            deleted: data.messages[index]?.deleted as boolean,
+            content: data.messages[index]?.content as {
+              text: string;
+              media: MediaContent;
+            },
+            recipient: data.messages[index]?.recipient as string,
+            sender: data.messages[index]?.sender as Sender,
+            read_receipt: data.messages[index]?.read_receipt as ReadReceipt,
+            // status: data.messages[index]?.status as boolean,
             card: {
               title: "Account Details",
               data: accountDetails,

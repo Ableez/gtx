@@ -2,7 +2,7 @@
 
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "./firebase";
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserRecord } from "firebase-admin/auth";
 import { Conversation } from "../../../chat";
 import { getUserCookie } from "./getUserCookie";
 import { redirect } from "next/navigation";

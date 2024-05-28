@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import Features from "@/components/landing/Features";
 import ScrollHero from "@/components/landing/scroll-hero";
-import { ParallaxScroll } from "@/components/landing/image-parallax";
 import { InfiniteMovingCards } from "@/components/landing/moving-cards";
 import CardDeck from "@/components/landing/card-deck";
 import ReadyNow from "@/components/landing/ready-to-trade";

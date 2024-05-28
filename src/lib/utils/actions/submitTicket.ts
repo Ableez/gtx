@@ -58,7 +58,7 @@ export const submitTicket = async (
       );
       const users = (await getDocs(userRef)).docs.map((e) => e.data());
 
-      if (users.length > 0) uid = users[0].id;
+      if (users.length > 0 && user[0].id) uid = users[0]?.id;
     }
 
     if (images) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserRecord } from "firebase-admin/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { TransactionRec } from "../../../chat";
 import { db } from "./firebase";

@@ -158,7 +158,7 @@ export const MessageForm = ({
       recipient: owns === "admin" ? "user" : "admin",
       card: {
         title: "",
-        data: null,
+        data: {},
       },
       content: {
         text: caption,

@@ -88,7 +88,7 @@ export type AccountDetails = {
   accountNumber: string;
   bankName: string;
 };
-import { UserRecord } from "firebase-admin/lib/auth/user-record";
+import { UserRecord } from "firebase-admin/auth";
 import { UserMetadata } from "firebase/auth";
 
 export type User = {

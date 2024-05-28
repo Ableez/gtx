@@ -170,7 +170,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             {
               timeStamp: new Date(),
             },
-            chatId,
+            chatId as string,
             recipient as {
               username: string;
               uid: string;
@@ -194,7 +194,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             {
               timeStamp: new Date(),
             },
-            chatId,
+            chatId as string,
             undefined,
             {
               caption,

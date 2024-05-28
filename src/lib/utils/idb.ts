@@ -56,7 +56,7 @@ export const init = (): Promise<IDBDatabase> => {
             if (Object.prototype.hasOwnProperty.call(dbSchema, version)) {
               conversationsObjectStore.createIndex(
                 index,
-                conversationsIndexSchema[index]
+                conversationsIndexSchema[index] as string
               );
             }
           }
@@ -65,7 +65,7 @@ export const init = (): Promise<IDBDatabase> => {
             if (Object.prototype.hasOwnProperty.call(dbSchema, version)) {
               giftcardsObjectStore.createIndex(
                 index,
-                giftcardsIndexSchema[index]
+                giftcardsIndexSchema[index] as string
               );
             }
           }

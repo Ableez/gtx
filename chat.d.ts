@@ -48,7 +48,7 @@ export type Message = {
   };
   card: {
     title: string;
-    data: any;
+    data: object | unknown | any | object;
   };
   quoted_message?: {
     text: string;
