@@ -90,7 +90,7 @@ export const MessageForm = ({
           {
             timeStamp: new Date(),
           },
-          chatId,
+          chatId as string,
           recipient as {
             username: string;
             uid: string;
@@ -114,7 +114,7 @@ export const MessageForm = ({
           {
             timeStamp: new Date(),
           },
-          chatId,
+          chatId as string,
           undefined,
           {
             caption,
