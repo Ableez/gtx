@@ -7,7 +7,7 @@ type Props = {};
 const ServiceDetail = (props: Props) => {
   return (
     <div>
-      <section className="bg-pink-100 text-left dark:bg-black py-24 px-4 md:px-16">
+      <section className="text-left py-24 px-4 md:px-16">
         <div className="grid max-w-screen-lg mx-auto md:gap-8 md:grid-cols-12 gap-12">
           <div className="md:justify-self-end justify-self-start md:mt-0 md:col-span-5 md:flex">
             <Image
@@ -30,7 +30,7 @@ const ServiceDetail = (props: Props) => {
           </div>
         </div>
       </section>
-      <section className="bg-white text-left dark:bg-black py-24 px-4 md:px-16">
+      <section className="text-left py-24 px-4 md:px-16">
         <div className="grid max-w-screen-lg mx-auto md:gap-8 md:grid-cols-12 gap-12">
           <div className="md:justify-self-end justify-self-start md:mt-0 md:col-span-5 md:flex md:order-1 -order-last">
             <Image

@@ -132,7 +132,7 @@ const UserFeedBacks = (props: Props) => {
   }, [cApi]);
 
   return (
-    <div className="bg-pink-100 dark:bg-purple-900 dark:bg-opacity-30 container py-24">
+    <div className="py-24">
       <div className="max-w-screen-lg mx-auto">
         <h4 className="font-black text-2xl mb-8">Feedbacks</h4>
         <div className="md:py-16">

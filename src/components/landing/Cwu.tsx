@@ -12,7 +12,7 @@ const Cwu = (props: Props) => {
         Chat with us live
       </h4>
 
-      <div className="bg-pink-200 w-fit rounded-t-2xl mx-auto overflow-clip">
+      <div className="bg-orange-200/40 w-fit rounded-t-2xl mx-auto overflow-clip">
         <div className="mx-auto">
           <Image
             alt="phone mockup"

@@ -4,7 +4,7 @@ type Props = {};
 
 const Metrics = (props: Props) => {
   return (
-    <div className="metrics py-10 md:px-16 px-4 md:flex-row flex-col flex align-middle place-items-center justify-center md:gap-[7em] gap-8">
+    <div className="py-10 md:px-16 px-4 md:flex-row flex-col flex align-middle place-items-center justify-center md:gap-[7em] gap-8">
       <div>
         <h4 className="md:text-2xl text-xl font-serif italic">
           Fast and reliable payouts

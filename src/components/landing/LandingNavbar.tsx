@@ -21,11 +21,11 @@ export default function LandingNavbar() {
   const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
 
   return (
-    <div className="bg-white bg-opacity-80 dark:bg-black dark:bg-opacity-70 backdrop-blur-md border-b border-b-neutral-100 dark:border-neutral-700 py-3 sticky top-0 z-[99999]">
-      <NavigationMenu className="max-w-screen-lg mx-auto relative">
+    <div className="py-3 sticky top-0 z-[99999] md:px-24 bg-white text-black shadow-sm">
+      <NavigationMenu className="max-w-screen-xl mx-auto relative">
         <button
           title="open side menu"
-          className="pl-4 duration-300 rounded-full md:hidden flex absolute"
+          className="pl-3 p-3  duration-300 rounded-full md:hidden flex absolute bg-black text-white"
           onClick={() => setOpen((prev) => !prev)}
         >
           <Bars3Icon width={25} />

@@ -47,6 +47,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "store.storeimages.cdn-apple.com",
+        pathname: "**",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "**",
         port: "",

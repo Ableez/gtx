@@ -10,6 +10,7 @@ const assets = [
   "/data/giftcards.ts",
   "/data/oldCards.ts",
   "/data/transactions.ts",
+  "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap",
 ];
 
 // Install Service Worker

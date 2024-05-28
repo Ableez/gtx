@@ -1,52 +1,212 @@
 import Image from "next/image";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
-const data = [
-  {
-    icon: "/secure_feature.svg",
-    title: "Secure & Safe 💯",
-    desc: "Great exchange assures you Safety, Security, and Transparency when trading your Digital assets with us with",
-  },
-  {
-    icon: "/satisfaction.svg",
-    title: "Customer Interaction & Satisfaction 🙂",
-    desc: 'At Great Exchange you reserve the right to a great trading experience. "Our customers, our success" its what we believe in.',
-  },
-  {
-    icon: "/rates.svg",
-    title: "Great Rates & Swift Payout 🏃💨",
-    desc: " Definitely our rates for all Giftcards and cryptocurrencies are high not leaving out our fast payment system",
-  },
-];
+type Props = {};
 
-const renderUI = data.map((feat, idx) => {
+const Features = (props: Props) => {
   return (
-    <Card
-      key={idx}
-      className="justify-center align-middle place-items-center max-w-sm aspect-square"
-    >
-      <CardHeader className="justify-center grid place-items-center gap-2">
-        <Image src={feat.icon} alt={feat.title} width={60} height={60} />
-        <CardTitle className="text-xl">{feat.title}</CardTitle>
-      </CardHeader>
-      <CardContent>{feat.desc}</CardContent>
-    </Card>
-  );
-});
-
-const Features = () => {
-  return (
-    <section className="my-24">
-      <h4 className="md:text-4xl text-2xl font-extrabold px-4 pb-4 relative w-fit mx-auto mb-4">
-        Benefits of trading with us
-        <div className="bg-secondary p-0.5 w-1/5  absolute bottom-1 rounded-full left-1/2 -translate-x-1/2" />
-      </h4>
-
-      <div className="grid grid-flow-row md:grid-flow-col align-top md:justify-between place-items-start justify-center gap-12 max-w-screen-lg mx-auto px-4 py-8">
-        {renderUI}
+    <div className="mb-14 md:mt-32 grid gap-6 px-4 place-items-center justify-center align-middle">
+      <div className="w-[270px] md:w-[350px] md:text-5xl text-center text-zinc-800 text-3xl font-extrabold">
+        Explore endless possibilities.
       </div>
-    </section>
+      <div className="grid gap-4 md:gap-6 md:grid-cols-3 md:p-16">
+        <div className="feature__card bg-[#C3B2E7] sticky top-[60px] md:relative md:top-0 p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-purple-950">
+              Fast transaction time
+            </h4>
+            <p className="text-sm text-black/50 font-medium">
+              Enjoy a fast transaction time. when you use our in app chat
+              feature.
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+        <div className="feature__card bg-[#F682A5] sticky top-[70px] md:relative md:top-0 p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-pink-950">Flexible</h4>
+            <p className="text-sm text-black/70 font-medium">
+              We try to be as flexible as possible so you can feel free to
+              negotiate rates that works best for you
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+        <div className="feature__card bg-[#B8CEDC] sticky top-[80px] md:relative md:top-0 p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-blue-950">Secure</h4>
+            <p className="text-sm text-black/70 font-medium">
+              Trade with ease and a relaxed spirit with out secure web app built
+              with your privacy as a top priority.
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+        <div className="feature__card bg-[#F9A474] sticky top-[90px] md:relative md:top-0 p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-orange-950">Versatility</h4>
+            <p className="text-sm text-black/70 font-medium">
+              If a gift card exists then we will buy it, no worries.
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+        <div className="feature__card bg-[#FEDF6F] sticky top-[100px] md:relative md:top-0 p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-orange-950">Inbox</h4>
+            <p className="text-sm text-black/70 font-medium">
+              Track gift cards and crypto currencies transactions, conversation
+              histories, and more
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+        <div className="feature__card bg-[#C9DA8F] sticky top-[110px] p-6 rounded-2xl text-left grid place-items-center">
+          <div className="grid gap-2">
+            <h4 className="text-xl font-bold text-orange-950">
+              We even do refunds
+            </h4>
+            <p className="text-sm text-black/70 font-medium">
+              We strive to make sure you have a great trading experience, so we
+              are willing to give you a refund when things go south.
+            </p>
+          </div>
+          <div>
+            <div className="flex align-middle place-items-center p-8">
+              <div>
+                <Image
+                  src={"/placeholder1.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[-15deg] rounded-md shadow-sm"
+                />
+              </div>
+              <div>
+                <Image
+                  src={"/placeholder2.png"}
+                  alt={"placeholder1"}
+                  width={133}
+                  height={186}
+                  className="rotate-[4deg] mr-2 rounded-md shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-2xl w-full shadow-lg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

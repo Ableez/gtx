@@ -36,7 +36,9 @@
     "**/*.js",
     "**/*.tsx",
     "firebase.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/components/landing/scroll-hero.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "files": ["node_modules/gsap/types/index.d.ts"]
 }
