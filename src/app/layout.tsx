@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import PromptInstall from "@/components/PromptInstall";
 import Script from "next/script";
 import RequestNotification from "@/components/RequestNotification";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -52,6 +53,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Toaster />
         <RequestNotification />
+        <SpeedInsights />
       </body>
     </html>
   );
