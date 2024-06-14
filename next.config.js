@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    async rewrites() {
+  async rewrites() {
     return [
       {
         source: "/__/auth",
-        destination: "great-exchange.firebaseapp.com",
+        destination: "https://great-exchange.firebaseapp.com",
       },
     ];
   },
