@@ -6,6 +6,8 @@ import { gsap } from "gsap"; // import {} from "gsap"
 import { useGSAP } from "@gsap/react";
 import { TextGenerateEffect } from "./text-generation-effect";
 import { FlipWords } from "./flip-words";
+import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +20,8 @@ const ScrollHero = (props: Props) => {
         trigger: ".heder__cont",
         pin: true,
         start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 1.5, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+        scrub: 1.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+        snap: "labels",
       },
       scale: 0.4,
       opacity: 0,
@@ -29,13 +32,47 @@ const ScrollHero = (props: Props) => {
       scrollTrigger: {
         trigger: ".heder__cont",
         start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 1.5, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+        scrub: 0.8, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
       },
-      scale: 0.8,
+      scale: 0.76,
       top: "-60px",
       ease: "power3.inOut",
     });
+
+    gsap.to(".phone__fr__header", {
+      scrollTrigger: {
+        trigger: ".heder__cont",
+        start: "-=60px top", // when the top of the trigger hits the top of the viewport
+        scrub: 1.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+      },
+      opacity: 1,
+      ease: "power1.inOut",
+    });
+
+    gsap.to(".side_text", {
+      scrollTrigger: {
+        trigger: ".heder__cont",
+        start: "-=60px top", // when the top of the trigger hits the top of the viewport
+        scrub: 0.5, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+      },
+      opacity: 1,
+      marginTop: -10,
+      top: "-60px",
+      delay: 2,
+      ease: "power1.inOut",
+    });
+
+    gsap.to(".phone_fr_btns", {
+      scrollTrigger: {
+        trigger: ".heder__cont",
+        start: "-=100px top", // when the top of the trigger hits the top of the viewport
+        scrub: 3.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+      },
+      scale: 0.86,
+      ease: "power1.inOut",
+    });
   });
+
   return (
     <div className="heder__cont h-screen relative">
       <div className="grid gap-6 pt-12 heder__">
@@ -92,25 +129,53 @@ const ScrollHero = (props: Props) => {
           </div>
         </div>
         <div className="text-center text-zinc-800 text-4xl md:text-5xl font-extrabold font-['Inter'] leading-[48.40px] max-w-[90vw] md:max-w-[30rem] mx-auto place-items-center">
-          <div className="grid grid-rows-3 gap-0 h-[10rem] md:h-[13rem]">
+          <div className="grid grid-rows-3 gap-0 -space-y-1 h-[10rem] md:h-[13rem]">
+            <div className="h-full">Sell Your</div>
             <div className="h-full">
-              Sell Your
-            </div>{" "}
-            <div className="h-full">
-              <FlipWords words={["Gift cards", "Cryptocurrencies"]} />
-            </div>{" "}
-            <div className="h-full">
-              for Instant Cash
+              <FlipWords words={["Gift cards", "Cryptos"]} />
             </div>
+            <div className="h-full">for Instant Cash</div>
           </div>
 
-          <Button className="md:w-[20vw] mx-auto mt-10 md:mt-0">Trade a giftcard</Button>
+          <Link href="/sell">
+            <Button className="md:w-[26vw] p-6 w-full mb-8 md:mb-20 rounded-full text-base mx-auto mt-4 md:mt-0">
+              Trade a giftcard
+            </Button>
+          </Link>
         </div>
       </div>
-
-      <div className="grid place-items-center phone__fr absolute left-1/2 -translate-x-1/2 w-full">
-        <Image src={"/phone_frame.png"} alt="Phone" width={399} height={786} />
-        <TextGenerateEffect words="We make selling your giftcards simple." />
+      <div className="phone__fr__header opacity-0 absolute top-14 left-1/2 -translate-x-1/2 w-full px-8 md:hidden">
+        <h4 className="text-[1.2rem] text-center font-bold">
+          We make selling your giftcard simple.
+        </h4>
+      </div>
+      <div className="grid place-items-center phone__fr absolute left-1/2 -translate-x-1/2 w-full scale-[1] md:grid-flow-col grid-flow-row md:grid-cols-3 md:grid-rows-none md:gap-8 grid-rows-2 gap-4 md:px-4 px-0 pt-4">
+        <div className="side_text md:mt-64 mt-80 opacity-0 hidden md:block">
+          <h4 className="md:text-[2.8rem] text-[1.8rem] font-black text-left ">
+            We make selling your giftcard simple.
+          </h4>
+        </div>
+        <div
+          style={{
+            backgroundImage: `url("/phone_frame.png")`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "110%",
+            backgroundPosition: "center center",
+            backgroundClip: "content-box",
+          }}
+          className="md:w-[399px] md:h-[786px] w-[369px] h-[686px] text-2xl font-bold"
+        >
+          <Image
+            src={"/dets_scn.png"}
+            alt=""
+            width={1050}
+            height={2277}
+            className="md:mt-[4.6rem] mt-[2.3rem] md:w-[75%] w-[76%] rounded-[42px] mx-auto max-h-[76.8%]"
+          />
+        </div>
+        <div className="side_text md:mt-64 md:opacity-0 mt-0 mb-8 md:mb-0 self-start md:self-center">
+          <TextGenerateEffect words="So you don't have to hassle." />
+        </div>
       </div>
     </div>
   );

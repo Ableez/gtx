@@ -1,3 +1,4 @@
+"use server";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { db } from "../firebase"; // Importing the firebase instance
@@ -8,7 +9,7 @@ import {
   ReadReceipt,
 } from "../../../../chat"; // Importing the Conversation type
 import { timeStamper } from "../timeStamper"; // Importing the timeStamper utility
-import Cookies from "js-cookie"; // Importing Cookies for managing cookies
+import { cookies } from "next/headers";
 
 // Importing necessary modules from firebase/firestore and firebase/auth
 
@@ -23,8 +24,10 @@ export const sendConfirmTransactionToAdmin = async (
     const chatDocRef = doc(db, "Messages", id as string);
 
     // Getting the user from the cookies
-    const cachedUser = Cookies.get("user");
+    const cachedUser = cookies().get("user")?.value;
     const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+
+    console.log("USER", user);
 
     // If the user is not found, return an error message
     if (!user) return { message: "User not found", success: false };
@@ -56,12 +59,13 @@ export const sendConfirmTransactionToAdmin = async (
       const obj = {
         ...data.messages[index],
         id: data.messages[index]?.id as string,
-        type: data.messages[index]?.id as string,
+        type: data.messages[index]?.type as string,
         deleted: data.messages[index]?.deleted as boolean,
-        content: data.messages[index]?.content as {
-          text: string;
-          media: MediaContent;
-        },
+        content:
+          (data.messages[index]?.content as {
+            text: string;
+            media: MediaContent;
+          }) || null,
         recipient: data.messages[index]?.recipient as string,
         sender: data.messages[index]?.sender as Sender,
         read_receipt: data.messages[index]?.read_receipt as ReadReceipt,
@@ -80,6 +84,17 @@ export const sendConfirmTransactionToAdmin = async (
       // Updating the message at the found index
       data.messages[index] = obj;
     }
+
+    console.log("UPDATE DATA:", {
+      messages: data.messages,
+      "lastMessage.read_receipt": {
+        delivery_status: "seen",
+        status: true,
+      },
+      updated_at: time,
+      "transaction.status": transactionStatus,
+      "transaction.accepted": transactionAccepted,
+    });
 
     // Updating the document in the Firestore with the new data
     await updateDoc(chatDocRef, {

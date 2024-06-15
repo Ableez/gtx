@@ -134,7 +134,7 @@ const FinishTransaction = ({
                       type="submit"
                       title="Confirm & close chat"
                       disabled={loading}
-                      className="w-full text-primary hover:text-pink-400"
+                      className="w-full text-primary grid place-items-center hover:text-pink-400"
                       variant={"ghost"}
                     >
                       {loading && (

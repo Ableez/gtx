@@ -29,8 +29,8 @@ export const FlipWords = ({
       }, duration);
   }, [isAnimating, duration, startAnimation]);
 
-  if (!currentWord) {
-    return words;
+  if (!currentWord || !isAnimating) {
+    return "Giftcards";
   }
 
   return (
@@ -49,24 +49,21 @@ export const FlipWords = ({
           y: 0,
         }}
         transition={{
-          duration: 0.4,
+          duration: 0.2,
           ease: "easeInOut",
           type: "spring",
-          stiffness: 100,
+          stiffness: 50,
           damping: 10,
         }}
         exit={{
           opacity: 0,
           y: -40,
-          x: 40,
+          x: 5,
           filter: "blur(8px)",
-          scale: 2,
+          scale: 0.2,
           position: "absolute",
         }}
-        className={cn(
-          "z-10 inline-block relative p-0",
-          className
-        )}
+        className={cn("z-10 inline-block relative p-0 scale-110", className)}
         key={currentWord}
       >
         {currentWord.split("").map((letter, index) => (

@@ -57,7 +57,7 @@ const RenderMessages = memo(function RenderMessages({
 
   return (
     <>
-      <div className="grid gap-1.5">{renderUI}</div>
+      <div className="grid gap-4">{renderUI}</div>
       <ImagesCarousel
         conversation={conversation as Conversation}
         openSlide={openSlide}

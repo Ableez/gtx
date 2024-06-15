@@ -26,7 +26,6 @@ export default function Home() {
     <main className="text-center bg-white text-black">
       <ScrollHero />
       <Features />
-      {/* <ParallaxScroll images={images} /> */}
       <div className="flex justify-center items-center place-items-center p-4 gap-4">
         <InfiniteMovingCards speed="fast" items={images} pauseOnHover={false} />
         <InfiniteMovingCards

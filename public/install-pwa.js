@@ -5,7 +5,7 @@ const btnAdd = document.querySelectorAll("#installButton");
 const dissmissInstall = document.getElementById("dissmissInstall");
 const divInstallStatus = document.getElementById("installAvailable");
 
-const installContainer = document.querySelectorAll("  #installContainer");
+const installContainer = document.querySelectorAll("#installContainer");
 
 // dismiss
 dissmissInstall.addEventListener("click", () => {

@@ -228,7 +228,7 @@ const CropImage = ({
           }
         }}
       >
-        <DialogContent className="w-[100vw] max-w-md rounded-2xl">
+        <DialogContent className="w-[100vw] max-w-md rounded-2xl border-2 border-black">
           <DialogHeader>
             {imgSrc && (
               <button

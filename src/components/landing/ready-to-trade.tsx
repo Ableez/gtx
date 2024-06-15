@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "../ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 type Props = {};
 
@@ -26,9 +27,11 @@ const ReadyNow = (props: Props) => {
         <h4 className="text-2xl md:text-[3rem] text-left font-bold leading-tight hidden md:block">
           So are you ready to start trading?
         </h4>
-        <Button className="w-full flex align-middle place-items-center gap-2 py-4">
-          Jump in <ArrowRightIcon width={14} strokeWidth={2} />
-        </Button>
+        <Link href="/sell">
+          <Button className="w-full flex align-middle place-items-center gap-2 py-4">
+            Jump in <ArrowRightIcon width={14} strokeWidth={2} />
+          </Button>
+        </Link>
       </div>
     </div>
   );

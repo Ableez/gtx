@@ -61,13 +61,25 @@ const CardDeck = (props: Props) => {
             );
           })}
         </div>
-        <Image
-          src={"/phone_frame.png"}
-          alt="Phone"
-          width={399}
-          height={786}
-          className="max-w-[20rem] w-[18rem] md:w-[22rem] z-[40]"
-        />
+        <div
+          style={{
+            backgroundImage: `url("/phone_frame.png")`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "110%",
+            backgroundPosition: "center center",
+            backgroundClip: "content-box",
+          }}
+          className="w-[299px] h-[586px] scale-95 text-2xl font-bold z-50"
+        >
+          <Image
+            src={"/mst_scn.png"}
+            alt="Phone"
+            width={399}
+            height={786}
+            className="md:mt-[3.4rem] mt-[2.5rem] w-[75%] rounded-[42px] mx-auto"
+          />
+        </div>
+
         <div className="flex flex-col items-center absolute top-1/2 -translate-y-1/2 scale-[1.4] rii_card">
           {cardDeck2.map((img, idx) => {
             return (

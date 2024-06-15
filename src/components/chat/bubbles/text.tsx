@@ -18,7 +18,7 @@ const TextMessage = ({ idx, message }: Props) => {
   return (
     <div
       key={idx}
-      className={`max-w-[320px] md:max-w-[500px] transition-all duration-500 px-2 ${
+      className={`max-w-[270px] md:max-w-[500px] transition-all duration-500 px-2 ${
         message.sender.uid === user.uid
           ? "justify-self-end"
           : "justify-self-start"
@@ -27,14 +27,13 @@ const TextMessage = ({ idx, message }: Props) => {
       <div
         className={`${
           message.sender.uid === user.uid
-            ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-            : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200/50 dark:bg-black"
-        } flex align-middle place-items-end justify-between px-3 gap-2 py-1.5`}
+            ? "bg-purple-600/70 dark:bg-purple-500/50 text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+            : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200/50 dark:bg-black text-black/70 dark:text-white"
+        } flex align-middle place-items-end justify-between px-3.5 gap-2 py-2`}
       >
         <div className="flex align-middle place-items-end gap-4">
-          <p className={`text-sm`}>
+          <p className={`text-xs font-medium`}>
             {message.content.text}
-            <br />
           </p>
           <p className="text-[8px] font-light leading-3">
             {message.read_receipt.delivery_status === "not_sent" ? (

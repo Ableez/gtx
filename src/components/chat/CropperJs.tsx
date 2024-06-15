@@ -427,14 +427,14 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             </div>
           ) : (
             imageUrl && (
-              <div className="md:max-h-[400px] max-h-[95dvh] h-fit grid gap-2 place-items-center align-middle">
+              <div className="md:h-[450px] max-h-[80dvh] grid gap-2 place-items-center align-middle">
                 <Image
                   src={imageUrl}
                   blurDataURL={imageUrl}
                   alt="Cropper Preview"
-                  className="w-fit h-[500px] object-contain"
-                  width={100}
-                  height={100}
+                  width={300}
+                  className="min-w-[120px] w-[300px] max-h-[70dvh] object-contain"
+                  height={300}
                   onLoad={(e) => {}}
                 />
                 <MessageForm

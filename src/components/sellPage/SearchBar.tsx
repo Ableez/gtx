@@ -66,7 +66,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
   });
 
   return (
-    <div className="sticky px-4 top-0 z-[50] bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl">
+    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -99,7 +99,7 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
       </div>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search..." />
-        <Button className="w-12 h-12 bg-neutral-200 z-50 dark:bg-black  rounded-full absolute top-0 right-0" onClick={() => setOpen(false)} variant={"ghost"} size={"icon"}>
+        <Button className="w-12 h-12 bg-neutral-100 z-50 dark:bg-black  rounded-full absolute top-0 right-0" onClick={() => setOpen(false)} variant={"ghost"} size={"icon"}>
           <XMarkIcon width={18} />
         </Button>
         <CommandList className="max-h-full">

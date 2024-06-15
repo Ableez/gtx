@@ -38,7 +38,9 @@ export const TextGenerateEffect = ({
   return (
     <div>
       <div>
-        <div className="text-lg font-semibold">{renderWords()}</div>
+        <div className="md:text-xl text-base font-medium text-black/60 dark:text-white/60">
+          {renderWords()}
+        </div>
       </div>
     </div>
   );

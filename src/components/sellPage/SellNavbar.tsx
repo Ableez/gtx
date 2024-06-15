@@ -27,7 +27,7 @@ export default function SellNavbar({ pageTitle, pathLen }: Props) {
   }, []);
 
   return (
-    <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-neutral-100 dark:bg-black z-20 flex align-middle place-items-center justify-between sticky top-0 mb-4 md:px-4 px-4 mt-2">
+    <div className="max-w-screen-md mx-auto py-1.5 backdrop-blur-sm bg-neutral-100 dark:bg-black z-40 flex align-middle place-items-center justify-between sticky top-0 mb-4 md:px-4 px-4 mt-2">
       {pathLen && pathLen !== "ticket" && <BackButton />}
 
       {user && pageTitle === "sell" && !pathLen && (

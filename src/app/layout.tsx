@@ -48,8 +48,10 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem
         >
-          <PromptInstall />
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          <Suspense fallback={<Loading />}>
+            {children}
+            {/* <PromptInstall /> */}
+          </Suspense>
         </ThemeProvider>
         <Toaster />
         <RequestNotification />
@@ -62,14 +64,9 @@ export default function RootLayout({
 const Head = () => {
   return (
     <head>
-      {/* <script
-        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-        defer
-      ></script> */}
-      {/* <script defer src="/scripts/onesignal.js"></script> */}
       <meta
         name="viewport"
-        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=yes, user-scalable=no, viewport-fit=cover"
       />
       <meta name="application-name" content="Greatex" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -97,11 +94,10 @@ const Head = () => {
       />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
-      <meta name="msapplication-config" content="/icons/browserconfig.xml" />
       <meta name="msapplication-tap-highlight" content="no" />
       <link rel="manifest" href="/manifest.json" />
       <link rel="shortcut icon" href="/icons/maskable_icon_x192.png" />
-      <Script src="../../install-pwa.js" />
+      {/* <Script src="../../install-pwa.js" /> */}
     </head>
   );
 };

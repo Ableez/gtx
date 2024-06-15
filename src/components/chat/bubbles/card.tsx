@@ -36,6 +36,8 @@ const CardMessage = ({
   const [hideCode, setHideCode] = useState(true);
   const [openConfirmTransaction, setOpenConfirmTransaction] = useState(false);
 
+  console.log("CARD TRANSACTION", message);
+
   return (
     <>
       <div

@@ -10,7 +10,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 
-// const savedPage = parseInt(localStorage.getItem("card_page") || "1");
 const savedPage = parseInt(Cookies.get("card_page") || "1");
 
 const SellPage = () => {
