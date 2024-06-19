@@ -102,19 +102,18 @@ const RegisterPage = (props: Props) => {
     <>
       {loading && <Loading />}
       <div className="grid grid-flow-row gap-6 py-6 px-2 max-w-sm mx-auto">
-        <div className="flex align-middle place-items-center justify-between px-4">
+        <div className="flex align-middle place-items-center justify-between">
           <Link href={"/"} className="py-2">
-            <div className="flex align-middle place-items-center w-fit gap-2 mx-auto">
+            <Button variant={"ghost"}>
               <Image
                 width={32}
                 height={32}
                 src={"/greatexc.svg"}
                 alt="Great Exchange"
               />
-              <h4 className="text-xl font-semibold text-primary">Greatex</h4>
-            </div>
+            </Button>
           </Link>
-          <h4 className="text-xl font-bold text-center">Sign Up</h4>
+          <h4 className="text-base font-bold text-center">Sign In</h4>
         </div>
 
         <div className="gap-4 px-4 mx-auto max-w-sm w-full">
