@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: "/__/auth",
-        destination: "https://great-exchange.firebaseapp.com",
+        destination: "https://great-exchange.firebaseapp.com/__/auth/",
       },
     ];
   },

@@ -6,6 +6,7 @@ import { InfiniteMovingCards } from "@/components/landing/moving-cards";
 import CardDeck from "@/components/landing/card-deck";
 import ReadyNow from "@/components/landing/ready-to-trade";
 import Footer from "@/components/landing/Footer";
+import FAQs from "@/components/landing/FAQs";
 
 export default function Home() {
   const images = [
@@ -37,6 +38,7 @@ export default function Home() {
       </div>
       <CardDeck />
       <ReadyNow />
+      <FAQs />
       <Footer />
     </main>
   );

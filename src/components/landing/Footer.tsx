@@ -1,5 +1,5 @@
-import { BsTwitterX } from "react-icons/bs";
-import { FaFacebook } from "react-icons/fa6";
+import { FaTiktok } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa6";
 import { LuInstagram } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
@@ -74,14 +74,18 @@ const Footer = (props: Props) => {
             Social
           </h4>
           <div className="flex flex-row gap-5 align-middle place-items-center justify-center text-4xl">
-            <Link href={"https://twitter.com/greatexchange"}>
-              <BsTwitterX />
+            <Link href={"http://wa.me/+2349072418875"}>
+              <FaWhatsapp />
             </Link>
-            <Link href={"https://twitter.com/greatexchange"}>
-              <FaFacebook />
-            </Link>
-            <Link href={"https://twitter.com/greatexchange"}>
+            <Link href={"https://www.instagram.com/exchange_.greatly/"}>
               <LuInstagram />
+            </Link>
+            <Link
+              href={
+                "https://www.tiktok.com/@greatexchange_?_t=8nK0rY1CMSr&_r=1"
+              }
+            >
+              <FaTiktok />
             </Link>
           </div>
         </div>
@@ -99,14 +103,26 @@ const Footer = (props: Props) => {
           Social
         </h4>
         <div className="flex flex-row gap-5 align-middle place-items-center justify-center text-4xl py-2">
-          <Link className="hover:scale-110 duration-300" href={"https://twitter.com/greatexchange"}>
-            <BsTwitterX />
+          <Link
+            target="_blank"
+            className="hover:scale-110 duration-300"
+            href={"http://wa.me/+2349072418875"}
+          >
+            <FaWhatsapp />
           </Link>
-          <Link className="hover:scale-110 duration-300" href={"https://twitter.com/greatexchange"}>
-            <FaFacebook />
-          </Link>
-          <Link className="hover:scale-110 duration-300" href={"https://twitter.com/greatexchange"}>
+          <Link
+            target="_blank"
+            className="hover:scale-110 duration-300"
+            href={"https://www.instagram.com/exchange_.greatly/"}
+          >
             <LuInstagram />
+          </Link>
+          <Link
+            target="_blank"
+            className="hover:scale-110 duration-300"
+            href={"https://www.tiktok.com/@greatexchange_?_t=8nK0rY1CMSr&_r=1"}
+          >
+            <FaTiktok />
           </Link>
         </div>
       </div>
