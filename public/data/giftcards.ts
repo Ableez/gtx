@@ -150,7 +150,7 @@ export const giftcards = [
     id: "Vanilla",
     popular: true,
     name: "Vanilla",
-    image: `${PUBLIC_URL}/Vanilla.svg`,
+    image: `${PUBLIC_URL}/vanilla.svg`,
     title: "Vanilla Card",
     category: "Shopping",
     subcategory: [
