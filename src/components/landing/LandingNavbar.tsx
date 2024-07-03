@@ -45,22 +45,16 @@ export default function LandingNavbar() {
 
         <NavigationMenuList className="hidden md:flex">
           <Link
-            href="/"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
-          >
-            Services
-          </Link>
-          <Link
-            href="/"
+            href="/faq"
             className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             About Us
           </Link>
           <Link
-            href="/"
+            href="/terms"
             className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
-            Policies
+            Terms & Policies
           </Link>
         </NavigationMenuList>
 
@@ -132,7 +126,7 @@ export default function LandingNavbar() {
               <Link
                 onClick={() => setOpen(false)}
                 className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
-                href={""}
+                href={"/faq"}
               >
                 <li>About Us</li>
                 <ChevronRightIcon
@@ -145,9 +139,9 @@ export default function LandingNavbar() {
               <Link
                 onClick={() => setOpen(false)}
                 className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
-                href={"/"}
+                href={"/terms"}
               >
-                <li>Policies</li>
+                <li>Terms & Policies</li>
                 <ChevronRightIcon
                   width={14}
                   className="group-hover:opacity-70 opacity-0 mr-2 duration-200 group group-hover:mr-0"

@@ -47,13 +47,13 @@ const faqs: FAQ[] = [
     value: "item-5",
     question: "How long does payments take?",
     answer:
-      "Payments are typically processed immediately after confirming your card information is valid.",
+      "Payments are typically processed Immediately after confirming your assets",
   },
   {
     value: "item-6",
     question: "What are your customer support hours?",
     answer:
-      "Our customer support team is available 24/7 to assist you. You can send us an email via info@greatexchange.co or call us on +234 805 255 5161",
+      "Our customer support team is available 24/7 to assist you. You can send us an email via help@greatexchange.co or call us on +234 701 066 2232",
   },
 ];
 
