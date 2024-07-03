@@ -46,7 +46,7 @@ const AttachFile = ({ message, chatId, scrollToBottom }: Props) => {
           <div className="max-w-md w-full mx-auto">
             <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
               <DrawerClose
-                className="cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 dark:hover:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl"
+                className={`${message?.transaction.crypto? "w-full" : "w-fit"} cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 dark:hover:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl`}
                 onClick={() => {
                   setOpenEdit(true);
                 }}
@@ -54,27 +54,32 @@ const AttachFile = ({ message, chatId, scrollToBottom }: Props) => {
                 <PhotoIcon width={30} />
                 <p className="text-xs">Gallery</p>
               </DrawerClose>
-              <DrawerClose
-                className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl"
-                onClick={() => setOpenEcode(true)}
-              >
-                <LockClosedIcon width={30} />
-                <p className="text-xs">
-                  {message?.transaction?.cardDetails?.ecode && "Edit "}
-                  E-Code
-                </p>
-              </DrawerClose>
-              <DrawerClose
-                className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-purple-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-purple-100 text-purple-500 dark:bg-purple-400 dark:bg-opacity-10 rounded-3xl"
-                onClick={() => setOpenAccount(true)}
-              >
-                <CreditCardIcon width={30} />
-                <p className="text-xs">
-                  {message?.transaction?.accountDetails?.accountNumber &&
-                    "Edit "}
-                  Account
-                </p>
-              </DrawerClose>
+              {!message?.transaction.crypto ?? (
+                <DrawerClose
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl"
+                  onClick={() => setOpenEcode(true)}
+                >
+                  <LockClosedIcon width={30} />
+                  <p className="text-xs">
+                    {message?.transaction?.cardDetails?.ecode && "Edit "}
+                    E-Code
+                  </p>
+                </DrawerClose>
+              )}
+
+              {!message?.transaction.crypto ?? (
+                <DrawerClose
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-purple-300 hover:dark:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-purple-100 text-purple-500 dark:bg-purple-400 dark:bg-opacity-10 rounded-3xl"
+                  onClick={() => setOpenAccount(true)}
+                >
+                  <CreditCardIcon width={30} />
+                  <p className="text-xs">
+                    {message?.transaction?.accountDetails?.accountNumber &&
+                      "Edit "}
+                    Account
+                  </p>
+                </DrawerClose>
+              )}
             </div>
           </div>
         </DrawerContent>

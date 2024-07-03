@@ -3,6 +3,8 @@ import React from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { gsap } from "gsap"; // import {} from "gsap"
 import { useGSAP } from "@gsap/react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,7 +39,7 @@ const CardDeck = (props: Props) => {
     <div className="my-32 overflow-hidden">
       <div className="mb-8">
         <h4 className="text-2xl md:text-4xl font-black leff_card">
-          Greatex Crypto
+          Great Exchange
         </h4>
       </div>
       <div className="flex align-middle justify-center place-items-center relative left__cards__cont">
@@ -101,11 +103,13 @@ const CardDeck = (props: Props) => {
           })}
         </div>
       </div>
-      <div className="mt-8 max-w-sm mx-auto px-8">
-        <h4 className="text-">
-          Coming soon. Greatex will also allow you to trade in your crypto
-          currencies for cash.
+      <div className="mt-8 max-w-sm mx-auto px-8 space-y-6">
+        <h4 className="text-center mb-6 text-lg text-black/70 dark:text-white/70">
+          Select from our large collection of cards to trade.
         </h4>
+        <Link href="/sell" className="w-full">
+          <Button className="py-6 w-full ">Check it out</Button>
+        </Link>
       </div>
     </div>
   );

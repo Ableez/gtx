@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
@@ -10,7 +10,7 @@ import Script from "next/script";
 import RequestNotification from "@/components/RequestNotification";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const openSans = Open_Sans({ subsets: ["latin"] });
+const openSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Great Exchange",

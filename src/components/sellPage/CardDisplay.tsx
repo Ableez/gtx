@@ -4,7 +4,7 @@ import React from "react";
 import { GiftCard } from "../../../types";
 
 type Props = {
-  filteredCards: GiftCard[];
+  filteredCards: { id: string; image: string; name: string }[];
 };
 
 const CardDisplay = ({ filteredCards }: Props) => {

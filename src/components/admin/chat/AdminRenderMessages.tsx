@@ -113,14 +113,16 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
         resend={resend}
         update={update}
       />
-      <FinishTransaction
-        finishTransaction={finishTransaction}
-        setFinishTransaction={setFinishTransaction}
-        card={conversation}
-        chatId={chatId}
-        resend={resend}
-        update={update}
-      />
+      {conversation?.transaction.crypto ?? (
+        <FinishTransaction
+          finishTransaction={finishTransaction}
+          setFinishTransaction={setFinishTransaction}
+          card={conversation}
+          chatId={chatId}
+          resend={resend}
+          update={update}
+        />
+      )}
       <SetRateComp
         card={card}
         chatId={chatId}

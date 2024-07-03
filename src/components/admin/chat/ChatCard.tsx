@@ -38,12 +38,7 @@ const ChatCard = ({ chat, chat2, idx }: Props) => {
     await updateDoc(chatRef, chatData);
   };
 
-  // const currMsg = chat.data.messages.findIndex(
-  //   (msg) => msg.sender.uid === user.uid
-  // );
-
   if (chat) {
-    console.log(chat.data);
     return (
       <div
         className="flex align-middle place-items-center justify-between h-fit duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-black/20"

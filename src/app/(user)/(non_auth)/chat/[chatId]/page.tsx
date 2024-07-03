@@ -9,8 +9,6 @@ import { Conversation } from "../../../../../../chat";
 import { postToast } from "@/components/postToast";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import PageDataFetchError from "@/components/PageDataFetchError";
-import { Button } from "@/components/ui/button";
-import { ArrowDownIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: {

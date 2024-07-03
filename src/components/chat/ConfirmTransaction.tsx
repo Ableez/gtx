@@ -57,6 +57,8 @@ const ConfirmTransaction = ({
     }
   };
 
+  const isCrypto = data.transaction.crypto;
+
   return (
     <Dialog
       open={openConfirmTransaction}
@@ -73,46 +75,63 @@ const ConfirmTransaction = ({
         </DialogHeader>
         <div>
           <div className="my-4">
-            <div className="flex pb-2 align-middle place-items-center justify-start gap-3">
-              <div className="relative">
+            {isCrypto ? (
+              <div>
                 <Image
                   alt="Card logo"
                   width={120}
                   height={120}
-                  src={
-                    data?.transaction?.cardDetails?.image || "/logoplace.svg"
-                  }
+                  src={data?.transaction?.cryptoData?.image || "/logoplace.svg"}
                   className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl "
                 />
-                <div className="absolute bottom-0 right-0">
-                  <Image
-                    alt="Subcategory logo"
-                    width={30}
-                    height={30}
-                    src={
-                      data?.transaction?.cardDetails?.subcategory?.image ||
-                      "/logoplace.svg"
-                    }
-                    className="w-4 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl"
-                  />
-                </div>
+                <h4 className="md:text-xl text-base tracking-wide font-bold">
+                  {data?.transaction?.cryptoData?.name}
+                </h4>
               </div>
-              <h4 className="md:text-xl text-base tracking-wide font-bold">
-                {data?.transaction?.cardDetails?.vendor} Card
-              </h4>
-            </div>
+            ) : (
+              <div className="flex pb-2 align-middle place-items-center justify-start gap-3">
+                <div className="relative">
+                  <Image
+                    alt="Card logo"
+                    width={120}
+                    height={120}
+                    src={
+                      data?.transaction?.cardDetails?.image || "/logoplace.svg"
+                    }
+                    className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl "
+                  />
+                  <div className="absolute bottom-0 right-0">
+                    <Image
+                      alt="Subcategory logo"
+                      width={30}
+                      height={30}
+                      src={
+                        data?.transaction?.cardDetails?.subcategory?.image ||
+                        "/logoplace.svg"
+                      }
+                      className="w-4 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl"
+                    />
+                  </div>
+                </div>
+                <h4 className="md:text-xl text-base tracking-wide font-bold">
+                  {data?.transaction?.cardDetails?.vendor} Card
+                </h4>
+              </div>
+            )}
             <div className="border-t border-neutral-200 dark:border-neutral-700">
               <dl className="divide-y divide-neutral-300 dark:divide-neutral-600">
-                <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
-                    Subcategory
-                  </dt>
-                  <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                    {data?.transaction.cardDetails?.subcategory?.value ||
-                      "Please wait..."}
-                  </dd>
-                </div>
-                <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                {!isCrypto && (
+                  <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
+                      Subcategory
+                    </dt>
+                    <dd className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
+                      {data?.transaction.cardDetails?.subcategory?.value ||
+                        "Please wait..."}
+                    </dd>
+                  </div>
+                )}
+                {/* <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
                     You will be receiving
                   </dt>
@@ -133,7 +152,7 @@ const ConfirmTransaction = ({
                       )}
                     </div>
                   </dd>
-                </div>
+                </div> */}
 
                 <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-sm font-semibold leading-6 text-neutral-900 dark:text-white">
@@ -162,11 +181,12 @@ const ConfirmTransaction = ({
                 Please you must send your account details.
               </p>
             )}
-            {!data?.transaction?.cardDetails?.rate && (
-              <p className="font-medium text-[10px] text-center text-amber-500">
-                Please request for the rate $.
-              </p>
-            )}
+            {!data?.transaction?.cardDetails?.rate ||
+              (!data?.transaction?.cryptoData?.rate && (
+                <p className="font-medium text-[10px] text-center text-amber-500">
+                  Please request for the rate $.
+                </p>
+              ))}
           </div>
           <form onSubmit={(e) => start(true, e)}>
             <Button

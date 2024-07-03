@@ -12,6 +12,7 @@ import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
 import { GiftCard } from "../../../types";
 import { User } from "firebase/auth";
+import { Conversation } from "../../../chat";
 
 export const getCardData = (id: string | undefined): GiftCard | null => {
   if (!id) {
@@ -172,6 +173,143 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       logged: true,
       error: "Internal error",
       proceed: false,
+    };
+  }
+};
+
+export const startCryptoChat = async (
+  cryptoData: {
+    name: string;
+    image: string;
+    acc: string;
+    id: string;
+  },
+  formData: FormData
+) => {
+  try {
+    const cachedUser = cookies().get("user")?.value;
+    const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+
+    if (!user) {
+      return {
+        link: "/",
+        logged: false,
+        error: "You must be logged in.",
+        proceed: false,
+      };
+    }
+
+    const msg = {
+      id: uuid(),
+      timeStamp: new Date(),
+    };
+
+    const price = formData.get("price");
+
+    console.log("price", price);
+
+    if (!price) {
+      return {
+        link: "",
+        logged: true,
+        error: "Please insert a price",
+        proceed: false,
+      };
+    }
+
+    const messagesRef = collection(db, "Messages");
+
+    const createdChat = await addDoc(messagesRef, {
+      chatStatus: "open",
+      transaction: {
+        started: false,
+        crypto: true,
+        cryptoData: {
+          name: cryptoData.name,
+          image: cryptoData.image,
+          acc: cryptoData.acc,
+          id: cryptoData.id,
+          price: price,
+        },
+      },
+      messages: [
+        {
+          id: msg.id,
+          type: "card",
+          deleted: false,
+          sender: {
+            username: user?.displayName,
+            uid: user?.uid,
+          },
+          recipient: "admin",
+          card: {
+            title: "crypto_trade",
+            data: {
+              id: cryptoData.id,
+              image: cryptoData.image,
+              name: cryptoData.name,
+              price: price,
+            },
+          },
+          timeStamp: msg.timeStamp,
+          edited: false,
+          edited_at: null, //date
+          read_receipt: {
+            delivery_status: "sent", // "not_sent" | "sent" | "delivered" | "seen"
+            status: false,
+            time: null, //date
+          },
+          quoted_message: {
+            text: "",
+            url: "",
+            metadata: {
+              media_name: "",
+              media_size: "",
+              media_type: "",
+            },
+          }, // or null,
+        },
+      ],
+      lastMessage: {
+        id: msg.id,
+        sender: "user",
+        content: {
+          text: `A ${price} ${cryptoData.name} Trade`,
+          media: false,
+        },
+        read_receipt: {
+          delivery_status: "sent",
+          status: false,
+          time: msg.timeStamp,
+        },
+      },
+      user: {
+        username: user?.displayName,
+        uid: user?.uid,
+        email: user?.email,
+        photoUrl: user?.photoURL || "",
+      },
+      created_at: msg.timeStamp,
+      updated_at: msg.timeStamp,
+    } as unknown as Conversation);
+
+    const link = `${createdChat.id}`;
+
+    await updateDoc(doc(db, "Users", user.uid), {
+      conversations: arrayUnion(link),
+    });
+
+    return {
+      link,
+      logged: true,
+      error: "",
+      proceed: true,
+    };
+  } catch (error) {
+    console.error("An error occured during the start of crypto chat:", error);
+    return {
+      success: false,
+      msg: "An internal error occured. Please try again.",
     };
   }
 };

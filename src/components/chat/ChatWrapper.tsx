@@ -17,6 +17,8 @@ const UserChatWrapper = ({
   scrollToBottom,
 }: Props): React.ReactElement => {
   const { conversation } = useMessagesStore();
+
+  console.log("CRYPT CONVERSATION", conversation);
   // const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
 
   // const docref = useRef<HTMLDivElement>(null);
@@ -51,7 +53,6 @@ const UserChatWrapper = ({
         <MessageInput chatId={chatId} scrollToBottom={scrollToBottom} />
       )}
 
-      {/* {isScrolledToBottom && ( */}
       <Button
         className="fixed bottom-16 right-4 z-[49] bg-white dark:bg-black rounded-full"
         variant={"outline"}

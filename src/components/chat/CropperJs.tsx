@@ -207,8 +207,6 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
             },
             true
           );
-
-          console.log("MESSAGE SENT");
         }
 
         scrollToBottom.current?.lastElementChild?.scrollIntoView({
@@ -251,7 +249,6 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
     }
   };
 
-  console.log("MULTIPLE", multipleFiles);
   return (
     <Dialog
       open={openS}

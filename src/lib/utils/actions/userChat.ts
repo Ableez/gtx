@@ -134,6 +134,7 @@ export const sendEcodeToAdmin = async (
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
+    console.log("HITTED");
 
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {
@@ -228,6 +229,7 @@ export const sendEcodeToAdmin = async (
             timeStamp: time,
           };
 
+          console.log("DATA MESSAGES: ", data.messages);
           await updateDoc(chatDocRef, {
             messages: data.messages,
             updated_at: time,
@@ -280,6 +282,8 @@ export const sendAccountToAdmin = async (
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
+
+    console.log("ACCT DETAILS:", accountDetails);
 
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {
@@ -351,6 +355,8 @@ export const sendAccountToAdmin = async (
 
         const time = timeStamper();
 
+        console.log("DATA:", JSON.stringify(data));
+
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
             ...data.messages[index],
@@ -377,7 +383,7 @@ export const sendAccountToAdmin = async (
           await updateDoc(chatDocRef, {
             messages: data.messages,
             updated_at: time,
-          });
+          }).catch((e) => console.log("ERROR updoc:", e));
         }
       }
     }

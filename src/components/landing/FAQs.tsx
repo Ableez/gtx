@@ -38,10 +38,16 @@ const faqs: FAQ[] = [
       "We accept a wide range of gift cards, including popular retailers and online stores. Check our list of accepted gift cards on the web app.",
   },
   {
-    value: "item-5",
-    question: "How can I trust you and how long does payments take?",
+    value: "item-trust",
+    question: "How can I trust you?",
     answer:
-      "Payments are typically processed immediately after confirming your card information is valid. We have been conducting our business legitimately for years and are registered with the Corporate Affairs Commission (CAC) under Registration Number: 1945065.",
+      "We have been conducting our business legitimately for years and are registered with the Corporate Affairs Commission (CAC) under Registration Number: 1945065.",
+  },
+  {
+    value: "item-5",
+    question: "How long does payments take?",
+    answer:
+      "Payments are typically processed immediately after confirming your card information is valid.",
   },
   {
     value: "item-6",
@@ -55,16 +61,18 @@ type Props = {};
 
 const FAQs: React.FC<Props> = (props: Props) => {
   return (
-    <div className="container py-24">
-      <div className="dark:text-white font-bold mb-8">
+    <div className="container py-24 bg-pink-50/70">
+      <div className="dark:text-white font-semibold text-xl mb-8">
         <h4>Frequently Asked Questions</h4>
       </div>
       <div className="w-full md:w-3/6 mx-auto">
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible className="gap-4 grid">
           {faqs.map((faq) => (
             <AccordionItem key={faq.value} value={faq.value}>
-              <AccordionTrigger>{faq.question}</AccordionTrigger>
-              <AccordionContent className="text-left dark:text-neutral-400">
+              <AccordionTrigger className="border border-black/10 rounded-xl px-4 drop-shadow-lg hover:drop-shadow-sm duration-300 bg-gradient-to-b from-pink-50 to-purple-100/80 hover:decoration-transparent shadow-pink-800/30 shadow-sm py-5">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-left dark:text-neutral-400 text-black/60 p-4">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

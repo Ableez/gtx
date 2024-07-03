@@ -40,7 +40,7 @@ export default function LandingNavbar() {
             src={"/greatexc.svg"}
             alt="Great Exchange"
           />
-          <h4 className="text-lg font-bold">Greatexc</h4>
+          <h4 className="text-lg font-bold">Great Exchange</h4>
         </Link>
 
         <NavigationMenuList className="hidden md:flex">
@@ -93,7 +93,7 @@ export default function LandingNavbar() {
                 src={"/greatexc.svg"}
                 alt="Great Exchange"
               />
-              <h4 className="text-xl font-bold">Greatexc</h4>
+              <h4 className="text-xl font-bold">Great Exchange</h4>
             </div>
 
             <Button
@@ -120,7 +120,7 @@ export default function LandingNavbar() {
               <Link
                 onClick={() => setOpen(false)}
                 className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
-                href={"/sell"}
+                href={"/sell/crypto"}
               >
                 <li>Crypto currencies</li>
                 <ChevronRightIcon

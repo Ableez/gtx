@@ -19,6 +19,7 @@ export const getAdminChats = async () => {
       collection(db, "Messages"),
       orderBy("updated_at", "desc")
     );
+    
     const chats = await getDocs(chatsRef);
 
     const userChats = chats.docs.map((doc) => {
@@ -34,7 +35,7 @@ export const getAdminChats = async () => {
       data: userChats as { data: Conversation; id: string }[],
     };
   } catch (error) {
-    console.error("GET ADMIN CHATS: ", error);
+    console.error("GET ADMIN CHATS Error: ", error);
 
     return {
       message: "An Internal error occured",

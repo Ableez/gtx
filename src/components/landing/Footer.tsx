@@ -58,7 +58,7 @@ const Footer = (props: Props) => {
           <div>
             <p className="text-sm text-left">
               You can also text our support team at{" "}
-              <Link href="tel:+2348103418286">0810 341 8286</Link> or email us
+              <Link href="tel:+2349072418875">0907 241 8875</Link> or email us
               at{" "}
               <Link
                 className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"

@@ -19,7 +19,6 @@ import { useFormStatus } from "react-dom";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Loading from "@/app/loading";
 import { SunIcon } from "@heroicons/react/24/outline";
 
 type Props = {

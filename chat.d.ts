@@ -78,6 +78,15 @@ export type CardDetails = {
 export type Transaction = {
   id: string;
   started: boolean;
+  crypto: boolean;
+  cryptoData: {
+    name: string;
+    image: string;
+    acc: string;
+    id: string;
+    price: string;
+    rate: string;
+  };
   cardDetails: CardDetails;
   accountDetails: {
     accountName: string;

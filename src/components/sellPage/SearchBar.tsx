@@ -1,6 +1,7 @@
+"use client";
+
 import { giftcards } from "../../../public/data/giftcards";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -8,23 +9,20 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "../ui/command";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useSellTab } from "@/lib/utils/store/sellTabs";
 
-type Props = {
-  tabTitle: string;
-  setTabTitle: Function;
-};
-
-const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
+const SearchBar = () => {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
+
+  const { tab, updateTab } = useSellTab((state) => state);
 
   const TABS: { title: string; link: string }[] = [
     {
@@ -65,8 +63,16 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
     );
   });
 
+  // hide search bar if displaying a cryptocurrency details
+  if (
+    pathname.split("/").length > 3 &&
+    pathname.split("/").includes("crypto")
+  ) {
+    return null;
+  }
+
   return (
-    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl">
+    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl  max-w-screen-md mx-auto">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -81,25 +87,42 @@ const SearchBar = ({ setTabTitle, tabTitle }: Props) => {
         </div>
       </Button>
       <div className="mt-3 gap-2 flex">
-        {TABS.map((tab, idx) => {
+        {TABS.map((t, idx) => {
           return (
-            <Button
-              className={`dark:bg-[#2c2c2c] shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] ${
-                tabTitle === tab.link
-                  ? "bg-primary dark:bg-primary hover:bg-primary dark:hover:bg-primary text-white"
-                  : "bg-white dark:bg-[#2c2c2c] hover:bg-white dark:hover:bg-[#2c2c2c] text-neutral-700 dark:text-white border"
-              }`}
-              onClick={() => setTabTitle(tab.link)}
-              key={idx}
-            >
-              {tab.title}
-            </Button>
+            <Link href={"/sell"} key={idx} onClick={() => updateTab(t.link)}>
+              <Button
+                className={`dark:bg-[#2c2c2c] shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] ${
+                  tab === t.link
+                    ? "bg-primary dark:bg-primary hover:bg-primary dark:hover:bg-primary text-white"
+                    : "bg-white dark:bg-[#2c2c2c] hover:bg-white dark:hover:bg-[#2c2c2c] text-neutral-700 dark:text-white border"
+                }`}
+              >
+                {t.title}
+              </Button>
+            </Link>
           );
         })}
+        <Link href={"/sell/crypto"}>
+          <Button
+            className={`dark:bg-[#2c2c2c] shadow-md shadow-[#fa6ed722] dark:shadow-lg dark:shadow-[#6133541f] ${
+              pathname === "/sell/crypto"
+                ? "bg-primary dark:bg-primary hover:bg-primary dark:hover:bg-primary text-white"
+                : "bg-white dark:bg-[#2c2c2c] hover:bg-white dark:hover:bg-[#2c2c2c] text-neutral-700 dark:text-white border"
+            }`}
+            onClick={() => updateTab(pathname)}
+          >
+            Cryptocurrencies
+          </Button>
+        </Link>
       </div>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search..." />
-        <Button className="w-12 h-12 bg-neutral-100 z-50 dark:bg-black  rounded-full absolute top-0 right-0" onClick={() => setOpen(false)} variant={"ghost"} size={"icon"}>
+        <Button
+          className="w-12 h-12 bg-neutral-100 z-50 dark:bg-black  rounded-full absolute top-0 right-0"
+          onClick={() => setOpen(false)}
+          variant={"ghost"}
+          size={"icon"}
+        >
           <XMarkIcon width={18} />
         </Button>
         <CommandList className="max-h-full">

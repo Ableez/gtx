@@ -61,21 +61,23 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
                 <p className="text-xs">Gallery</p>
               </DrawerClose>
 
-              <DrawerClose
-                className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
-                onClick={() => setOpenRate(true)}
-              >
-                <CurrencyDollarIcon width={30} />
-                <p className="text-xs">
-                  {message?.transaction.cardDetails.rate ? "Edit " : "Set "}
-                  Rate
-                </p>
-                {!message?.transaction.cardDetails.rate && (
-                  <span className="text-[10px] py-0.5 px-1.5 bg-rose-400 rounded-full text-white absolute -top-1 right-0">
-                    Not Set
-                  </span>
-                )}
-              </DrawerClose>
+              {!message?.transaction.crypto ?? (
+                <DrawerClose
+                  className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
+                  onClick={() => setOpenRate(true)}
+                >
+                  <CurrencyDollarIcon width={30} />
+                  <p className="text-xs">
+                    {message?.transaction.cardDetails.rate ? "Edit " : "Set "}
+                    Rate
+                  </p>
+                  {!message?.transaction.cardDetails.rate && (
+                    <span className="text-[10px] py-0.5 px-1.5 bg-rose-400 rounded-full text-white absolute -top-1 right-0">
+                      Not Set
+                    </span>
+                  )}
+                </DrawerClose>
+              )}
 
               <DrawerClose
                 className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-purple-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-purple-100  text-purple-500 dark:bg-purple-400 dark:bg-opacity-10 rounded-3xl"
@@ -88,13 +90,17 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
           </div>
         </DrawerContent>
       </Drawer>
-      <SetRateComp
-        edit={message?.transaction.cardDetails.rate ? true : false}
-        chatId={chatId}
-        openRate={openRate}
-        setOpenRate={setOpenRate}
-        card={message?.transaction.cardDetails as CardDetails}
-      />
+
+      {!message?.transaction.crypto ?? (
+        <SetRateComp
+          edit={message?.transaction.cardDetails.rate ? true : false}
+          chatId={chatId}
+          openRate={openRate}
+          setOpenRate={setOpenRate}
+          card={message?.transaction.cardDetails as CardDetails}
+        />
+      )}
+
       <StartAdminTransaction
         openStartTransaction={openStartTransaction}
         setOpenStartTransaction={setOpenStartTransaction}

@@ -43,7 +43,7 @@ const ImageBubble = ({
         className={`${
           message.sender.uid === user.uid
             ? "justify-self-end"
-            : "justify-self-start"
+            : "justify-self-start flex-row-reverse"
         } flex align-middle place-items-center gap-2`}
       >
         <DropdownMenu>
@@ -85,7 +85,7 @@ const ImageBubble = ({
 
                   toast.dismiss("download-toast");
                   postToast("✔️ Done", {
-                    duration: 1200,
+                    duration: 2000,
                     id: "download-progress",
                   });
                 };
@@ -123,7 +123,7 @@ const ImageBubble = ({
             } grid align-middle place-items-center justify-between px-1 gap-2 py-1 min-w-[100px] min-h-[100px]`}
           >
             <div className="rounded-sm overflow-clip shadow-md bg-white relative">
-              <div className="w-full h-16 absolute bottom-0 left-0 from-transparent to-black/60 bg-gradient-to-b" />
+              <div className="w-full h-8 absolute bottom-0 left-0 from-transparent to-black/60 bg-gradient-to-b" />
               <h4 className="absolute bottom-2 text-white right-4 text-xs">
                 {message?.read_receipt.delivery_status === "not_sent" ? (
                   <ClockIcon width={14} />

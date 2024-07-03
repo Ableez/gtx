@@ -24,6 +24,7 @@ const AdminChat = async (props: Props) => {
       </div>
     );
   }
+  
   if (!chats.success || !chats.data) {
     return (
       <section className="bg-white dark:bg-neutral-900 grid placeitce gap-4 text-center">

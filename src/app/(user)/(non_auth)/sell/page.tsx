@@ -9,22 +9,23 @@ import Loader from "@/components/Loader";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
+import { useSellTab } from "@/lib/utils/store/sellTabs";
 
 const savedPage = parseInt(Cookies.get("card_page") || "1");
 
 const SellPage = () => {
   const container = useRef<HTMLDivElement>(null);
-  const [tabTitle, setTabTitle] = useState("all");
   const [currPage, setCurrPage] = useState(savedPage);
   const [currCards, setCurrCards] = useState<Pagination>(
     new Pagination(giftcards, 20, currPage)
   );
+  const { tab } = useSellTab((state) => state);
   const [cardsToShow, setCardsToShow] = useState<GiftCard[] | undefined>(
     currCards?.getCurrentPageData()
   );
 
   useEffect(() => {
-    if (tabTitle === "mostpopular") {
+    if (tab === "mostpopular") {
       setCardsToShow(giftcards.filter((card) => card.popular));
     } else {
       setCardsToShow(currCards?.goToPage(currPage));
@@ -32,12 +33,10 @@ const SellPage = () => {
       Cookies.set("card_page", currPage.toString());
     }
     container.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [currCards, tabTitle, currPage]);
+  }, [currCards, tab, currPage]);
 
   return (
-    <div className="pb-8 max-w-screen-md mx-auto" ref={container}>
-      <SearchBar setTabTitle={setTabTitle} tabTitle={tabTitle} />
-
+    <div className="pb-16 max-w-screen-md mx-auto" ref={container}>
       {!currCards || !cardsToShow ? (
         <div className="h-[50vh] grid place-items-center align-middle justify-center">
           <div className="p-4 rounded-lg bg-white dark:bg-black shadow-2xl dark:shadow-lg shadow-pink-200 dark:shadow-[#43262f60] ">
@@ -53,7 +52,7 @@ const SellPage = () => {
               Errrm, seems like we dont know that one!
             </div>
           )}
-          {tabTitle !== "mostpopular" && (
+          {tab !== "mostpopular" && (
             <div className=" flex align-middle place-items-center justify-center gap-4 w-fit mx-auto mb-4">
               <Button
                 variant={"ghost"}

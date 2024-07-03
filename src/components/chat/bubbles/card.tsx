@@ -212,6 +212,46 @@ const CardMessage = ({
           </CardComponent>
         )}
 
+        {message.card.title === "crypto_trade" && (
+          <CardComponent title={"Crypto Details"} key={idx}>
+            <>
+              <div className="flex pb-2 align-middle place-items-center justify-start gap-3 ">
+                <div className="relative">
+                  <Image
+                    alt="Card logo"
+                    width={120}
+                    height={120}
+                    src={message?.card?.data?.image || "/logoplace.svg"}
+                    className="w-8 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl border-2"
+                  />
+                  <div className="absolute bottom-0 right-0">
+                    <Image
+                      alt="Subcategory logo"
+                      width={30}
+                      height={30}
+                      src={message?.card?.data?.image || "/logoplace.svg"}
+                      className="w-4 p-0.5 bg-white dark:bg-neutral-600 rounded-3xl"
+                    />
+                  </div>
+                </div>
+                <h4 className=" font-medium">{message?.card?.data.name}</h4>
+              </div>
+              <div className="border-t border-pink-700/10 dark:border-neutral-700">
+                <dl className="divide-y divide-pink-700/10 dark:divide-neutral-700">
+                  <div className="py-2 sm:grid sm:grid-cols-3 pr-8 sm:gap-4 sm:px-0">
+                    <dt className=" text-neutral-700 text-sm leading-6 dark:text-neutral-300">
+                      Price
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 sm:col-span-2 sm:mt-0 font-medium">
+                      {message?.card?.data?.price || "Please wait..."}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </>
+          </CardComponent>
+        )}
+
         {message.card.title === "start_transaction" && (
           <CardComponent
             footer={

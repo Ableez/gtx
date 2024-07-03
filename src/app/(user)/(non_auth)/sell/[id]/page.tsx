@@ -47,18 +47,7 @@ const GiftCardPage = ({ params }: Props) => {
   return (
     <>
       <div className="container font-bold text-lg relative max-w-screen-md pb-6">
-        {/* <Button
-          variant={"outline"}
-          size={"icon"}
-          className="hover:ring-4 absolute -top-2"
-        >
-          <Link href={"/sell"}>
-            <ArrowLeftIcon width={20} />
-          </Link>
-        </Button> */}
-
         <CardSelector id={card_id} />
-
         <div className="mt-10 text-center font-light text-[0.6em]">
           Please read our{" "}
           <Link
