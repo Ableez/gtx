@@ -26,7 +26,7 @@ const Footer = (props: Props) => {
           <Link href={"/"}>
             <div className="flex align-middle place-items-center justify-center gap-2">
               <Image src={"/gtx_logo.svg"} alt="Logo" width={30} height={30} />
-              <h4 className="font-semibold text-lg">Greatex</h4>
+              <h4 className="font-semibold text-lg">Great Exchange</h4>
             </div>
           </Link>
 

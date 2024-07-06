@@ -45,7 +45,7 @@ export default function LandingNavbar() {
 
         <NavigationMenuList className="hidden md:flex">
           <Link
-            href="/faq"
+            href="#about-us"
             className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             About Us
@@ -126,7 +126,7 @@ export default function LandingNavbar() {
               <Link
                 onClick={() => setOpen(false)}
                 className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
-                href={"/faq"}
+                href={"#about-us"}
               >
                 <li>About Us</li>
                 <ChevronRightIcon

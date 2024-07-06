@@ -78,7 +78,7 @@ const CardDeck = (props: Props) => {
             alt="Phone"
             width={399}
             height={786}
-            className="md:mt-[3.4rem] mt-[2.5rem] w-[75%] rounded-[42px] mx-auto"
+            className="md:mt-[3.4rem] mt-[3.5rem] w-[75%] rounded-[42px] mx-auto"
           />
         </div>
 

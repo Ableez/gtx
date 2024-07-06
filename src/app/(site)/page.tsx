@@ -4,7 +4,7 @@ import Features from "@/components/landing/Features";
 import ScrollHero from "@/components/landing/scroll-hero";
 import { InfiniteMovingCards } from "@/components/landing/moving-cards";
 import CardDeck from "@/components/landing/card-deck";
-import ReadyNow from "@/components/landing/ready-to-trade";
+import AboutUs from "@/components/landing/ready-to-trade";
 import Footer from "@/components/landing/Footer";
 import FAQs from "@/components/landing/FAQs";
 
@@ -36,8 +36,8 @@ export default function Home() {
           pauseOnHover={false}
         />
       </div>
+      <AboutUs />
       <CardDeck />
-      <ReadyNow />
       <FAQs />
       <Footer />
     </main>

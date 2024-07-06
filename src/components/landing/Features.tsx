@@ -141,7 +141,7 @@ const featureCards: FeatureCardType[] = [
 
 const Features = (props: Props) => {
   return (
-    <div className="mb-14 mt-16 md:mt-32 grid gap-8 px-4 place-items-center justify-center align-middle relative">
+    <div className="mb-14 mt-32 md:mt-32 grid gap-8 px-4 place-items-center justify-center align-middle relative">
       <div className="w-[270px] md:w-[350px] md:text-5xl text-center text-zinc-800 text-3xl font-extrabold">
         Explore endless possibilities.
       </div>

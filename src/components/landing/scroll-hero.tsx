@@ -170,10 +170,10 @@ const ScrollHero = (props: Props) => {
             alt=""
             width={1050}
             height={2277}
-            className="md:mt-[4.6rem] mt-[2.3rem] md:w-[75%] w-[76%] rounded-[42px] mx-auto max-h-[76.8%]"
+            className="md:mt-[4.6rem] mt-[3rem] md:w-[75%] w-[76%] rounded-[42px] mx-auto max-h-[76.8%]"
           />
         </div>
-        <div className="side_text md:mt-64 md:opacity-0 mt-0 mb-8 md:mb-0 self-start md:self-center">
+        <div className="side_text md:mt-64 md:opacity-0 mt-0 mb-16 md:mb-0 self-start md:self-center">
           <TextGenerateEffect words="So you don't have to hassle." />
         </div>
       </div>
