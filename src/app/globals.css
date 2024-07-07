@@ -119,7 +119,9 @@ input[type="number"]::-webkit-outer-spin-button {
 /* scrollbar */
 /* width */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 0px;
+  display: hidden;
+  height: 0px;
 }
 
 /* Track */

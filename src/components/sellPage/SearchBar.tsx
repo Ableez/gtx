@@ -72,7 +72,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl  max-w-screen-md mx-auto">
+    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl max-w-screen-md mx-auto">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -86,7 +86,7 @@ const SearchBar = () => {
           <span>Search...</span>
         </div>
       </Button>
-      <div className="mt-3 gap-2 flex">
+      <div className="mt-3 gap-2 flex w-full overflow-x-scroll py-2.5 px-2.5">
         {TABS.map((t, idx) => {
           return (
             <Link href={"/sell"} key={idx} onClick={() => updateTab(t.link)}>
