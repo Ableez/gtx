@@ -108,6 +108,23 @@ export const sendConfirmTransactionToAdmin = async (
       "transaction.accepted": transactionAccepted,
     });
 
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        payload: {
+          title: `${user.displayName} ${
+            isAccepted ? "accepted" : "rejected"
+          } your transaction`,
+          body: `${data.transaction.cardDetails.name} Card`,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/chat/${id}`,
+            someData: `From ${user.displayName}`,
+          },
+        },
+      }),
+    });
+
     // Returning a success message
     return {
       success: true,

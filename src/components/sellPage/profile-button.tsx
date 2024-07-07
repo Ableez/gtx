@@ -100,7 +100,7 @@ const ProfileButton = ({ user }: Props) => {
                 Profile
               </DropdownMenuItem>
             </Link>
-            <Link className="py-3" href={"/profile"}>
+            <Link className="py-3" href={"/notification"}>
               <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
                 <BellIcon width={14} />
                 Notifications

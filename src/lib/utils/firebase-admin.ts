@@ -11,4 +11,5 @@ if (!admin.apps.length) {
   });
 }
 
+export const adminDB = admin.firestore();
 export default admin;

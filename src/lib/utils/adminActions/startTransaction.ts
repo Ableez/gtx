@@ -10,7 +10,13 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { Conversation, MediaContent, ReadReceipt, Sender, TransactionRec } from "../../../../chat";
+import {
+  Conversation,
+  MediaContent,
+  ReadReceipt,
+  Sender,
+  TransactionRec,
+} from "../../../../chat";
 import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
@@ -148,6 +154,23 @@ export const startTransaction = async (
         };
       }
     }
+
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: [data.user.uid],
+        payload: {
+          title: `Transaction started`,
+          body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/chat/${id}`,
+            someData: `From Great Exchange`,
+          },
+        },
+      }),
+    });
+
     return {
       message: "Transaction started successfully",
       success: true,
@@ -263,6 +286,22 @@ export const finishTransactionAction = async (
         created_at: time,
         updated_at: time,
       } as TransactionRec);
+
+      await fetch("http://localhost:3000/api/notifications/send-notification", {
+        method: "POST",
+        body: JSON.stringify({
+          userId: [data.user.uid],
+          payload: {
+            title: `Transaction Completed`,
+            body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
+            icon: "/greatexc.svg",
+            data: {
+              url: `https://greatexc.vercel.app/chat/${id}`,
+              someData: `From Great Exchange`,
+            },
+          },
+        }),
+      });
 
       return {
         success: true,

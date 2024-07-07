@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       role: "user",
       conversations: [],
       cardChoices: [],
+      preferences: null,
       transactions: [],
     };
 

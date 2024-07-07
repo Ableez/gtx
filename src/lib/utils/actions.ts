@@ -13,6 +13,7 @@ import { v4 as uuid } from "uuid";
 import { GiftCard } from "../../../types";
 import { User } from "firebase/auth";
 import { Conversation } from "../../../chat";
+import { adminEmails } from "../../../CONSTANTS";
 
 export const getCardData = (id: string | undefined): GiftCard | null => {
   if (!id) {
@@ -160,6 +161,21 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       conversations: arrayUnion(link),
     });
 
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        payload: {
+          title: "You have a new Chat",
+          body: `${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price} `,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+            someData: `From ${user.displayName}`,
+          },
+        },
+      }),
+    });
+
     return {
       link,
       logged: true,
@@ -205,8 +221,6 @@ export const startCryptoChat = async (
     };
 
     const price = formData.get("price");
-
-    console.log("price", price);
 
     if (!price) {
       return {
@@ -297,6 +311,21 @@ export const startCryptoChat = async (
 
     await updateDoc(doc(db, "Users", user.uid), {
       conversations: arrayUnion(link),
+    });
+
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        payload: {
+          title: "You have a new Chat",
+          body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+            someData: `From ${user.displayName}`,
+          },
+        },
+      }),
     });
 
     return {

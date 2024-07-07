@@ -144,8 +144,6 @@ const LoginForm = (props: Props) => {
     }
   };
 
-
-
   // This function returns an error message based on the error code
   const getErrorMessage = (err: FirebaseError) => {
     switch (err?.code) {

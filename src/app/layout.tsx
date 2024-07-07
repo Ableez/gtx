@@ -54,7 +54,6 @@ export default function RootLayout({
           </Suspense>
         </ThemeProvider>
         <Toaster />
-        <RequestNotification />
         <SpeedInsights />
       </body>
     </html>

@@ -42,14 +42,7 @@ const Footer = (props: Props) => {
           </h4>
           <div>
             <p className="text-sm text-left">
-              Have questions?{" "}
-              <Link
-                className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"
-                href={"mailto:djayableez@gmail.com"}
-              >
-                Get in touch
-              </Link>{" "}
-              or check out our{" "}
+              Have questions? check out our{" "}
               <Link
                 className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"
                 href={"/support"}
@@ -61,8 +54,13 @@ const Footer = (props: Props) => {
           <div>
             <p className="text-sm text-left">
               You can also text our support team at{" "}
-              <Link href="tel:+2349072418875">0907 241 8875</Link> or email us
-              at{" "}
+              <Link
+                className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"
+                href={"tel:07010662232"}
+              >
+                07010662232
+            </Link>{" "}
+              or email us at{" "}
               <Link
                 className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"
                 href={"mailto:help@greatexchange.com"}

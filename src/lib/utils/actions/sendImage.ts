@@ -34,7 +34,20 @@ export const sendImageA = async (formData: FormData) => {
       method: "POST",
     }).then((e) => e.json());
 
-    console.log(res);
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        payload: {
+          title: user.displayName,
+          body: `Sent a picture`,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/chat/${chatId}`,
+            someData: `From ${user.displayName}`,
+          },
+        },
+      }),
+    });
 
     return res;
   } catch (error) {

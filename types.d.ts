@@ -107,6 +107,7 @@ export type User = {
   conversations: string[];
   cardChoices: string[];
   transactions: string[];
+  preferences: {};
 };
 
 export type ReviewContent = {
@@ -134,4 +135,11 @@ export type Feedback = {
     photoUrl: string;
     username: string;
   };
+};
+
+type Preferences = {
+  message: boolean;
+  updates: boolean;
+  reminders: boolean;
+  account: boolean;
 };

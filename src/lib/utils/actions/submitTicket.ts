@@ -103,6 +103,21 @@ export const submitTicket = async (
       });
     }
 
+    await fetch("http://localhost:3000/api/notifications/send-notification", {
+      method: "POST",
+      body: JSON.stringify({
+        payload: {
+          title: "${user.displayName} has a Complaint",
+          body: `a complaint has been made by ${user.displayName}`,
+          icon: "/greatexc.svg",
+          data: {
+            url: `https://greatexc.vercel.app/support/ticket/${save.id}`,
+            someData: `From ${user.displayName}`,
+          },
+        },
+      }),
+    });
+
     return {
       message: "Ticket has been sent!",
       success: true,
