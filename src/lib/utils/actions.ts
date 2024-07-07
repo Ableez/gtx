@@ -14,6 +14,8 @@ import { GiftCard } from "../../../types";
 import { User } from "firebase/auth";
 import { Conversation } from "../../../chat";
 import { adminEmails } from "../../../CONSTANTS";
+import { truncateString } from "../utils";
+import { sendNotification } from "./sendNotification";
 
 export const getCardData = (id: string | undefined): GiftCard | null => {
   if (!id) {
@@ -161,20 +163,15 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       conversations: arrayUnion(link),
     });
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: "You have a new Chat",
-          body: `${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price} `,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: "You have a new Chat",
+        body: `${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price} `,
+        url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+      },
+      null
+    );
 
     return {
       link,
@@ -313,20 +310,15 @@ export const startCryptoChat = async (
       conversations: arrayUnion(link),
     });
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: "You have a new Chat",
-          body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: "You have a new Chat",
+        body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
+        url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+      },
+      null
+    );
 
     return {
       link,

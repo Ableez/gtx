@@ -9,6 +9,7 @@ import PromptInstall from "@/components/PromptInstall";
 import Script from "next/script";
 import RequestNotification from "@/components/RequestNotification";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import NotificationWrapper from "@/lib/context/PushNotificationWrapper";
 
 const openSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -49,7 +50,8 @@ export default function RootLayout({
           enableSystem
         >
           <Suspense fallback={<Loading />}>
-            {children}
+            <NotificationWrapper>{children}</NotificationWrapper>
+
             {/* <PromptInstall /> */}
           </Suspense>
         </ThemeProvider>

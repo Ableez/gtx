@@ -12,6 +12,7 @@ import {
 } from "../../../../chat";
 import { timeStamper } from "../timeStamper";
 import { truncateString } from "@/lib/utils";
+import { sendNotification } from "../sendNotification";
 
 export const sendUserMessage = async (
   data: {
@@ -105,20 +106,15 @@ export const sendUserMessage = async (
       updated_at: msg.timeStamp,
     });
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: `${user.displayName} - ${chatData.transaction.cardDetails.name} Card`,
-          body: `${truncateString(message?.toString() || "", 64)}`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: `${user.displayName} - ${chatData.transaction.cardDetails.name} Card`,
+        body: `${truncateString(message?.toString() || "", 64)}`,
+        url: `https://greatexc.vercel.app/chat/${id}`,
+      },
+      null
+    );
 
     return { success: true, message: "Message sent" };
   } catch (error) {
@@ -150,7 +146,6 @@ export const sendEcodeToAdmin = async (
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
-    console.log("HITTED");
 
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {
@@ -245,7 +240,6 @@ export const sendEcodeToAdmin = async (
             timeStamp: time,
           };
 
-          console.log("DATA MESSAGES: ", data.messages);
           await updateDoc(chatDocRef, {
             messages: data.messages,
             updated_at: time,
@@ -255,35 +249,25 @@ export const sendEcodeToAdmin = async (
     }
 
     if (edit) {
-      await fetch("http://localhost:3000/api/notifications/send-notification", {
-        method: "POST",
-        body: JSON.stringify({
-          payload: {
-            title: `${user.displayName} updated their E-code`,
-            body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-            icon: "/greatexc.svg",
-            data: {
-              url: `https://greatexc.vercel.app/chat/${id}`,
-              someData: `From ${user.displayName}`,
-            },
-          },
-        }),
-      });
+      await sendNotification(
+        user,
+        {
+          title: `${user.displayName} updated their E-code`,
+          body: `${data.transaction.cardDetails.name} Giftcard E-code`,
+          url: `https://greatexc.vercel.app/chat/${id}`,
+        },
+        null
+      );
     } else {
-      await fetch("http://localhost:3000/api/notifications/send-notification", {
-        method: "POST",
-        body: JSON.stringify({
-          payload: {
-            title: `${user.displayName} Sent an E-code`,
-            body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-            icon: "/greatexc.svg",
-            data: {
-              url: `https://greatexc.vercel.app/chat/${id}`,
-              someData: `From ${user.displayName}`,
-            },
-          },
-        }),
-      });
+      await sendNotification(
+        user,
+        {
+          title: `${user.displayName} Sent an E-code`,
+          body: `${data.transaction.cardDetails.name} Giftcard E-code`,
+          url: `https://greatexc.vercel.app/chat/${id}`,
+        },
+        null
+      );
     }
 
     return {
@@ -437,37 +421,26 @@ export const sendAccountToAdmin = async (
     }
 
     if (edit) {
-      await fetch("http://localhost:3000/api/notifications/send-notification", {
-        method: "POST",
-        body: JSON.stringify({
-          payload: {
-            title: `${user.displayName}'s Bank Details`,
-            body: `Just editted their account number`,
-            icon: "/greatexc.svg",
-            data: {
-              url: `https://greatexc.vercel.app/chat/${id}`,
-              someData: `From ${user.displayName}`,
-            },
-          },
-        }),
-      });
+      await sendNotification(
+        user,
+        {
+          title: `${user.displayName}'s Bank Details`,
+          body: `Just editted their account number`,
+          url: `https://greatexc.vercel.app/chat/${id}`,
+        },
+        null
+      );
     } else {
-      await fetch("http://localhost:3000/api/notifications/send-notification", {
-        method: "POST",
-        body: JSON.stringify({
-          payload: {
-            title: `${user.displayName}'s Bank Details`,
-            body: `Sent their bank details`,
-            icon: "/greatexc.svg",
-            data: {
-              url: `https://greatexc.vercel.app/chat/${id}`,
-              someData: `From ${user.displayName}`,
-            },
-          },
-        }),
-      });
+      await sendNotification(
+        user,
+        {
+          title: `${user.displayName}'s Bank Details`,
+          body: `Sent their bank details`,
+          url: `https://greatexc.vercel.app/chat/${id}`,
+        },
+        null
+      );
     }
-
     return {
       message: "Account Details sent",
       success: true,

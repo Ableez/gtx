@@ -1,5 +1,30 @@
+let NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+
 // Install Service Worker
 self.addEventListener("install", async (event) => {
+  event.waitUntil(
+    fetch("/api/env-config")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        console.log("Received config:", config);
+        if (!config.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+          throw new Error(
+            "NEXT_PUBLIC_VAPID_PUBLIC_KEY is missing from config"
+          );
+        }
+        NEXT_PUBLIC_VAPID_PUBLIC_KEY = config.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        console.log("VAPID key set:", NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch VAPID key:", error);
+      })
+  );
+
   event.waitUntil(
     caches.open(staticCacheName).then((cache) => {
       cache.addAll(assets);
@@ -7,47 +32,171 @@ self.addEventListener("install", async (event) => {
   );
 });
 
-// Activate Service Worker
-self.addEventListener("activate", async (event) => {
-  // Remove old caches
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys
-          .filter((key) => key !== staticCacheName)
-          .map((key) => caches.delete(key))
-      );
-    })
-  );
-});
+let lastNotification = null;
 
 self.addEventListener("push", function (event) {
   if (event.data) {
-    console.log("This push event has data: ", event.data.text());
     const data = event.data.json();
 
-    const options = {
-      body: data.body,
-      icon: data.icon,
-      data: data.data, // This allows you to access the data when the notification is clicked
-    };
+    event.waitUntil(
+      (async () => {
+        try {
+          console.log("Push event received:", data);
 
-    console.log("[SW.JS registration", self.registration);
+          // Store the last notification
+          lastNotification = {
+            data: data,
+            timestamp: Date.now(),
+          };
 
-    return event.waitUntil(
-      self.registration.showNotification(data.title, options)
+          // Check if resubscription is needed
+          const subscription =
+            await self.registration.pushManager.getSubscription();
+          if (!subscription) {
+            console.log("Subscription not found, resubscribing...");
+            await resubscribeToPush(data.data.userId);
+          } else {
+            console.log("Subscription is still valid");
+          }
+
+          // Get all clients
+          const clients = await self.clients.matchAll({ type: "window" });
+
+          if (clients.length > 0) {
+            // Sort clients by last focused time
+            clients.sort((a, b) => b.lastFocusTime - a.lastFocusTime);
+
+            // Send message to the most recently focused client
+            await clients[0].postMessage({
+              type: "PUSH_RECEIVED",
+              data: data,
+            });
+          } else {
+            console.log(
+              "No clients found, showing notification from service worker"
+            );
+            // If no clients are available, show notification from service worker
+            await self.registration.showNotification(data.title, {
+              body: data.body,
+              icon: data.icon,
+              data: data.data,
+            });
+          }
+        } catch (error) {
+          console.error("Error in push event:", error);
+        }
+      })()
     );
   } else {
     console.log("This push event has no data.");
   }
 });
 
-self.addEventListener("notificationclick", function (event) {
-  console.log("Notification click: ", event);
-
-  event.notification.close();
-
-  if (event.notification.data && event.notification.data.url) {
-    event.waitUntil(clients.openWindow(event.notification.data.url));
+// Listen for messages from clients
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "GET_LAST_NOTIFICATION") {
+    if (lastNotification && Date.now() - lastNotification.timestamp < 30000) {
+      // Only send if the notification is less than 30 seconds old
+      event.source.postMessage({
+        type: "LAST_NOTIFICATION",
+        data: lastNotification.data,
+      });
+      lastNotification = null; // Clear the stored notification
+    }
   }
 });
+async function resubscribeToPush(userId) {
+  if (!NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+    console.error("VAPID key is not set. Fetching it now.");
+    try {
+      const response = await fetch("/api/env-config");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const config = await response.json();
+      console.log("Received config:", config);
+      if (!config.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+        throw new Error("NEXT_PUBLIC_VAPID_PUBLIC_KEY is missing from config");
+      }
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY = config.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      console.log("VAPID key fetched:", NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+    } catch (error) {
+      console.error("Failed to fetch VAPID key:", error);
+      throw new Error("Unable to fetch VAPID key");
+    }
+  }
+
+  try {
+    const subscription = await self.registration.pushManager.getSubscription();
+    if (subscription) {
+      await subscription.unsubscribe();
+    }
+
+    const applicationServerKey = urlBase64ToUint8Array(
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    );
+
+    const newSubscription = await self.registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: applicationServerKey,
+    });
+
+    console.log("Resubscribed to push notifications:", newSubscription);
+
+    // Send new subscription details to your server
+    await fetch("/api/notifications/subscribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        subscription: newSubscription,
+        resubscribing: true,
+      }),
+    });
+
+    console.log("Subscription details sent to server");
+  } catch (error) {
+    console.error("Failed to resubscribe:", error);
+    throw error;
+  }
+}
+
+// Helper function to convert base64 to Uint8Array
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// Helper function for base64 decoding
+function atob(input) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  let str = input.replace(/=+$/, "");
+  let output = "";
+
+  if (str.length % 4 == 1) {
+    throw new Error(
+      "'atob' failed: The string to be decoded is not correctly encoded."
+    );
+  }
+  for (
+    let bc = 0, bs = 0, buffer, i = 0;
+    (buffer = str.charAt(i++));
+    ~buffer && ((bs = bc % 4 ? bs * 64 + buffer : buffer), bc++ % 4)
+      ? (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6))))
+      : 0
+  ) {
+    buffer = chars.indexOf(buffer);
+  }
+  return output;
+}

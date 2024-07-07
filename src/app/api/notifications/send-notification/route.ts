@@ -6,7 +6,7 @@ import { adminEmails } from "../../../../../CONSTANTS";
 export const POST = async (request: Request) => {
   try {
     const { userId, payload } = (await request.json()) as {
-      userId: string[];
+      userId: string[] | null;
       payload: unknown;
     };
 
@@ -46,9 +46,8 @@ export const POST = async (request: Request) => {
           );
           return { userId: uid, status: "sent" };
         } catch (error) {
-          const pushErr = error as webpush.WebPushError;
-
           console.error(`Failed to send notification to user ${uid}:`, error);
+
           return {
             userId: uid,
             status: "failed",
@@ -75,6 +74,7 @@ export const POST = async (request: Request) => {
     );
   } catch (error) {
     console.error("[SEND NOTIFICATION]: Internal server error", error);
+
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

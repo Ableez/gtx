@@ -20,6 +20,7 @@ import {
 } from "firebase/storage";
 import { objectToFile } from "../fileConverter";
 import { v4 } from "uuid";
+import { sendNotification } from "../sendNotification";
 
 export const submitTicket = async (
   ticketType: string,
@@ -103,20 +104,17 @@ export const submitTicket = async (
       });
     }
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: "${user.displayName} has a Complaint",
-          body: `a complaint has been made by ${user.displayName}`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/support/ticket/${save.id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: `${user.displayName} has a Complaint`,
+        body: `a complaint has been made by ${
+          user.displayName
+        } on ${date.toLocaleDateString()}`,
+        url: `https://greatexc.vercel.app/support/ticket/${save.id}`,
+      },
+      null
+    );
 
     return {
       message: "Ticket has been sent!",

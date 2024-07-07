@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { cookies } from "next/headers";
 import { UserRecord } from "firebase-admin/auth";
 import { truncateString } from "@/lib/utils";
+import { sendNotification } from "../sendNotification";
 
 export const sendAdminMessage = async (
   data: {
@@ -96,21 +97,15 @@ export const sendAdminMessage = async (
       updated_at: msg.timeStamp,
     });
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: [recipient.uid],
-        payload: {
-          title: `A new message`,
-          body: `${truncateString(message?.toString() || "", 64)}`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: `A new message`,
+        body: `${truncateString(message?.toString() || "", 64)}`,
+        url: `https://greatexc.vercel.app/chat/${id}`,
+      },
+      [recipient.uid]
+    );
 
     return {
       success: true,

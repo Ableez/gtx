@@ -96,6 +96,12 @@ const nextConfig = {
 
     return config;
   },
+  env: {
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+  },
+  publicRuntimeConfig: {
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+  },
 };
 
 module.exports = nextConfig;

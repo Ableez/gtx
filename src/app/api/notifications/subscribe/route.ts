@@ -12,30 +12,35 @@ webpush.setVapidDetails(
 );
 
 export const POST = async (request: NextRequest) => {
-  const { subscription, userId, preferences } = await request.json();
+  const { subscription, userId, preferences, resubscribing } =
+    await request.json();
 
   try {
-    await adminDB.collection("Users").doc(userId).update({
-      preferences,
-    });
+    if (preferences) {
+      await adminDB.collection("Users").doc(userId).update({
+        preferences,
+      });
+    }
 
     await adminDB.collection("PushSubscriptions").doc(userId).set({
       subscription,
       userId,
     });
 
-    webpush.sendNotification(
-      subscription,
-      JSON.stringify({
-        title: "Heads Up!",
-        body: "This how notifications will be sent",
-        icon: "/greatexc.svg",
-        data: {
-          url: "https://greatexc.vercel.app/",
-          someData: "From Great Exchange",
-        },
-      })
-    );
+    if (!resubscribing) {
+      webpush.sendNotification(
+        subscription,
+        JSON.stringify({
+          title: "Heads Up!",
+          body: "This how notifications will be sent",
+          icon: "/greatexc.svg",
+          data: {
+            url: "https://greatexc.vercel.app/",
+            someData: "From Great Exchange",
+          },
+        })
+      );
+    }
 
     return NextResponse.json(
       { message: "Subscription saved successfully" },

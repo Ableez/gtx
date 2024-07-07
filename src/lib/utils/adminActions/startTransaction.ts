@@ -21,6 +21,7 @@ import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
 import { checkIsAdmin } from "./checkAdmin";
+import { sendNotification } from "../sendNotification";
 
 export const startTransaction = async (
   id: string,
@@ -155,21 +156,15 @@ export const startTransaction = async (
       }
     }
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: [data.user.uid],
-        payload: {
-          title: `Transaction started`,
-          body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${id}`,
-            someData: `From Great Exchange`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: `Transaction started`,
+        body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
+        url: `https://greatexc.vercel.app/chat/${id}`,
+      },
+      [data.user.uid]
+    );
 
     return {
       message: "Transaction started successfully",
@@ -287,21 +282,15 @@ export const finishTransactionAction = async (
         updated_at: time,
       } as TransactionRec);
 
-      await fetch("http://localhost:3000/api/notifications/send-notification", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: [data.user.uid],
-          payload: {
-            title: `Transaction Completed`,
-            body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
-            icon: "/greatexc.svg",
-            data: {
-              url: `https://greatexc.vercel.app/chat/${id}`,
-              someData: `From Great Exchange`,
-            },
-          },
-        }),
-      });
+      await sendNotification(
+        user,
+        {
+          title: `Transaction Completed`,
+          body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
+          url: `https://greatexc.vercel.app/chat/${id}`,
+        },
+        [data.user.uid]
+      );
 
       return {
         success: true,

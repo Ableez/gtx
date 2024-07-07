@@ -10,6 +10,7 @@ import {
 } from "../../../../chat"; // Importing the Conversation type
 import { timeStamper } from "../timeStamper"; // Importing the timeStamper utility
 import { cookies } from "next/headers";
+import { sendNotification } from "../sendNotification";
 
 // Importing necessary modules from firebase/firestore and firebase/auth
 
@@ -108,22 +109,19 @@ export const sendConfirmTransactionToAdmin = async (
       "transaction.accepted": transactionAccepted,
     });
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: `${user.displayName} ${
-            isAccepted ? "accepted" : "rejected"
-          } your transaction`,
-          body: `${data.transaction.cardDetails.name} Card`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${id}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        title: `${data.transaction.cardDetails.name} Card - ${
+          isAccepted ? "Accepted" : "Rejected"
+        }`,
+        body: `Your transactionhas been ${
+          isAccepted ? "completed" : "rejected"
+        } `,
+        url: `https://greatexc.vercel.app/chat/${id}`,
+      },
+      [user.uid]
+    );
 
     // Returning a success message
     return {

@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
+import { sendNotification } from "../sendNotification";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
@@ -34,20 +35,15 @@ export const sendImageA = async (formData: FormData) => {
       method: "POST",
     }).then((e) => e.json());
 
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
-      method: "POST",
-      body: JSON.stringify({
-        payload: {
-          title: user.displayName,
-          body: `Sent a picture`,
-          icon: "/greatexc.svg",
-          data: {
-            url: `https://greatexc.vercel.app/chat/${chatId}`,
-            someData: `From ${user.displayName}`,
-          },
-        },
-      }),
-    });
+    await sendNotification(
+      user,
+      {
+        body: `Sent a picture`,
+        title: user.displayName,
+        url: `https://greatexc.vercel.app/chat/${chatId}`,
+      },
+      null
+    );
 
     return res;
   } catch (error) {
