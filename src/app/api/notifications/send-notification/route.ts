@@ -29,7 +29,7 @@ export const POST = async (request: Request) => {
       }
     });
 
-    const notificationPromises = userIdArr.map(async (uid) => {
+    const notificationPromises = userIdArr.map(async (uid: string) => {
       const subscription = userSubscriptions.get(uid);
       if (subscription) {
         try {
