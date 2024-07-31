@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Loading from "@/app/loading";
 import { TransactionRec } from "../../../../../../../chat";
-import { User } from "../../../../../../../types";
+import type { User } from "../../../../../../../types";
 import ApproveTransaction from "@/components/admin/transactions/approve_transaction";
 import { formatCurrency } from "@/lib/utils/thousandSeperator";
 import { cancelTransaction } from "@/lib/utils/adminActions/startTransaction";

@@ -10,7 +10,7 @@ import {
 } from "../ui/carousel";
 import Image from "next/image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 
 type Props = {
   currId?: string;

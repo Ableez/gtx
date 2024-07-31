@@ -4,23 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import {
-  CollapsibleTrigger,
-  CollapsibleContent,
-  Collapsible,
-} from "@/components/ui/collapsible";
-import { ArrowLeft, Bell, BellOff, Settings, Settings2 } from "lucide-react";
-import { Preferences, User } from "../../../../types";
+
+import { ArrowLeft, Bell, BellOff, Settings2 } from "lucide-react";
+import type { Preferences, User } from "../../../../types";
 import Cookies from "js-cookie";
 import { useNotificationPreferences } from "@/lib/utils/store/notificationsPreferences";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -30,10 +23,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
-import { postToast } from "@/components/postToast";
 import { toast } from "sonner";
-import Loader from "@/components/Loader";
 import { SunIcon } from "@radix-ui/react-icons";
+import Loading from "@/app/loading";
 
 type NotificationType = {
   id: keyof Preferences;
@@ -55,6 +47,8 @@ export default function PushNotificationManager() {
   const [permissionStatus, setPermissionStatus] = useState("default");
   const [subscribing, setSubscribing] = useState(false);
   const router = useRouter();
+
+  const [user, setUser] = useState<User | null>(null);
 
   const { notificationPreferences, setNotificationPreferences } =
     useNotificationPreferences();
@@ -101,42 +95,29 @@ export default function PushNotificationManager() {
   }, [setNotificationPreferences]);
 
   useEffect(() => {
-    checkSubscription();
-    loadNotificationPreferences();
-  }, [loadNotificationPreferences]);
+    if (!user?.preferences) {
+      setIsSubscribed(false);
+    }
+  }, [user?.preferences]);
 
   useEffect(() => {
     const uc = Cookies.get("user");
 
-    if (!uc) {
-      return;
-    }
+    if (uc) {
+      const user = JSON.parse(uc) as User;
 
-    const user = JSON.parse(uc) as User;
-
-    if (!user.preferences) {
-      setIsSubscribed(false);
+      setUser(user);
     }
   }, []);
 
-  const uc = Cookies.get("user");
-
-  if (!uc) {
-    return "USER NOT LOGGED IN";
-  }
-
-  const user = JSON.parse(uc) as User;
-
-  console.log("USER", user);
-
-  const checkSubscription = async () => {
+  const checkSubscription = useCallback(async () => {
     if ("serviceWorker" in navigator) {
       const registration = await navigator.serviceWorker.ready;
       const existingSubscription =
         await registration.pushManager.getSubscription();
 
       const preferences = await fetch(
-        `/api/notifications/preferences?userId=${user.uid}`,
+        `/api/notifications/preferences?userId=${user?.uid}`,
         {
           method: "GET",
         }
@@ -153,7 +134,12 @@ export default function PushNotificationManager() {
       setSubscription(existingSubscription);
       setPermissionStatus(Notification.permission);
     }
-  };
+  }, [user?.uid]);
+
+  useEffect(() => {
+    checkSubscription();
+    loadNotificationPreferences();
+  }, [checkSubscription, loadNotificationPreferences]);
 
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
@@ -168,8 +154,9 @@ export default function PushNotificationManager() {
   };
 
   const subscribeUser = async () => {
-    if ("serviceWorker" in navigator) {
+    if (navigator.serviceWorker) {
       setSubscribing(true);
+
       try {
         const permission = await requestNotificationPermission();
 
@@ -186,7 +173,7 @@ export default function PushNotificationManager() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              userId: user.uid,
+              userId: user?.uid,
               subscription: newSubscription,
               preferences: notificationPreferences,
             }),
@@ -231,7 +218,7 @@ export default function PushNotificationManager() {
         },
         body: JSON.stringify({
           endpoint: subscription.endpoint,
-          userId: user.uid,
+          userId: user?.uid,
         }),
       });
 
@@ -273,11 +260,15 @@ export default function PushNotificationManager() {
         },
         body: JSON.stringify({
           preferences: newPreferences,
-          userId: user.uid,
+          userId: user?.uid,
         }),
       });
     }
   };
+
+  if (!user) {
+    return <Loading />;
+  }
 
   return (
     <div className="h-screen grid place-items-start">

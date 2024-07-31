@@ -21,7 +21,7 @@ import { useFormStatus } from "react-dom";
 import { postToast } from "../postToast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { doc, getDoc } from "firebase/firestore";
-import { User } from "../../../types";
+import type { User } from "../../../types";
 import admin from "@/lib/utils/firebase-admin";
 
 const SubmitButton = ({ setLoading }: { setLoading: Function }) => {

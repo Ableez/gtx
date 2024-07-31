@@ -3,8 +3,8 @@ import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { cookies } from "next/headers";
 import { db } from "../firebase";
 import { v4 } from "uuid";
-import { User } from "firebase/auth";
-import {
+import type { User } from "firebase/auth";
+import type {
   Conversation,
   MediaContent,
   ReadReceipt,
@@ -111,7 +111,7 @@ export const sendUserMessage = async (
       {
         title: `${user.displayName} - ${chatData.transaction.cardDetails.name} Card`,
         body: `${truncateString(message?.toString() || "", 64)}`,
-        url: `https://greatexc.vercel.app/chat/${id}`,
+        url: `/chat/${id}`,
       },
       null
     );

@@ -3,7 +3,7 @@ import { SunIcon } from "@radix-ui/react-icons";
 import React, { useRef, useState } from "react";
 import { postToast } from "../postToast";
 import AttachFile from "./AttachFile";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import Cookies from "js-cookie";
@@ -29,6 +29,8 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
   const formAction = (e: FormData) => {
     if (message.length === 0) return;
     setLoading(true);
+
+    console.log("SENDING MESSAGE");
 
     sendMessageAction(e)
       .then((res) => {

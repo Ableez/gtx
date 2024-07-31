@@ -5,7 +5,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { Conversation, Message } from "../../../../../../../chat";
+import type { Conversation, Message } from "../../../../../../../chat";
 import AdminChatWrapper from "@/components/admin/chat/AdminChatWrapper";
 import { postToast } from "@/components/postToast";
 import PageDataFetchError from "@/components/PageDataFetchError";

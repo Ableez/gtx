@@ -1,11 +1,13 @@
 const baseUrl =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/"
+    ? "https://greatexc.vercel.app/"
     : process.env.NEXT_PUBLIC_DOMAIN;
 
 export async function dynamicBlurDataUrl(url: any) {
   const base64str = await fetch(
-    `${baseUrl || "http://localhost:3000/"}/_next/image?url=${url}&w=16&q=75`
+    `${
+      baseUrl || "https://greatexc.vercel.app/"
+    }/_next/image?url=${url}&w=16&q=75`
   ).then(async (res) =>
     Buffer.from(await res.arrayBuffer()).toString("base64")
   );

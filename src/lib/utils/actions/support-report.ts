@@ -3,7 +3,7 @@
 import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { cookies } from "next/headers";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 
 export const sendReport = async (e: FormData) => {
   const obj = Object.fromEntries(e.entries()) as {
@@ -63,6 +63,4 @@ export const sendReport = async (e: FormData) => {
   }
 };
 
-export const sendSupportMessage = async (e: FormData) => {
-
-};
+export const sendSupportMessage = async (e: FormData) => {};

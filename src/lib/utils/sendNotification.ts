@@ -1,4 +1,6 @@
-import { User } from "../../../types";
+import type { User } from "../../../types";
+
+const APP_URL = process.env.APP_URL!;
 
 export const sendNotification = async (
   user: User | any,
@@ -10,7 +12,8 @@ export const sendNotification = async (
   userId: string | string[] | null
 ) => {
   try {
-    await fetch("http://localhost:3000/api/notifications/send-notification", {
+    console.log(APP_URL);
+    await fetch(`${APP_URL}/api/notifications/send-notification`, {
       method: "POST",
       body: JSON.stringify({
         userId: userId,

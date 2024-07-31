@@ -1,6 +1,6 @@
 "use server";
 
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { cookies } from "next/headers";
@@ -19,7 +19,6 @@ export const checkServerAdmin = async () => {
       role: string;
       id: string;
     };
-
 
     if (!user || !getUser.exists()) {
       return {

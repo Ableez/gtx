@@ -22,7 +22,7 @@ import {
   SunIcon,
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,12 +30,13 @@ import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { useAdminUser } from "@/lib/utils/adminActions/useAdminUser";
+import { useNotificationSubscription } from "@/lib/utils/store/notifications";
 
 type Props = {
-  setConfirmClose: React.Dispatch<SetStateAction<boolean>>;
+  handleClose: () => void;
 };
 
-export default function AdminNavbar({ setConfirmClose }: Props) {
+export default function AdminNavbar({ handleClose }: Props) {
   const { setTheme } = useTheme();
   const router = useRouter();
   const pathName = usePathname();
@@ -53,6 +54,9 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
       setPageTitle("Reports");
     }
   }, [pathName]);
+
+  const { isSubscribed, notificationPermission } =
+    useNotificationSubscription();
 
   return (
     <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-black z-50 max-w-screen-md mx-auto">
@@ -75,7 +79,10 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
         <h4 className="text-lg font-bold">{pageTitle}</h4>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
+            <Button variant={"ghost"} size={"icon"} className="relative">
+              {!isSubscribed && (
+                <span className="p-0.5 rounded-full bg-red-500 absolute top-2 right-1" />
+              )}
               <EllipsisVerticalIcon width={22} />
             </Button>
           </DropdownMenuTrigger>
@@ -97,7 +104,7 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
                 <DropdownMenuGroup>
                   <DropdownMenuItem
                     onClick={() => {
-                      setConfirmClose(true);
+                      handleClose();
                     }}
                     asChild
                   >
@@ -116,6 +123,31 @@ export default function AdminNavbar({ setConfirmClose }: Props) {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="py-3">
                     Contact Support
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => router.push("/notification")}
+                    className="py-3 relative"
+                  >
+                    {notificationPermission === "denied" ? (
+                      "Allow notification"
+                    ) : (
+                      <div className="justify-between place-content-center flex w-full">
+                        Notifications
+                        {isSubscribed ? (
+                          <span className="text-[10px] text-green-500 font-bold justify-self-end">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-red-500 font-bold justify-self-end">
+                            Not subscribed
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {!isSubscribed && (
+                      <span className="p-[0.18rem] rounded-full bg-red-500 absolute top-2 right-1" />
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </DropdownMenuGroup>

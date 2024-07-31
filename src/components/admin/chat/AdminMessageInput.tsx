@@ -4,7 +4,7 @@ import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation"
 import { PaperAirplaneIcon, SunIcon } from "@heroicons/react/24/outline";
 import React, { useRef, useState } from "react";
 import AdminAttachFile from "./AdminAttachFile";
-import { Conversation } from "../../../../chat";
+import type { Conversation } from "../../../../chat";
 import { v4 } from "uuid";
 import { Timestamp } from "firebase/firestore";
 import Cookies from "js-cookie";

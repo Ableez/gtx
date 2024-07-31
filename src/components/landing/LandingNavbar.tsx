@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 import {
   ArrowRightIcon,
   ChevronRightIcon,

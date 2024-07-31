@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Conversation, Message } from "../../../../chat";
+import type { Conversation, Message } from "../../../../chat";
 import { produce } from "immer";
 
 type State = {

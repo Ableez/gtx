@@ -8,7 +8,7 @@ import Image from "next/image";
 import BackButton from "./BackButton";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { User } from "../../../types";
+import type { User } from "../../../types";
 import ProfileButton from "./profile-button";
 
 type Props = {

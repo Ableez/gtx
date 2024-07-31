@@ -23,7 +23,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { User } from "../../../types";
+import type { User } from "../../../types";
 import Link from "next/link";
 import { Button } from "../ui/button";
 

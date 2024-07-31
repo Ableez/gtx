@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
-import { User } from "../../../../../../types";
+import type { User } from "../../../../../../types";
 import { User as FirebaseUser, updateProfile } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { postToast } from "@/components/postToast";

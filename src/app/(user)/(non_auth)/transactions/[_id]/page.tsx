@@ -30,7 +30,7 @@ import { cancelTransaction } from "@/lib/utils/adminActions/startTransaction";
 import DownloadReceipt from "@/components/admin/transactions/download_receipt";
 import { Separator } from "@/components/ui/separator";
 import { TransactionRec } from "../../../../../../chat";
-import { User } from "../../../../../../types";
+import type { User } from "../../../../../../types";
 import TransactionSkeleton from "@/components/skeletons/TransactionSkeleton";
 
 type Props = {

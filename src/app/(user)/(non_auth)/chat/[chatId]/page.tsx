@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Conversation } from "../../../../../../chat";
+import type { Conversation } from "../../../../../../chat";
 import { postToast } from "@/components/postToast";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import PageDataFetchError from "@/components/PageDataFetchError";
@@ -19,12 +19,6 @@ type Props = {
 const UserChatWrapper = dynamic(() => import("@/components/chat/ChatWrapper"), {
   ssr: false,
 });
-
-/**
- * UserChatScreen component displays the chat screen for a specific user.
- * Props} params - The component props containing the chatId.
- * JSX.Element} The rendered UserChatScreen component.
- */
 
 const cachedUser = Cookies.get("user");
 const user = cachedUser ? JSON.parse(cachedUser) : null;
@@ -40,7 +34,6 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
     (state) => state.updateConversation
   );
 
-  // Check if user is logged in, if not show unauthorized toast and redirect to login page
   useEffect(() => {
     if (!user) {
       postToast("Unauthorized", {
@@ -56,7 +49,6 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
   }, [router]);
 
   useEffect(() => {
-    // Fetch chat data from Firestore and update state
     const unsubscribe = onSnapshot(
       doc(db, "Messages", params.chatId),
       (doc) => {
@@ -90,8 +82,6 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
           // zustand
           updateConversation(newChat as Conversation, scrollToBottom);
         }
-
-        // Scroll to the bottom of the chat
       }
     );
 
@@ -102,8 +92,6 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
   if (!messages && error) {
     return <PageDataFetchError error={error} />;
   }
-
-  // Render the UserChatWrapper component with necessary props
   return (
     <UserChatWrapper scrollToBottom={scrollToBottom} chatId={params.chatId} />
   );

@@ -2,7 +2,6 @@
 
 import AdminNavbar from "@/components/admin/Navbar";
 import CloseChatDialog from "@/components/admin/chat/CloseChatDialog";
-import { usePathname } from "next/navigation";
 import React, { ReactNode, useState } from "react";
 
 type Props = {
@@ -10,15 +9,15 @@ type Props = {
 };
 
 const AdminPathHandler = (props: Props) => {
-  const pathname = usePathname();
   const [confirmClose, setConfirmClose] = useState(false);
 
-  const regex = /admin\/chat\/.*/;
-  const isChatPage = regex.test(pathname);
+  const handleClose = () => {
+    setConfirmClose(true);
+  };
 
   return (
     <>
-      <AdminNavbar setConfirmClose={setConfirmClose} />
+      <AdminNavbar handleClose={handleClose} />
       {props.children}
       <CloseChatDialog
         confirmClose={confirmClose}

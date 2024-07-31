@@ -21,9 +21,9 @@ import {
 import { postToast } from "@/components/postToast";
 import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
-import { User } from "../../../../../../types";
-import { FirebaseError } from "firebase/app";
-import { User as FirebaseUser } from "firebase/auth";
+import type { User } from "../../../../../../types";
+import type { FirebaseError } from "firebase/app";
+import type { User as FirebaseUser } from "firebase/auth";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import ProfileImage from "./ProfileImage";
 

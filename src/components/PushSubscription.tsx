@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { User } from "../../types";
+import type { User } from "../../types";
 
 const PushNotificationSubscriber: React.FC = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -128,7 +128,7 @@ const PushNotificationSubscriber: React.FC = () => {
     <div className="grid gap-4 w-32">
       <h2>Push Notifications</h2>
       <Button onClick={subscribeUser} disabled={isSubscribed}>
-    {isSubscribed ? "Subscribed" : "Subscribe to Push Notifications"}
+        {isSubscribed ? "Subscribed" : "Subscribe to Push Notifications"}
       </Button>
       <Button
         onClick={sendNotification}

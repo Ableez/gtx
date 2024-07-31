@@ -13,7 +13,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Conversation } from "../../../../chat";
+import type { Conversation } from "../../../../chat";
 import Image from "next/image";
 import { finishTransactionAction } from "@/lib/utils/adminActions/startTransaction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

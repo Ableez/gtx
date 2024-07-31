@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import UserChatContainer from "./ChatContainer";
 import MessageInput from "./message-input";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
@@ -17,32 +17,6 @@ const UserChatWrapper = ({
   scrollToBottom,
 }: Props): React.ReactElement => {
   const { conversation } = useMessagesStore();
-
-  console.log("CRYPT CONVERSATION", conversation);
-  // const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
-
-  // const docref = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   const el = docref.current;
-
-  //   const scroll = () => {
-  //     console.log("scrolling");
-  //     if (el && window) {
-  //       console.log("SCROLL TOP ell", el.scrollHeight);
-  //       console.log("SCROLL TOP:", Math.round(window.scrollY));
-  //       const windowScrollY = Math.floor(window.scrollY);
-  //       const elScrollHeight = el.scrollHeight;
-  //       const show = windowScrollY - 500 !== elScrollHeight ? true : false;
-  //       console.log("SHOW", show)
-  //       setIsScrolledToBottom(show);
-  //     }
-  //   };
-
-  //   window?.addEventListener("scroll", scroll);
-
-  //   return () => window?.removeEventListener("scroll", scroll);
-  // });
 
   return (
     <div className="box-border">
@@ -67,7 +41,6 @@ const UserChatWrapper = ({
       >
         <ChevronDownIcon width={14} />
       </Button>
-      {/* )} */}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { sendEcodeToAdmin } from "@/lib/utils/actions/userChat";
 import { SunIcon } from "@heroicons/react/24/outline";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 import { v4 } from "uuid";
 import { Timestamp } from "firebase/firestore";
 import Cookies from "js-cookie";

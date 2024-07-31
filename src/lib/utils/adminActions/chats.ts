@@ -3,7 +3,7 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { v4 } from "uuid";
 import { cookies } from "next/headers";
-import { UserRecord } from "firebase-admin/auth";
+import type { UserRecord } from "firebase-admin/auth";
 import { truncateString } from "@/lib/utils";
 import { sendNotification } from "../sendNotification";
 
@@ -100,9 +100,9 @@ export const sendAdminMessage = async (
     await sendNotification(
       user,
       {
-        title: `A new message`,
+        title: `Message`,
         body: `${truncateString(message?.toString() || "", 64)}`,
-        url: `https://greatexc.vercel.app/chat/${id}`,
+        url: `/chat/${id}`,
       },
       [recipient.uid]
     );

@@ -8,7 +8,7 @@ import {
 } from "firebase/storage";
 import { storage } from "../firebase";
 import { cookies } from "next/headers";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 
 interface ImageBuffer {
   name: string;

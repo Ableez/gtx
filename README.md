@@ -16,7 +16,6 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result
+Open [https://greatexc.vercel.app](https://greatexc.vercel.app) with your browser to see the result
 
 ## About the project
-

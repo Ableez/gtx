@@ -1,6 +1,6 @@
 {
   "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
-  "description": "Install greatexchange app on your device for the best experience trading with Great Exchange.",
+  "description": "Install Great Exchange app on your device for the best experience trading with Great Exchange.",
   "gcm_sender_id": "443106951382",
   "screenshot": [
     {
@@ -32,14 +32,13 @@
     }
   ],
   "name": "Great Exchange",
-  "short_name": "Greatex",
+  "short_name": "Great Exchange",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "display_override": ["window-controls-overlay"],
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/sell",
   "categories": ["Finance", "Money", "Gift cards"],
-
   "lang": "en-US",
   "id": "greatex_1221",
   "splash_pages": "/splash",

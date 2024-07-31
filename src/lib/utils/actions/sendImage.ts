@@ -6,7 +6,7 @@ import { sendNotification } from "../sendNotification";
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.BASE_URL
-    : "http://localhost:3000";
+    : "https://greatexc.vercel.app";
 
 export const sendImageA = async (formData: FormData) => {
   const uc = cookies().get("user")?.value;

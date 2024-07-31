@@ -6,7 +6,7 @@ import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import { v4 } from "uuid";
 import { usePathname } from "next/navigation";
-import { Conversation, Message } from "../../../../../../../chat";
+import type { Conversation, Message } from "../../../../../../../chat";
 import { Timestamp } from "firebase/firestore";
 import { useUploadThing } from "@/lib/utils/uploadthing";
 import { dataURLtoFile } from "@/lib/utils/fileConverter";

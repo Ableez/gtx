@@ -13,7 +13,7 @@ import { SunIcon } from "@heroicons/react/24/outline";
 import { Label } from "../ui/label";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import { v4 } from "uuid";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 import Cookies from "js-cookie";
 import { postToast } from "../postToast";
 import { Timestamp } from "firebase/firestore";

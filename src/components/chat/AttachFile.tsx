@@ -15,7 +15,7 @@ import {
 } from "../ui/drawer";
 
 import ECodeComp from "./eCode";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 import AccountComp from "./account-dialog";
 import CropImage from "../admin/chat/CropImage";
 import "react-image-crop/dist/ReactCrop.css";
@@ -46,7 +46,9 @@ const AttachFile = ({ message, chatId, scrollToBottom }: Props) => {
           <div className="max-w-md w-full mx-auto">
             <div className="grid grid-cols-3 pb-8 gap-2 md:gap-4 transition-all duration-400 p-4">
               <DrawerClose
-                className={`${message?.transaction.crypto? "w-full" : "w-fit"} cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 dark:hover:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl`}
+                className={`${
+                  message?.transaction.crypto ? "w-full" : "w-fit"
+                } cursor-pointer transition-all duration-500 hover:dark:bg-opacity-5 hover:border-orange-300 dark:hover:border-neutral-800 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-orange-100 text-orange-500 dark:bg-orange-400 dark:bg-opacity-10 rounded-3xl`}
                 onClick={() => {
                   setOpenEdit(true);
                 }}

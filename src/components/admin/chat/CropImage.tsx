@@ -7,7 +7,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
-import { Conversation, Message } from "../../../../chat";
+import type { Conversation, Message } from "../../../../chat";
 import { postToast } from "@/components/postToast";
 import ImageCropper from "./ImageCropper";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";

@@ -9,7 +9,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { SunIcon } from "@heroicons/react/24/outline";
-import { Conversation } from "../../../chat";
+import type { Conversation } from "../../../chat";
 import Image from "next/image";
 import { sendConfirmTransactionToAdmin } from "@/lib/utils/actions/sendConfirmTransactionToAdmin";
 import { formatCurrency } from "@/lib/utils/thousandSeperator";

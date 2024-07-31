@@ -1,9 +1,12 @@
 let NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+const API_URL = self.location.origin;
+
+console.log("API_URL:", API_URL);
 
 // Install Service Worker
 self.addEventListener("install", async (event) => {
   event.waitUntil(
-    fetch("/api/env-config")
+    fetch(`${API_URL}/api/env-config`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,6 +70,11 @@ self.addEventListener("push", function (event) {
             clients.sort((a, b) => b.lastFocusTime - a.lastFocusTime);
 
             // Send message to the most recently focused client
+            await self.registration.showNotification(data.title, {
+              body: data.body,
+              icon: data.icon,
+              data: data.data,
+            });
             await clients[0].postMessage({
               type: "PUSH_RECEIVED",
               data: data,
@@ -83,12 +91,31 @@ self.addEventListener("push", function (event) {
             });
           }
         } catch (error) {
-          console.error("Error in push event:", error);
+          console.error("Detailed push event error:", {
+            message: error.message,
+            stack: error.stack,
+            cause: error.cause,
+          });
         }
       })()
     );
   } else {
     console.log("This push event has no data.");
+  }
+});
+
+// notification click event listener
+self.addEventListener("notificationclick", function (event) {
+  console.log("Notification click Received.");
+  event.notification.close();
+
+  // Check if the clicked notification has a URL in its data
+  if (event.notification.data && event.notification.data.url) {
+    console.log("URL found in notification data:", event.notification.data.url);
+
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  } else {
+    console.log("No URL found in notification data");
   }
 });
 
@@ -109,7 +136,7 @@ async function resubscribeToPush(userId) {
   if (!NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
     console.error("VAPID key is not set. Fetching it now.");
     try {
-      const response = await fetch("/api/env-config");
+      const response = await fetch(`${API_URL}/api/env-config`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -144,7 +171,7 @@ async function resubscribeToPush(userId) {
     console.log("Resubscribed to push notifications:", newSubscription);
 
     // Send new subscription details to your server
-    await fetch("/api/notifications/subscribe", {
+    await fetch(`${API_URL}/api/notifications/subscribe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

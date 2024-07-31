@@ -1,6 +1,6 @@
 "use server";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { db } from "../firebase"; // Importing the firebase instance
 import {
   Conversation,
