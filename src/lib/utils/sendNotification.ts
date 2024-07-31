@@ -13,7 +13,7 @@ export const sendNotification = async (
 ) => {
   try {
     console.log(APP_URL);
-    await fetch(`/api/notifications/send-notification`, {
+    await fetch(`${APP_URL}/api/notifications/send-notification`, {
       method: "POST",
       body: JSON.stringify({
         userId: userId,
