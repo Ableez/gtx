@@ -8,8 +8,6 @@
     "noUncheckedIndexedAccess": true,
     "checkJs": false,
     "pretty": true,
-    "noUnusedLocals": true,
-    "importsNotUsedAsValues": "error",
 
     "allowJs": true,
     "skipLibCheck": true,
