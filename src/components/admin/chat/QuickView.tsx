@@ -66,7 +66,7 @@ const QuickView = () => {
       //     </p>
       //   </Link>
       // </div>
-      <ChatCard chat={chat} key={idx} idx={idx} />
+      <ChatCard isAdmin chat={chat} key={idx} idx={idx} />
     );
   });
 
