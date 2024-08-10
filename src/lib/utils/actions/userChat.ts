@@ -72,6 +72,7 @@ export const sendUserMessage = async (
       lastMessage: {
         id: msg.id,
         sender: user.uid,
+        seen: false,
         read_receipt: {
           delivery_status: "sent",
           status: false,

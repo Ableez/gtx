@@ -120,6 +120,7 @@ export type LastMessage = {
     text: string;
     media: boolean;
   };
+  seen: true;
 };
 export type Conversation = {
   id: string;

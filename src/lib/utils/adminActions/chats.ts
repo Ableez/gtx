@@ -62,6 +62,7 @@ export const sendAdminMessage = async (
     await updateDoc(chatDocRef, {
       lastMessage: {
         id: msg.id,
+        seen: false,
         sender: user.uid,
         read_receipt: {
           delivery_status: "sent",
