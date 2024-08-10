@@ -241,7 +241,7 @@ const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
             );
           })
         : chats.map((chat, idx) => (
-            <ChatCard isAdmin={false} key={idx} chat={chat} />
+            <ChatCard idx={idx} isAdmin={false} key={idx} chat={chat} />
           ))}
     </div>
   );

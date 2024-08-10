@@ -70,18 +70,15 @@ const UserChatPage = ({ params }: Props) => {
     return () => unsubscribe();
   }, []);
 
-  console.log(chats);
-
   if (loading) {
     return <Loading />;
   }
 
-  console.log(params.uid);
   return (
     <div>
       <div className="p-8 m-4 text-center mb-4 text-base font-medium">
-        <span className="capitalize">{chats[0]?.data.user.username}</span>'s
-        messages
+        <span className="capitalize">{chats[0]?.data.user.username}</span>
+        &apos;s messages
       </div>
       {chats.map((chat, idx) => (
         <ChatCard isAdmin={false} key={idx} chat={chat} />
