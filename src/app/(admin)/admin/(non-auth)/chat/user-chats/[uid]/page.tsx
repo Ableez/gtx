@@ -68,7 +68,7 @@ const UserChatPage = ({ params }: Props) => {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [params.uid]);
 
   if (loading) {
     return <Loading />;
@@ -81,7 +81,7 @@ const UserChatPage = ({ params }: Props) => {
         &apos;s messages
       </div>
       {chats.map((chat, idx) => (
-        <ChatCard isAdmin={false} key={idx} chat={chat} />
+        <ChatCard idx={idx} isAdmin={false} key={idx} chat={chat} />
       ))}
     </div>
   );
