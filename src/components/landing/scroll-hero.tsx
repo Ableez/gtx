@@ -132,7 +132,7 @@ const ScrollHero = (props: Props) => {
           <div className="grid grid-rows-3 gap-0 -space-y-1 h-[10rem] md:h-[13rem]">
             <div className="h-full">Sell Your</div>
             <div className="h-full">
-              <FlipWords words={["Gift cards", "Cryptos"]} />
+              <FlipWords words={["Gift cards", "Cryptocurrencies"]} />
             </div>
             <div className="h-full">for Instant Cash</div>
           </div>
