@@ -31,7 +31,7 @@ export function middleware(req: NextRequest) {
   console.log("IP:", req.headers);
   if (!ip || !allowedIPs.includes(ip)) {
     console.log(`❌IP ${ip} not allowed`);
-    return NextResponse.redirect(new URL("/sell", req.url)); // Redirect if IP not allowed
+    return NextResponse.redirect(new URL("/redirect", req.url));
   }
 
   console.log(`✅IP ${ip} allowed`);
