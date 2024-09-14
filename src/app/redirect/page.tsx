@@ -9,7 +9,9 @@ export default function Component() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
+      setCountdown((prevCountdown) =>
+        prevCountdown === 0 ? 0 : prevCountdown - 1
+      );
       if (countdown === 0) {
         redirect("/sell");
       }

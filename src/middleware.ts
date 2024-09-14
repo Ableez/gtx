@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // const allowedIPs = ["102.89.22.238", "192.168.203.149"]; // List of allowed
-const allowedIPs = JSON.parse(process.env.ADMIN_IPADDRESS || "[]");
+const allowedIPs = process.env.ADMIN_IPADDRESS?.split("/") || [];
 
 function getClientIp(req: NextRequest): string | null {
   const xForwardedFor = req.headers.get("x-forwarded-for");
