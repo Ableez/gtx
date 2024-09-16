@@ -78,9 +78,9 @@ const CardSelector = ({ id }: Props) => {
     };
 
     const whatsappMessage = `Trade a ${cardInfo.price} ${cardInfo.cardTitle} ${cardInfo.subcategory} giftcard`;
-    const whatsappLink = `https://api.whatsapp.com/send?phone=2348103418286&text=${encodeURIComponent(
-      whatsappMessage
-    )}`;
+    const whatsappLink = `https://api.whatsapp.com/send?phone=${
+      process.env.WHATSAPP_HANDLE
+    }&text=${encodeURIComponent(whatsappMessage)}`;
 
     window.location.href = whatsappLink;
   };
