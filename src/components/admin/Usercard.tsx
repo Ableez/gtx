@@ -28,7 +28,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { postToast } from "../postToast";
-import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page-cp";
 import { usePathname } from "next/navigation";
 
 type Props = {

@@ -14,7 +14,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserByUid } from "@/lib/utils/fetchUserUid";
-import { NewType } from "../../users/page";
+import { NewType } from "../../users/page-cp";
 import { CheckBadgeIcon } from "@heroicons/react/20/solid";
 import ReplyTicketDialog from "@/components/admin/tickets/ReplyTicketDialog";
 import { seenTicket } from "@/lib/utils/adminActions/replyTicket";

@@ -1,4 +1,4 @@
-import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page-cp";
 import { db } from "@/lib/utils/firebase";
 import admin from "@/lib/utils/firebase-admin";
 import { getUserCookie } from "@/lib/utils/getUserCookie";

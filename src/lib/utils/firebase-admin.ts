@@ -12,4 +12,5 @@ if (!admin.apps.length) {
 }
 
 export const adminDB = admin.firestore();
+export const adminAuth = admin.auth();
 export default admin;

@@ -13,6 +13,7 @@ export async function POST(req: Request) {
       email: string;
       password: string;
       username: string;
+      visitorId: string;
     };
 
     //   create user
@@ -33,16 +34,23 @@ export async function POST(req: Request) {
       uid: user.uid,
       role: "admin",
     };
+
     await setDoc(doc(db, "Users", user.uid), userData);
 
     //   save user data to cookies
     Cookies.set("user", JSON.stringify(user.toJSON()));
 
+    await setDoc(doc(db, "allowedAdmins", user.uid), {
+      uid: user.uid,
+      username: user.displayName,
+      disabled: user.disabled,
+      fingerprintId: null,
+    });
     //   log user in
     await signInWithEmailAndPassword(auth, email, password);
 
     return NextResponse.json({
-      message: "Signin successfull",
+      message: "Admin created successfully",
       login: true,
       user: user.toJSON(),
     });

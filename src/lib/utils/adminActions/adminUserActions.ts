@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import admin from "../firebase-admin";
 import { db } from "../firebase";
-import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page-cp";
 import { checkIsAdmin } from "./checkAdmin";
 
 export async function toggleBlockUser(uid: string) {

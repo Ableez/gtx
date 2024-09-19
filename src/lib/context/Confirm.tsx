@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { checkIsAdmin } from "../utils/adminActions/checkAdmin";
 import { useRouter } from "next/navigation";
 import { postToast } from "@/components/postToast";
-import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page-cp";
 import { SunIcon } from "@heroicons/react/24/outline";
 
 type Props = { children: ReactNode; isAdmin: boolean };
