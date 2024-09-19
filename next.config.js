@@ -102,6 +102,7 @@ const nextConfig = {
   publicRuntimeConfig: {
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
   },
+  crossOrigin: "anonymous",
 };
 
 module.exports = nextConfig;
