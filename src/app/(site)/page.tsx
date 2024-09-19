@@ -7,7 +7,6 @@ import CardDeck from "@/components/landing/card-deck";
 import AboutUs from "@/components/landing/ready-to-trade";
 import Footer from "@/components/landing/Footer";
 import FAQs from "@/components/landing/FAQs";
-import PushSubscription from "@/components/PushSubscription";
 
 export default function Home() {
   const images = [

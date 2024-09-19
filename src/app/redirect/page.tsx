@@ -2,22 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function Component() {
-  const [countdown, setCountdown] = useState(10);
+export default function Redirect() {
+  const [countdown, setCountdown] = useState(5);
+
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prevCountdown) =>
         prevCountdown === 0 ? 0 : prevCountdown - 1
       );
+
       if (countdown === 0) {
-        redirect("/sell");
+        router.push("/sell");
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [countdown]);
+  }, [countdown, router]);
 
   return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
@@ -27,14 +31,18 @@ export default function Component() {
           Unauthorized Access
         </h1>
         <p className="mt-4 text-muted-foreground">
-          You are not authorized to view this content. Please log in to
+          You are not authorized to access this content. Please log in to
           continue.
         </p>
         <div className="mt-6 flex items-center justify-center gap-2">
-          <Button className="w-full sm:w-auto">Log In</Button>
-          <Button variant="outline" className="w-full sm:w-auto">
-            Sign Up
-          </Button>
+          <Link href="/login">
+            <Button className="w-full sm:w-auto">Log In</Button>
+          </Link>
+          <Link href="/signup">
+            <Button variant="outline" className="w-full sm:w-auto">
+              Sign Up
+            </Button>
+          </Link>
         </div>
         <div className="mt-6 rounded-md bg-muted px-4 py-3 text-center text-sm font-medium text-muted-foreground">
           <span className="font-bold text-foreground">

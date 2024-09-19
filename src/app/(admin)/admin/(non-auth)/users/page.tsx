@@ -1,71 +1,51 @@
-"use server";
+import React, { Suspense } from "react";
+import { getTotalPagesAction } from "@/lib/utils/adminActions/getAllUsers";
+import Search from "./_components/search";
+import UsersTable from "./_components/users-table";
+import PagePagination from "./_components/pagination";
 
-import React from "react";
-import { getUsers } from "@/lib/utils/fetchUsers";
-import { AccountDetails } from "../../../../../../types";
-import { Conversation, TransactionRec } from "../../../../../../chat";
-import Usercard from "@/components/admin/Usercard";
-import { Accordion } from "@/components/ui/accordion";
-import Link from "next/link";
-
-export type NewType = {
-  imageUrl: string;
-  savedPayments: boolean;
-  role: string;
-  disabled: boolean;
-  deleted: boolean;
-  email: string;
-  feedbacks: string[];
-  payment: AccountDetails[];
-  id: string;
-  username: string;
-  chats: Conversation[];
-  transactions: TransactionRec[];
-  reports_reviews: string[];
+type Props = {
+  searchParams: {
+    username: string;
+    page: string;
+  };
 };
 
-const AdminManageUserPage = async () => {
-  const fetchedUsers = await getUsers();
+const CreateUser = async ({ searchParams }: Props) => {
+  const query = searchParams?.username || "";
+  const currentPage = Number(searchParams?.page) || 1;
 
-  if (!fetchedUsers) {
-    return (
-      <div>
-        <div>Could not fetch users</div>
-        <Link href="/admin/users">Retry</Link>
-      </div>
-    );
-  }
-
-  const users = fetchedUsers as NewType[];
-
-  const renderUsers = users.map((u) => {
-    const user = JSON.parse(JSON.stringify(u));
-    if (user.role !== "admin") {
-      return <Usercard key={user.id} user={user} />;
-    } else {
-      return null;
-    }
-  });
+  const totalPages = await getTotalPagesAction(query);
 
   return (
-    <div>
-      {users.length > 0 ? (
-        <Accordion type="single" collapsible className="mx-auto max-w-md">
-          {renderUsers}
-        </Accordion>
-      ) : (
-        <div className="grid grid-flow-row gap-6 place-items-center align-middle justify-center py-10">
-          <h4>Could not fetch any user data</h4>
-          <Link
-            className="underline text-primary p-3 rounded-lg hover:bg-pink-400/10 duration-300"
-            href={"/admin/users"}
-          >
-            Refresh
-          </Link>
-        </div>
-      )}
+    <div className="mx-auto max-w-screen-md">
+      <div className="p-2">
+        <h4 className="font-bold text-xl">Users</h4>
+      </div>
+
+      <Search username={searchParams.username} />
+
+      <Suspense
+        key={query + currentPage}
+        fallback={
+          <div className="p-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="w-full dark:bg-neutral-900 align-middle place-items-center justify-start px-6 animate-pulse h-10 rounded-lg mb-2"
+              />
+            ))}
+          </div>
+        }
+      >
+        <UsersTable query={query} currentPage={currentPage} />
+      </Suspense>
+
+      <div className="mt-5 flex w-full justify-center">
+        <PagePagination totalPages={totalPages} />
+      </div>
     </div>
   );
 };
 
-export default AdminManageUserPage;
+export default CreateUser;

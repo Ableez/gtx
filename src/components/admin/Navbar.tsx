@@ -33,7 +33,7 @@ import { useAdminUser } from "@/lib/utils/adminActions/useAdminUser";
 import { useNotificationSubscription } from "@/lib/utils/store/notifications";
 
 type Props = {
-  handleClose: () => void;
+  handleClose?: () => void;
 };
 
 export default function AdminNavbar({ handleClose }: Props) {
@@ -58,11 +58,17 @@ export default function AdminNavbar({ handleClose }: Props) {
   const { isSubscribed, notificationPermission } =
     useNotificationSubscription();
 
+  const handleCloseAction = () => {
+    if (handleClose) {
+      handleClose();
+    }
+  };
+
   return (
     <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-black z-50 max-w-screen-md mx-auto">
       <NavigationMenu>
-        {pathName === "/admin" ? (
-          <Link href={"/"} className="p-3">
+        {pathName !== "/admin/chat" ? (
+          <Link href={"/admin"} className="p-3">
             <Image
               src={"/greatexc.svg"}
               alt={"Great Exchange logo"}
@@ -71,7 +77,7 @@ export default function AdminNavbar({ handleClose }: Props) {
             />
           </Link>
         ) : (
-          <Button onClick={() => router.back()} variant={"ghost"} size={"icon"}>
+          <Button onClick={handleCloseAction} variant={"ghost"} size={"icon"}>
             <ArrowLeftIcon width={22} />
           </Button>
         )}
@@ -102,12 +108,7 @@ export default function AdminNavbar({ handleClose }: Props) {
             {/\/admin\/chat\/(.*)$/.test(pathName) ? (
               <>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      handleClose();
-                    }}
-                    asChild
-                  >
+                  <DropdownMenuItem onClick={handleCloseAction} asChild>
                     <Button variant={"ghost"} className="w-full py-3 text-left">
                       Close chat
                     </Button>
@@ -118,12 +119,11 @@ export default function AdminNavbar({ handleClose }: Props) {
             ) : (
               <>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="py-3">
-                    Transactions History
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="py-3">
-                    Contact Support
-                  </DropdownMenuItem>
+                  <Link href={"/admin/advanced-settings"}>
+                    <DropdownMenuItem className="py-3">
+                      Advanced settings
+                    </DropdownMenuItem>
+                  </Link>
 
                   <DropdownMenuItem
                     onClick={() => router.push("/notification")}

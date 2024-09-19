@@ -273,7 +273,7 @@ export default function PushNotificationManager() {
   return (
     <div className="h-screen grid place-items-start">
       <div className="w-full max-w-md mx-auto">
-        <div className="flex items-center justify-start gap-4 p-4 bg-white/90 backdrop-blur-xl sticky top-0">
+        <div className="flex items-center justify-start gap-4 p-4 bg-white/90 dark:bg-neutral-900 backdrop-blur-xl sticky top-0">
           <Button
             variant={"outline"}
             size={"icon"}
@@ -302,7 +302,7 @@ export default function PushNotificationManager() {
             </Alert>
           )}
           {!isSubscribed && (
-            <div className="grid grid-flow-row place-items-center border border-pink-100 gap-4 px-4 py-6 bg-pink-50 rounded-2xl">
+            <div className="grid grid-flow-row place-items-center border border-pink-100 gap-4 px-4 py-6 bg-pink-50 dark:bg-pink-600/10 rounded-2xl">
               <h4 className="font-medium text-base text-center">
                 {isSubscribed
                   ? "Subscribed"

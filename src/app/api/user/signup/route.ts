@@ -12,10 +12,11 @@ import { doc, setDoc } from "firebase/firestore";
 export async function POST(req: Request) {
   try {
     //   get passed credentials
-    const { email, password, username } = (await req.json()) as {
+    const { email, password, username, fingerprintId } = (await req.json()) as {
       email: string;
       password: string;
       username: string;
+      fingerprintId: string;
     };
 
     await setPersistence(auth, browserLocalPersistence);
@@ -49,8 +50,15 @@ export async function POST(req: Request) {
     // Save user data to db
     await setDoc(doc(db, "Users", user.uid), userData);
 
+    await setDoc(doc(db, "visitors", fingerprintId), {
+      uid: user.uid,
+      username: user.displayName,
+      disabled: false,
+      fingerprintId: fingerprintId,
+    });
+
     return Response.json({
-      message: "Signin successfull",
+      message: "Signup successfull",
       login: true,
       user: userData,
     });

@@ -12,7 +12,6 @@ export const sendNotification = async (
   userId: string | string[] | null
 ) => {
   try {
-    console.log(APP_URL);
     await fetch(`${APP_URL}/api/notifications/send-notification`, {
       method: "POST",
       body: JSON.stringify({

@@ -20,6 +20,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/lib/utils/firebase";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 type Props = {};
 
@@ -31,6 +32,8 @@ const RegisterPage = (props: Props) => {
   const signup = async (e: FormData) => {
     try {
       setLoading(true);
+
+      const fingerprintId = await FingerprintJS.load().then((fp) => fp.get());
 
       const password = e.get("password")?.toString();
       const email = e.get("email")?.toString();
@@ -47,6 +50,7 @@ const RegisterPage = (props: Props) => {
           email: email,
           password: password,
           username: username,
+          fingerprintId: fingerprintId.visitorId,
         }),
       });
 

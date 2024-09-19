@@ -5,9 +5,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
-import PromptInstall from "@/components/PromptInstall";
-import Script from "next/script";
-import RequestNotification from "@/components/RequestNotification";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NotificationWrapper from "@/lib/context/PushNotificationWrapper";
 

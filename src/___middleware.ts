@@ -28,7 +28,7 @@ function getClientIp(req: NextRequest): string | null {
 export function middleware(req: NextRequest) {
   const ip = getClientIp(req);
 
-  console.log("IP:", req.headers);
+  console.log("IP:", ip);
   if (!ip || !allowedIPs.includes(ip)) {
     console.log(`❌IP ${ip} not allowed`);
     return NextResponse.redirect(new URL("/redirect", req.url));

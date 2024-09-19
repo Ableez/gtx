@@ -13,7 +13,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserByUid } from "@/lib/utils/fetchUserUid";
-import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page";
+import { NewType } from "@/app/(admin)/admin/(non-auth)/users/page-cp";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 type Props = {

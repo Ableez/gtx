@@ -1,60 +1,50 @@
-"use client";
+"use client"
 
-import React, { useCallback, useEffect, useState } from "react";
+import * as React from "react"
+import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
-type Props = {};
+import { cn } from "@/lib/utils"
 
-const colors = [
-  "#FF3B30",
-  "#FF453A",
-  "#FF9500",
-  "#FF9F0A",
-  "#FFCC00",
-  "#FFD60A",
-  "#34C759",
-  "#30D158",
-  "#00C7BE",
-  "#63E6E2",
-  "#30B0C7",
-  "#40CBE0",
-  "#32ADE6",
-  "#64D2FF",
-  "#007AFF",
-  "#0A84FF",
-  "#5856D6",
-  "#5E5CE6",
-  "#AF52DE",
-  "#BF5AF2",
-  "#FF2D55",
-  "#FF375F",
-  "#A2845E",
-  "#AC8E68",
-];
+const Avatar = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative flex h-9 w-9 shrink-0 overflow-hidden rounded-full",
+      className
+    )}
+    {...props}
+  />
+))
+Avatar.displayName = AvatarPrimitive.Root.displayName
 
-const Avatar = (props: Props) => {
-  const [curr, setCurr] = useState<number>(0);
+const AvatarImage = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Image>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Image
+    ref={ref}
+    className={cn("aspect-square object-cover h-full w-full", className)}
+    {...props}
+  />
+))
+AvatarImage.displayName = AvatarPrimitive.Image.displayName
 
-  const rand = useCallback(() => {
-    const numbe = Math.floor(Math.random() * colors.length);
-    setCurr(numbe);
-  }, []);
+const AvatarFallback = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Fallback>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Fallback
+    ref={ref}
+    className={cn(
+      "flex h-full w-full items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800",
+      className
+    )}
+    {...props}
+  />
+))
+AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 
-  useEffect(() => {
-    rand();
-  }, [rand]);
-
-  console.log(colors[curr]);
-
-  return (
-    <span
-      style={{
-        backgroundImage: `linear-gradient(to left, ${colors[curr]}, ${
-          colors[curr - 1]
-        })`,
-      }}
-      className={`w-fit p-6 bg-gradient-to-tr rounded-full shadow-primary`}
-    ></span>
-  );
-};
-
-export default Avatar;
+export { Avatar, AvatarImage, AvatarFallback }
