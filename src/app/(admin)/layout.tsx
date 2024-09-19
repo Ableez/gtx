@@ -1,4 +1,5 @@
 "use client";
+
 import React, { ReactNode, useEffect, useState } from "react";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { redirect, useRouter } from "next/navigation";
