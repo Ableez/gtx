@@ -22,7 +22,7 @@ export const checkIsAdmin = async () => {
     const user = JSON.parse(u);
 
     const checkUser = await fetch(
-      `${baseUrl}/api/admin/validate?uid=${user.uid}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/validate?uid=${user.uid}`,
       {
         method: "GET",
       }
