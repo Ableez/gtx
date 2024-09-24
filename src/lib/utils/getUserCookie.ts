@@ -9,3 +9,13 @@ export const getUserCookie = async () => {
   }
 };
 
+export const getTypedUserCookie = async () => {
+  const u = cookies().get("user")?.value;
+  const user = u ? JSON.parse(u) : null;
+
+  if (user) {
+    return user;
+  } else {
+    return null;
+  }
+};

@@ -155,7 +155,7 @@ export async function makeAdminAction(uid: string) {
 
     await adminDB
       .collection("allowedAdmins")
-      .doc(visitorData.fingerprintId)
+      .doc(uid)
       .set(visitorData);
 
     await adminDB

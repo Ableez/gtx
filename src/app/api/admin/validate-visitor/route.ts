@@ -1,20 +1,41 @@
 import { adminDB } from "@/lib/utils/firebase-admin";
+import { getTypedUserCookie } from "@/lib/utils/getUserCookie";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { visitorId } = await req.json();
+  const u = await getTypedUserCookie();
 
-  const doc = await adminDB.collection("allowedAdmins").doc(visitorId).get();
+  if (!u) {
+    return NextResponse.json({
+      isAdmin: false,
+      login: true,
+    });
+  }
 
-  console.log("VISITOR ID", visitorId);
-  console.log("ALLOWEDDOC", await doc.data());
+  const querySnapshot = await adminDB
+    .collection("allowedAdmins")
+    .where("uid", "==", u.uid)
+    .limit(1)
+    .get();
 
-  if (!doc.exists) {
-    return new Response("Unauthorized", { status: 401 });
+  const doc = querySnapshot.docs[0];
+
+  if (!doc) {
+    return NextResponse.json({
+      isAdmin: false,
+      login: false,
+    });
   }
 
   if (doc.data()?.disabled) {
-    return new Response("Unauthorized", { status: 401 });
+    return NextResponse.json({
+      isAdmin: false,
+      login: false,
+    });
   }
 
-  return new Response("Authorized", { status: 200 });
+  return NextResponse.json({
+    isAdmin: true,
+    login: false,
+  });
 }

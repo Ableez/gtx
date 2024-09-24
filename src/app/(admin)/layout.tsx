@@ -1,9 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { redirect, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 
 type Props = {
@@ -16,12 +14,6 @@ const AdminLayout = (props: Props) => {
 
   useEffect(() => {
     const setFp = async () => {
-      const fp = await FingerprintJS.load();
-
-      const { visitorId } = await fp.get();
-
-      console.log("VISITOR ID", visitorId);
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/validate-visitor`,
         {
@@ -29,13 +21,19 @@ const AdminLayout = (props: Props) => {
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
           },
-          body: JSON.stringify({
-            visitorId,
-          }),
         }
       );
 
-      if (response.status === 200) {
+      const resp = (await response.json()) as {
+        isAdmin: boolean;
+        login: boolean;
+      };
+
+      if (resp.login) {
+        return router.push("/login");
+      }
+
+      if (resp.isAdmin) {
         setFpHash("Authorized");
       } else {
         setFpHash("Unauthorized");
@@ -65,6 +63,8 @@ const AdminLayout = (props: Props) => {
       </div>
     );
   }
+
+  return <>❌Error State</>;
 };
 
 export default AdminLayout;
