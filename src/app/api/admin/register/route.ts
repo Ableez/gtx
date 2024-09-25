@@ -1,9 +1,11 @@
 import { auth, db } from "@/lib/utils/firebase";
 import admin from "@/lib/utils/firebase-admin";
 import { FirebaseError } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import Cookies from "js-cookie";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -17,11 +19,11 @@ export async function POST(req: Request) {
     };
 
     //   create user
-    const user = await admin.auth().createUser({
-      displayName: username,
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
       email,
-      password,
-    });
+      password
+    );
 
     //   make user an admin
     await admin.auth().setCustomUserClaims(user.uid, { admin: true });
@@ -36,16 +38,14 @@ export async function POST(req: Request) {
     };
 
     await setDoc(doc(db, "Users", user.uid), userData);
-
     //   save user data to cookies
-    Cookies.set("user", JSON.stringify(user.toJSON()));
-
     await setDoc(doc(db, "allowedAdmins", user.uid), {
       uid: user.uid,
       username: user.displayName,
-      disabled: user.disabled,
+      disabled: false,
       fingerprintId: null,
     });
+
     //   log user in
     await signInWithEmailAndPassword(auth, email, password);
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { getAuth } from "firebase-admin/auth";
 import { User } from "../../../../types";
 import { adminAuth, adminDB } from "../firebase-admin";
 import { sendNotification } from "../sendNotification";
@@ -13,6 +14,7 @@ export async function getAllUsers() {
       const user = await adminAuth.getUser(doc.id);
 
       const data = doc.data() as User;
+
       return {
         id: doc.id,
         username: data.displayName,
@@ -20,9 +22,9 @@ export async function getAllUsers() {
         email: data.email,
         image: data.imageUrl,
         role: data.role,
-        messages: data.conversations,
-        transactions: data.transactions,
-        disabled: user.disabled,
+        messages: data.conversations || [],
+        transactions: data.transactions || [],
+        disabled: user.disabled || false,
         customClaims: user.customClaims,
       };
     });
@@ -138,6 +140,19 @@ export async function makeAdminAction(uid: string) {
 
     await adminAuth.setCustomUserClaims(uid, { admin: true });
 
+    const additionalClaims = {
+      adminAccount: false,
+    };
+
+    const customToken = await adminAuth.createCustomToken(
+      uid,
+      additionalClaims
+    );
+
+    await adminDB.collection("Users").doc(uid).update({
+      customToken: customToken,
+    });
+
     const visitorSnapshot = await adminDB
       .collection("visitors")
       .where("uid", "==", uid)
@@ -153,10 +168,7 @@ export async function makeAdminAction(uid: string) {
       return { ok: false, message: "User cannot be an admin" };
     }
 
-    await adminDB
-      .collection("allowedAdmins")
-      .doc(uid)
-      .set(visitorData);
+    await adminDB.collection("allowedAdmins").doc(uid).set(visitorData);
 
     await adminDB
       .collection("visitors")
