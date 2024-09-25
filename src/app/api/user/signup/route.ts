@@ -1,4 +1,5 @@
 import { auth, db } from "@/lib/utils/firebase";
+import { adminAuth, adminDB } from "@/lib/utils/firebase-admin";
 import { FirebaseError } from "firebase/app";
 import {
   User,
@@ -55,6 +56,19 @@ export async function POST(req: Request) {
       username: user.displayName,
       disabled: false,
       fingerprintId: fingerprintId,
+    });
+
+    const additionalClaims = {
+      adminAccount: false,
+    };
+
+    const customToken = await adminAuth.createCustomToken(
+      user.uid,
+      additionalClaims
+    );
+
+    await adminDB.collection("Users").doc(user.uid).update({
+      customToken: customToken,
     });
 
     return Response.json({

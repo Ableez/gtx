@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { postToast } from "@/components/postToast";
-import { SubmitButton } from "@/components/loginForm";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Loading from "@/app/loading";
 import { Label } from "@/components/ui/label";
 import { signInWithGoogle } from "@/lib/utils/actions/signinwithgoogle";
 import GoogleIcon from "@/components/icons/google";
+import { SubmitButton } from "@/components/loginForm";
 
 type Props = {};
 
@@ -186,7 +186,7 @@ const LoginPage = (props: Props) => {
                   </div>
                 </div>
               </div>
-              <SubmitButton setLoading={setLoading} />
+              <SubmitButton isAdmin={true} setLoading={setLoading} />
             </form>
           </div>
 

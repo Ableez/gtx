@@ -30,6 +30,17 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import UnbanUser from "./unban-user";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type User = {
   id: string;
@@ -55,6 +66,49 @@ const UserActionButton = ({ user }: { user: User }) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const router = useRouter();
+
+  const handleDeleteUser = () => {
+    setLoading(true);
+    setDeleteLoading(true);
+    const { dismiss, update } = toast({
+      description: (
+        <div className="flex flex-col gap-2">
+          <Loader2 className="animate-spin" size={16} /> Deleting user
+        </div>
+      ),
+      duration: 1000000,
+    });
+
+    deleteUserAction(user.id)
+      .then(() => {
+        postToast("User deleted successfully");
+        setLoading(false);
+        setDeleteLoading(false);
+        update({
+          description: (
+            <div className="flex flex-col gap-2">Deleted</div>
+          ),
+          id: "delete-user",
+        });
+
+        dismiss();
+      })
+      .catch((err) => {
+        postToast("Error deleting user");
+        setLoading(false);
+        setDeleteLoading(false);
+        update({
+          variant: "destructive",
+          description: (
+            <div className="flex flex-col gap-2">
+              Error deleting user
+            </div>
+          ),
+          id: "delete-user",
+        });
+        dismiss();
+      });
+  };
 
   return (
     <Drawer>
@@ -125,61 +179,37 @@ const UserActionButton = ({ user }: { user: User }) => {
           </div>
         ) : (
           <div className="flex flex-col gap-2 pt-4 pb-8 px-4 border-t">
-            <Button
-              variant="ghost"
-              disabled={loading || deleteLoading}
-              className="w-full flex gap-2 justify-start duration-300 transition-all ease-in dark:hover:bg-neutral-900 text-orange-400"
-              onClick={() => {
-                setLoading(true);
-                setDeleteLoading(true);
-                const { dismiss, update } = toast({
-                  description: (
-                    <div className="flex flex-col gap-2">
-                      <Loader2 className="animate-spin" size={16} /> Deleting
-                      user
-                    </div>
-                  ),
-                  duration: 1000000,
-                });
-
-                deleteUserAction(user.id)
-                  .then(() => {
-                    postToast("User deleted successfully");
-                    setLoading(false);
-                    setDeleteLoading(false);
-                    update({
-                      description: (
-                        <div className="flex flex-col gap-2">Deleted</div>
-                      ),
-                      id: "delete-user",
-                    });
-
-                    dismiss();
-                  })
-                  .catch((err) => {
-                    postToast("Error deleting user");
-                    setLoading(false);
-                    setDeleteLoading(false);
-                    update({
-                      variant: "destructive",
-                      description: (
-                        <div className="flex flex-col gap-2">
-                          Error deleting user
-                        </div>
-                      ),
-                      id: "delete-user",
-                    });
-                    dismiss();
-                  });
-              }}
-            >
-              {deleteLoading ? (
-                <Loader2 className="animate-spin" size={16} />
-              ) : (
-                <Trash2Icon size={20} />
-              )}
-              <h4>Delete user</h4>
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  disabled={loading || deleteLoading}
+                  className="w-full flex gap-2 justify-start duration-300 transition-all ease-in dark:hover:bg-neutral-900 text-orange-400"
+                >
+                  {deleteLoading ? (
+                    <Loader2 className="animate-spin" size={16} />
+                  ) : (
+                    <Trash2Icon size={20} />
+                  )}
+                  <h4>Delete user</h4>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the user
+                    account and remove their data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteUser}>
+                    Delete User
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             <Button
               variant="ghost"
