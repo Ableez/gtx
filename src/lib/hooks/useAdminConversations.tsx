@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { ConversationCollections } from "../../../chat";
 import { db } from "../utils/firebase";
@@ -22,9 +24,11 @@ const useAdminConversations = () => {
     const fetchChats = (): (() => void) | undefined => {
       const uc = Cookies.get("user");
 
+      console.log("UCC", uc);
+
       console.log(JSON.parse(uc || "{}"));
 
-      if (!uc) {
+      if (uc && JSON.parse(uc).role !== "admin") {
         postToast("Unauthorized access", {
           description: "Please login as admin",
         });
