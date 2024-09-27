@@ -24,17 +24,6 @@ const useAdminConversations = () => {
     const fetchChats = (): (() => void) | undefined => {
       const uc = Cookies.get("user");
 
-      console.log("UCC", uc);
-
-      console.log(JSON.parse(uc || "{}"));
-
-      if (uc && JSON.parse(uc).role !== "admin") {
-        postToast("Unauthorized access", {
-          description: "Please login as admin",
-        });
-        redirect("/admin/login");
-      }
-
       const q = query(
         collection(db, "Messages"),
         orderBy("updated_at", "desc")
