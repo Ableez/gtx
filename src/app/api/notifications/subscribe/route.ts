@@ -35,7 +35,7 @@ export const POST = async (request: NextRequest) => {
           body: "This how notifications will be sent",
           icon: "/greatexc.svg",
           data: {
-            url: "https://greatexc.vercel.app/",
+            url: "https://greatexchange.co/",
             someData: "From Great Exchange",
           },
         })

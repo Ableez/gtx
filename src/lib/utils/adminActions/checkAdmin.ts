@@ -5,7 +5,7 @@ import { getUserCookie } from "../getUserCookie";
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_BASE_URL
-    : "https://greatexc.vercel.app";
+    : "https://greatexchange.co";
 
 export const checkIsAdmin = async () => {
   const u = await getUserCookie();

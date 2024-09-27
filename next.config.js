@@ -49,7 +49,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "greatexc.vercel.app",
+        hostname: "greatexchange.co",
         pathname: "**",
         port: "",
       },

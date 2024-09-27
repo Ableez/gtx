@@ -16,6 +16,6 @@ pnpm dev
 bun dev
 ```
 
-Open [https://greatexc.vercel.app](https://greatexc.vercel.app) with your browser to see the result
+Open [https://greatexchange.co](https://greatexchange.co) with your browser to see the result
 
 ## About the project

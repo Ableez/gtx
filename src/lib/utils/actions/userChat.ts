@@ -255,7 +255,7 @@ export const sendEcodeToAdmin = async (
         {
           title: `${user.displayName} updated their E-code`,
           body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-          url: `https://greatexc.vercel.app/chat/${id}`,
+          url: `https://greatexchange.co/chat/${id}`,
         },
         null
       );
@@ -265,7 +265,7 @@ export const sendEcodeToAdmin = async (
         {
           title: `${user.displayName} Sent an E-code`,
           body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-          url: `https://greatexc.vercel.app/chat/${id}`,
+          url: `https://greatexchange.co/chat/${id}`,
         },
         null
       );
@@ -427,7 +427,7 @@ export const sendAccountToAdmin = async (
         {
           title: `${user.displayName}'s Bank Details`,
           body: `Just editted their account number`,
-          url: `https://greatexc.vercel.app/chat/${id}`,
+          url: `https://greatexchange.co/chat/${id}`,
         },
         null
       );
@@ -437,7 +437,7 @@ export const sendAccountToAdmin = async (
         {
           title: `${user.displayName}'s Bank Details`,
           body: `Sent their bank details`,
-          url: `https://greatexc.vercel.app/chat/${id}`,
+          url: `https://greatexchange.co/chat/${id}`,
         },
         null
       );

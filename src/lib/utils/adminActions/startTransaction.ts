@@ -161,7 +161,7 @@ export const startTransaction = async (
       {
         title: `Transaction started`,
         body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
-        url: `https://greatexc.vercel.app/chat/${id}`,
+        url: `https://greatexchange.co/chat/${id}`,
       },
       [data.user.uid]
     );
@@ -287,7 +287,7 @@ export const finishTransactionAction = async (
         {
           title: `Transaction Completed`,
           body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
-          url: `https://greatexc.vercel.app/chat/${id}`,
+          url: `https://greatexchange.co/chat/${id}`,
         },
         [data.user.uid]
       );

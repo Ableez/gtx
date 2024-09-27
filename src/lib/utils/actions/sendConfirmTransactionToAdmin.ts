@@ -118,7 +118,7 @@ export const sendConfirmTransactionToAdmin = async (
         body: `Your transactionhas been ${
           isAccepted ? "completed" : "rejected"
         } `,
-        url: `https://greatexc.vercel.app/chat/${id}`,
+        url: `https://greatexchange.co/chat/${id}`,
       },
       [user.uid]
     );

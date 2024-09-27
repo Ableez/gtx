@@ -11,7 +11,7 @@ import { getStorage } from "firebase/storage";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBaqs5rPeY_5Mol9nq8MOzLhZ5QsdEwL2E",
-  authDomain: "greatexc.vercel.app",
+  authDomain: "greatexchange.co",
   projectId: "great-exchange",
   storageBucket: "great-exchange.appspot.com",
   messagingSenderId: "443106951382",

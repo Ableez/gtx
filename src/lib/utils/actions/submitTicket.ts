@@ -111,7 +111,7 @@ export const submitTicket = async (
         body: `a complaint has been made by ${
           user.displayName
         } on ${date.toLocaleDateString()}`,
-        url: `https://greatexc.vercel.app/support/ticket/${save.id}`,
+        url: `https://greatexchange.co/support/ticket/${save.id}`,
       },
       null
     );

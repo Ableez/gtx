@@ -168,7 +168,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       {
         title: "You have a new Chat",
         body: `${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price} `,
-        url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+        url: `https://greatexchange.co/chat/${createdChat.id}`,
       },
       null
     );
@@ -315,7 +315,7 @@ export const startCryptoChat = async (
       {
         title: "You have a new Chat",
         body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
-        url: `https://greatexc.vercel.app/chat/${createdChat.id}`,
+        url: `https://greatexchange.co/chat/${createdChat.id}`,
       },
       null
     );

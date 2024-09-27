@@ -6,7 +6,7 @@ import { sendNotification } from "../sendNotification";
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? process.env.BASE_URL
-    : "https://greatexc.vercel.app";
+    : "https://greatexchange.co";
 
 export const sendImageA = async (formData: FormData) => {
   const uc = cookies().get("user")?.value;
@@ -40,7 +40,7 @@ export const sendImageA = async (formData: FormData) => {
       {
         body: `Sent a picture`,
         title: user.displayName,
-        url: `https://greatexc.vercel.app/chat/${chatId}`,
+        url: `https://greatexchange.co/chat/${chatId}`,
       },
       null
     );
