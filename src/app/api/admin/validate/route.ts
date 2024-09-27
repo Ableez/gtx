@@ -1,4 +1,4 @@
-import admin from "@/lib/utils/firebase-admin";
+import admin, { adminDB } from "@/lib/utils/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 
 const getParams = async (request: NextRequest) => {
@@ -22,12 +22,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const userRecord = await admin.auth().getUser(uid);
 
-    // if (!userRecord) {
-    //   return NextResponse.json({
-    //     user: null,
-    //     isAdmin: false,
-    //   });
-    // }
+    const userDoc = (
+      await adminDB.collection("Users").doc(uid).get()
+    ).data() as { customToken: string };
+
+    if (!userRecord || !userDoc) {
+      return NextResponse.json({
+        user: null,
+        isAdmin: false,
+      });
+    }
 
     // const claims = userRecord.customClaims;
 
