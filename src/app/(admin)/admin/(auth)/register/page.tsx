@@ -87,7 +87,9 @@ const LoginPage = (props: Props) => {
                 src={"/greatexc.svg"}
                 alt="Great Exchange"
               />
-              <h4 className="text-xl font-semibold text-primary">Greatex</h4>
+              <h4 className="text-xl font-semibold text-primary">
+                Great Exchange
+              </h4>
             </div>
           </Link>
           <h4 className="text-xl font-bold text-center">Sign Up</h4>

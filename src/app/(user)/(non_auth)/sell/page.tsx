@@ -104,7 +104,7 @@ const SellPage = () => {
             </b>{" "}
             We will only ask for your card&apos;s PIN when we are ready to
             process your transaction. Be cautious of anyone claiming to
-            represent our <b>Greatex</b> or <b>Great Exchange</b> who asks for
+            represent our <b>Great Exchange</b> or <b>Great Exchange</b> who asks for
             this information. Remember, your gift card&apos;s security is in
             your hands. Stay vigilant to enjoy a worry-free exchange experience.
           </p>
