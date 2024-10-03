@@ -4,6 +4,7 @@ import { auth, db } from "@/lib/utils/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
+import { cookies as cookieStore } from "next/headers";
 
 export async function loginUser(formData: FormData) {
   const email = formData.get("email") as string;
@@ -23,16 +24,18 @@ export async function loginUser(formData: FormData) {
     const userDoc = await getDoc(userRef);
 
     const checkedUser = userDoc.data() as { role?: string };
-    if (!checkedUser || checkedUser.role !== "admin") {
-      // Instead of signing out, we'll just return a message
 
-      Cookies.set("user", JSON.stringify(userCredential.user.toJSON()), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+    if (checkedUser.role !== "admin") {
+      cookieStore().set("user", JSON.stringify(checkedUser), {
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        priority: "high",
+        expires: new Date().getTime() + 1000 * 60 * 60 * 24 * 14,
       });
-      Cookies.set("state", "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+
+      cookieStore().set("state", "true", {
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        priority: "high",
+        expires: new Date().getTime() + 1000 * 60 * 60 * 24 * 14,
       });
 
       return {
@@ -60,14 +63,16 @@ export async function loginUser(formData: FormData) {
     }
 
     // Set cookies
-
-    Cookies.set("user", JSON.stringify(userCredential.user.toJSON()), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+    cookieStore().set("user", JSON.stringify(checkedUser), {
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      priority: "high",
+      expires: new Date().getTime() + 1000 * 60 * 60 * 24 * 14,
     });
-    Cookies.set("state", "true", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+
+    cookieStore().set("state", "true", {
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      priority: "high",
+      expires: new Date().getTime() + 1000 * 60 * 60 * 24 * 14,
     });
 
     return { success: true, isAdmin: userDoc.data()?.role === "admin" };
