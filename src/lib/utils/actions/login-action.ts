@@ -53,9 +53,11 @@ export async function loginUser(formData: FormData) {
     const cookieStore = cookies();
 
     cookieStore.set("user", JSON.stringify(userCredential.user.toJSON()), {
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
     cookieStore.set("state", "true", {
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
 
