@@ -3,7 +3,7 @@
 import { auth, db } from "@/lib/utils/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 
 export async function loginUser(formData: FormData) {
   const email = formData.get("email") as string;
@@ -22,17 +22,15 @@ export async function loginUser(formData: FormData) {
     const userRef = doc(db, "Users", userCredential.user.uid);
     const userDoc = await getDoc(userRef);
 
-    const cookieStore = cookies();
-
     const checkedUser = userDoc.data() as { role?: string };
     if (!checkedUser || checkedUser.role !== "admin") {
       // Instead of signing out, we'll just return a message
 
-      cookieStore.set("user", JSON.stringify(userCredential.user.toJSON()), {
+      Cookies.set("user", JSON.stringify(userCredential.user.toJSON()), {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });
-      cookieStore.set("state", "true", {
+      Cookies.set("state", "true", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });
@@ -63,11 +61,11 @@ export async function loginUser(formData: FormData) {
 
     // Set cookies
 
-    cookieStore.set("user", JSON.stringify(userCredential.user.toJSON()), {
+    Cookies.set("user", JSON.stringify(userCredential.user.toJSON()), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
-    cookieStore.set("state", "true", {
+    Cookies.set("state", "true", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
