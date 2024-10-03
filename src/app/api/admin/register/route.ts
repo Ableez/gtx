@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     //   save user to firestore
     const userData = {
       email: user.email,
-      displayName: user.displayName,
+      displayName: user.displayName || username || "username",
       photoURL: user.photoURL || "",
       uid: user.uid,
       role: "admin",
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     //   save user data to cookies
     await setDoc(doc(db, "allowedAdmins", user.uid), {
       uid: user.uid,
-      username: user.displayName,
+      username: user.displayName || username || "username",
       disabled: false,
       fingerprintId: null,
     });

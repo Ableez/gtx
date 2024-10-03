@@ -61,6 +61,7 @@ const UnifiedLoginForm = ({ isAdmin = false, url = null }: Props) => {
           router.push(isAdmin ? "/admin" : url || "/sell");
         } else {
           // Handle error (e.g., show toast)
+
           postToast("Error", { description: result.message });
           console.error(result.message);
         }

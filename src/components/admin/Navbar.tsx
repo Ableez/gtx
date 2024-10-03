@@ -64,10 +64,12 @@ export default function AdminNavbar({ handleClose }: Props) {
     }
   };
 
+  const pathregex = /^\/admin\/chat\/.+$/;
+
   return (
     <div className="px-2 py-2 mb-4 backdrop-blur-md dark:backdrop-blur-lg sticky top-0 shadow-lg shadow-[#ffacf323] dark:shadow-[#24182a23] bg-[#f5f5f5c0] dark:bg-black z-50 max-w-screen-md mx-auto">
       <NavigationMenu>
-        {pathName !== "/admin/chat" ? (
+        {!pathregex.test(pathName) ? (
           <Link href={"/admin"} className="p-3">
             <Image
               src={"/greatexc.svg"}

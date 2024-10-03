@@ -45,6 +45,7 @@ export async function getUsersAction(query: string, currentPage: number) {
   return filteredUsers.slice(startIndex, endIndex);
 }
 
+
 export async function getTotalPagesAction(query: string) {
   const users = await Promise.all(await getAllUsers());
   const filteredUsers = users.filter((user) =>
