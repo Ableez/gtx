@@ -186,7 +186,7 @@ const LoginPage = (props: Props) => {
                   </div>
                 </div>
               </div>
-              <SubmitButton isAdmin={true} setLoading={setLoading} />
+              <SubmitButton setLoading={setLoading} />
             </form>
           </div>
 

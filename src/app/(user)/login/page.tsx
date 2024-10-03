@@ -48,7 +48,7 @@ const LoginPage = (props: Props) => {
         <h4 className="w-fit mx-auto">Or</h4>
 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-black p-4 rounded-2xl">
-          <LoginForm url={urlRef} isAdmin={false} />
+          <LoginForm url={urlRef} />
 
           <p className="mt-10 text-center text-sm text-neutral-500">
             New here?{" "}

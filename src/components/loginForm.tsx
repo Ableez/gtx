@@ -13,15 +13,12 @@ import { postToast } from "./postToast";
 import { loginUser } from "@/lib/utils/actions/login-action";
 
 type Props = {
-  isAdmin?: boolean;
   url?: string | null;
 };
 
 export const SubmitButton = ({
-  isAdmin,
   setLoading,
 }: {
-  isAdmin: boolean;
   setLoading?: (t: boolean) => void;
 }) => {
   const { pending } = useFormStatus();
@@ -44,21 +41,21 @@ export const SubmitButton = ({
       className="flex w-full justify-center rounded-md bg-primary px-3 py-6 text-sm font-medium leading-6 text-white shadow-sm hover:bg-primary disabled:bg-opacity-40 disabled:cursor-not-allowed gap-3 duration-300 mt-2"
     >
       {pending && <Loading />}
-      {isAdmin ? "Sign in" : "Continue"}
+      Sign in
     </Button>
   );
 };
 
-const UnifiedLoginForm = ({ isAdmin = false, url = null }: Props) => {
+const UnifiedLoginForm = ({ url = null }: Props) => {
   const [view, setView] = useState(false);
   const router = useRouter();
 
   return (
     <form
       action={async (formData: FormData) => {
-        const result = await loginUser(formData, isAdmin);
+        const result = await loginUser(formData);
         if (result.success) {
-          router.push(isAdmin ? "/admin" : url || "/sell");
+          router.push(result.isAdmin ? "/admin" : url || "/sell");
         } else {
           // Handle error (e.g., show toast)
 
@@ -125,7 +122,7 @@ const UnifiedLoginForm = ({ isAdmin = false, url = null }: Props) => {
           </div>
         </div>
       </div>
-      <SubmitButton isAdmin={isAdmin} />
+      <SubmitButton />
     </form>
   );
 };

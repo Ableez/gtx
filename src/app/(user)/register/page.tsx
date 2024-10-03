@@ -215,7 +215,7 @@ const RegisterPage = (props: Props) => {
                   </div>
                 </div>
               </div>
-              <SubmitButton setLoading={setLoading} isAdmin={false} />
+              <SubmitButton setLoading={setLoading} />
             </form>
           </div>
 
