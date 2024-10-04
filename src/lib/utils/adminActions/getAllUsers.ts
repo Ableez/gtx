@@ -45,7 +45,6 @@ export async function getUsersAction(query: string, currentPage: number) {
   return filteredUsers.slice(startIndex, endIndex);
 }
 
-
 export async function getTotalPagesAction(query: string) {
   const users = await Promise.all(await getAllUsers());
   const filteredUsers = users.filter((user) =>
@@ -142,7 +141,7 @@ export async function makeAdminAction(uid: string) {
     await adminAuth.setCustomUserClaims(uid, { admin: true });
 
     const additionalClaims = {
-      adminAccount: false,
+      adminAccount: true,
     };
 
     const customToken = await adminAuth.createCustomToken(
@@ -159,10 +158,6 @@ export async function makeAdminAction(uid: string) {
       .where("uid", "==", uid)
       .get();
 
-    if (visitorSnapshot.empty || !visitorSnapshot.docs[0]) {
-      return { ok: false, message: "User cannot be an admin" };
-    }
-
     const visitorData = visitorSnapshot.docs[0]?.data();
 
     if (!visitorData) {
@@ -171,10 +166,10 @@ export async function makeAdminAction(uid: string) {
 
     await adminDB.collection("allowedAdmins").doc(uid).set(visitorData);
 
-    await adminDB
-      .collection("visitors")
-      .doc(visitorData.fingerprintId)
-      .delete();
+    // await adminDB
+    //   .collection("visitors")
+    //   .doc(visitorData.fingerprintId)
+    //   .delete();
 
     sendNotification(
       {},
@@ -190,5 +185,61 @@ export async function makeAdminAction(uid: string) {
   } catch (error) {
     console.log("Error making admin", error);
     return { ok: false, message: "Error making admin" };
+  }
+}
+
+export async function removeAdminAction(uid: string, username: string) {
+  try {
+    await adminDB.collection("Users").doc(uid).update({
+      role: "user",
+    });
+
+    await adminAuth.updateUser(uid, {
+      disabled: false,
+    });
+
+    await adminAuth.setCustomUserClaims(uid, { admin: false });
+
+    const additionalClaims = {
+      adminAccount: false,
+    };
+
+    const customToken = await adminAuth.createCustomToken(
+      uid,
+      additionalClaims
+    );
+
+    await adminDB.collection("Users").doc(uid).update({
+      customToken: customToken,
+    });
+
+    const adminSnapshot = await adminDB
+      .collection("allowedAdmins")
+      .where("uid", "==", uid)
+      .get();
+
+    if (adminSnapshot.empty || !adminSnapshot.docs[0]) {
+      return { ok: false, message: "User is not an admin" };
+    }
+
+    await adminDB
+      .collection("allowedAdmins")
+      .doc(adminSnapshot.docs[0].id)
+      .delete();
+
+    sendNotification(
+      { uid: [uid] },
+      {
+        title: "Admin removed",
+        body: `You are no longer an admin ${username}`,
+        url: "/admin/login",
+      },
+      uid
+    );
+
+    return { ok: true, message: "Admin removed successfully" };
+  } catch (error) {
+    console.log("Error removing admin", error);
+    return { ok: false, message: "Error removing admin" };
   }
 }

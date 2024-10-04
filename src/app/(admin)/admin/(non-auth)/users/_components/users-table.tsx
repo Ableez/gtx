@@ -2,6 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { getUsersAction } from "@/lib/utils/adminActions/getAllUsers";
 import UserActionButton from "./action-btn";
+import AdminUserActionButton from "./admin-action-btn";
+import { CrownIcon } from "lucide-react";
 
 export default async function UsersTable({
   query,
@@ -36,8 +38,9 @@ export default async function UsersTable({
             <div
               className={`${user.disabled ? "opacity-50" : ""} flex flex-col`}
             >
-              <h4 className="text-sm font-semibold capitalize">
+              <h4 className="text-sm font-semibold capitalize flex align-middle place-items-center items-center gap-2">
                 {user.username}
+                {user.role === "admin" && <CrownIcon color="gold" size={16} />}
               </h4>
               <p className="md:text-sm text-[12px] text-neutral-500">
                 {user.email}
@@ -51,14 +54,8 @@ export default async function UsersTable({
             </div>
           )}
 
-          {user.isAdmin ? (
-            <div
-              className={`${
-                user.disabled ? "opacity-50" : ""
-              } bg-purple-500 rounded-md px-2 py-1 h-fit scale-75`}
-            >
-              <h4>Admin</h4>
-            </div>
+          {user.role === "admin" ? (
+            <AdminUserActionButton user={user} />
           ) : (
             <UserActionButton user={user} />
           )}

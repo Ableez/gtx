@@ -31,6 +31,12 @@ async function sendNotificationToUser(
     .get();
 
   if (!userDoc.exists) {
+    console.log({
+      userId,
+      status: "failed",
+      error: "User has no active subscription.",
+    });
+
     return {
       userId,
       status: "failed",
@@ -48,6 +54,7 @@ async function sendNotificationToSubscription(
   payload: unknown
 ): Promise<NotificationResult> {
   if (!subscription) {
+    console.log({ userId, status: "PUSH SUBSCRIPTION NOT FOUND" });
     return { userId, status: "not found" };
   }
 
@@ -55,9 +62,11 @@ async function sendNotificationToSubscription(
     await webpush.sendNotification(subscription, JSON.stringify(payload), {
       vapidDetails,
     });
+
+    console.log({ userId, status: "NOTIFICAION sent" });
     return { userId, status: "sent" };
   } catch (error) {
-    // logger.error(`Failed to send notification to user ${userId}:`, error);
+    console.error(`Failed to send notification to user ${userId}:`, error);
     return { userId, status: "failed", error: (error as Error).message };
   }
 }
@@ -100,6 +109,8 @@ async function sendToAllAdmins(
 export const POST = async (request: Request) => {
   try {
     const { userId, payload } = (await request.json()) as NotificationPayload;
+
+    console.log("PAYLOAD", { userId, payload });
 
     let results: NotificationResult[];
 

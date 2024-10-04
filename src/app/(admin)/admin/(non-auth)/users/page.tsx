@@ -29,7 +29,7 @@ const CreateUser = async ({ searchParams }: Props) => {
         key={query + currentPage}
         fallback={
           <div className="p-2">
-            {Array.from({ length: 4 }).map((_, index) => (
+            {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
                 className="w-full dark:bg-neutral-900 align-middle place-items-center justify-start px-6 animate-pulse h-10 rounded-lg mb-2"

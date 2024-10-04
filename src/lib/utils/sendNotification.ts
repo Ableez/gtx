@@ -15,7 +15,7 @@ export const sendNotification = async (
     await fetch(`${APP_URL}/api/notifications/send-notification`, {
       method: "POST",
       body: JSON.stringify({
-        userId: userId,
+        userId: [userId],
         payload: {
           title: payload.title,
           body: payload.body,

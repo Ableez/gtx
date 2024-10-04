@@ -8,7 +8,7 @@ const AdminAuthLayout = (props: Props) => {
   return (
     <>
       <div className="text-xs mt-4 p-1.5 text-center">
-        Not an admin?{" "}
+        Not an admin?
         <Link href={"/login"} className="underline font-semibold">
           click here
         </Link>
