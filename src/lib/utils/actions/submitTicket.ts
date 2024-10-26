@@ -1,9 +1,9 @@
+"use server";
 import {
   addDoc,
   arrayUnion,
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   updateDoc,
@@ -11,7 +11,6 @@ import {
 } from "firebase/firestore";
 import Cookies from "js-cookie";
 import { db, storage } from "../firebase";
-import { TicketsData } from "../../../../types";
 import {
   getDownloadURL,
   ref,
@@ -20,7 +19,8 @@ import {
 } from "firebase/storage";
 import { objectToFile } from "../fileConverter";
 import { v4 } from "uuid";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToAdmin } from "../sendNotification";
+// import { sendNotification } from "../sendNotification";
 
 export const submitTicket = async (
   ticketType: string,
@@ -104,17 +104,13 @@ export const submitTicket = async (
       });
     }
 
-    await sendNotification(
-      user,
-      {
-        title: `${user.displayName} has a Complaint`,
-        body: `a complaint has been made by ${
-          user.displayName
-        } on ${date.toLocaleDateString()}`,
-        url: `https://greatexchange.co/support/ticket/${save.id}`,
-      },
-      null
-    );
+    sendNotificationToAdmin({
+      title: `${user.displayName} has a Complaint`,
+      body: `a complaint has been made by ${
+        user.displayName
+      } on ${date.toLocaleDateString()}`,
+      url: `https://greatexchange.co/support/ticket/${save.id}`,
+    });
 
     return {
       message: "Ticket has been sent!",

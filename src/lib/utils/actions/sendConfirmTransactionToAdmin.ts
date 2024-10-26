@@ -10,7 +10,7 @@ import {
 } from "../../../../chat"; // Importing the Conversation type
 import { timeStamper } from "../timeStamper"; // Importing the timeStamper utility
 import { cookies } from "next/headers";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToUser } from "../sendNotification";
 
 // Importing necessary modules from firebase/firestore and firebase/auth
 
@@ -109,19 +109,15 @@ export const sendConfirmTransactionToAdmin = async (
       "transaction.accepted": transactionAccepted,
     });
 
-    await sendNotification(
-      user,
-      {
-        title: `${data.transaction.cardDetails.name} Card - ${
-          isAccepted ? "Accepted" : "Rejected"
-        }`,
-        body: `Your transactionhas been ${
-          isAccepted ? "completed" : "rejected"
-        } `,
-        url: `https://greatexchange.co/chat/${id}`,
-      },
-      [user.uid]
-    );
+    await sendNotificationToUser(user.uid, {
+      title: `${data.transaction.cardDetails.name} Card - ${
+        isAccepted ? "Accepted" : "Rejected"
+      }`,
+      body: `Your transactionhas been ${
+        isAccepted ? "completed" : "rejected"
+      } `,
+      url: `https://greatexchange.co/chat/${id}`,
+    });
 
     // Returning a success message
     return {

@@ -15,6 +15,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/utils/firebase";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
+import { getCustomTimestamp } from "@/lib/utils/custom-timestamp";
 
 type MessageFormProps = {
   loading: boolean;
@@ -113,13 +114,6 @@ export const MessageForm = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const getCustomTimestamp = () => {
-    const now = new Date();
-    const seconds = Math.floor(now.getTime() / 1000);
-    const nanoseconds = (now.getTime() % 1000) * 1000000;
-    return { seconds, nanoseconds };
   };
 
   const updateConvo = () => {

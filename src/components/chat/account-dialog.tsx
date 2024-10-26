@@ -17,6 +17,7 @@ import type { Conversation } from "../../../chat";
 import Cookies from "js-cookie";
 import { postToast } from "../postToast";
 import { Timestamp } from "firebase/firestore";
+import { getCustomTimestamp } from "@/lib/utils/custom-timestamp";
 
 type Props = {
   chatId: string;
@@ -79,15 +80,17 @@ const AccountComp = ({
 
     const msg = {
       id: v4(),
-      timeStamp: new Date(), // replaced_date,
+      timeStamp: getCustomTimestamp(), // replaced_date,
     };
+
+    const allmsg = { ...allMessages.messages, timeStamp: getCustomTimestamp() };
 
     if (!edit) {
       updateConversation(
         {
           ...allMessages,
           messages: [
-            ...allMessages.messages,
+            ...allmsg,
             {
               id: msg.id,
               type: "card",
@@ -113,16 +116,16 @@ const AccountComp = ({
                   url: "",
                 },
               },
-              timeStamp: new Date(), // date_replaced,
+              timeStamp: getCustomTimestamp(), // date_replaced,
               edited: false,
               read_receipt: {
                 delivery_status: "sent",
                 status: false,
-                time: new Date(), // date_replaced,
+                time: getCustomTimestamp(), // date_replaced,
               },
             },
           ],
-          updated_at: new Date(), // date_replaced,
+          updated_at: getCustomTimestamp(), // date_replaced,
           transaction: {
             ...allMessages.transaction,
             accountDetails: {

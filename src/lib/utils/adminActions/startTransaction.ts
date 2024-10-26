@@ -21,7 +21,7 @@ import { v4 } from "uuid";
 import { checkServerAdmin } from "./checkServerAdmin";
 import { timeStamper } from "../timeStamper";
 import { checkIsAdmin } from "./checkAdmin";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToUser } from "../sendNotification";
 
 export const startTransaction = async (
   id: string,
@@ -156,15 +156,11 @@ export const startTransaction = async (
       }
     }
 
-    await sendNotification(
-      user,
-      {
-        title: `Transaction started`,
-        body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
-        url: `https://greatexchange.co/chat/${id}`,
-      },
-      [data.user.uid]
-    );
+    await sendNotificationToUser(data.user.uid, {
+      title: `Transaction started`,
+      body: `Lets confirm the transaction of ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD`,
+      url: `https://greatexchange.co/chat/${id}`,
+    });
 
     return {
       message: "Transaction started successfully",
@@ -282,15 +278,11 @@ export const finishTransactionAction = async (
         updated_at: time,
       } as TransactionRec);
 
-      await sendNotification(
-        user,
-        {
-          title: `Transaction Completed`,
-          body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
-          url: `https://greatexchange.co/chat/${id}`,
-        },
-        [data.user.uid]
-      );
+      await sendNotificationToUser(data.user.uid, {
+        title: `Transaction Completed`,
+        body: `Transaction for ${data.transaction.cardDetails.name} Card -  ${data.transaction.cardDetails.price} USD}`,
+        url: `https://greatexchange.co/chat/${id}`,
+      });
 
       return {
         success: true,

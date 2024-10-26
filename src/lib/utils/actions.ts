@@ -62,13 +62,6 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
     (c) => c.value === subcategoryValue
   );
 
-  const getCustomTimestamp = () => {
-    const now = new Date();
-    const seconds = Math.floor(now.getTime() / 1000);
-    const nanoseconds = (now.getTime() % 1000) * 1000000;
-    return { seconds, nanoseconds };
-  };
-
   const cardInfo = {
     cardTitle: data.name,
     price: `$${price}`,

@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToUser } from "../sendNotification";
 
 const baseUrl =
   process.env.NODE_ENV === "production"
@@ -35,15 +35,11 @@ export const sendImageA = async (formData: FormData) => {
       method: "POST",
     }).then((e) => e.json());
 
-    await sendNotification(
-      user,
-      {
-        body: `Sent a picture`,
-        title: user.displayName,
-        url: `https://greatexchange.co/chat/${chatId}`,
-      },
-      null
-    );
+    await sendNotificationToUser(user.uid, {
+      body: `Sent a picture`,
+      title: user.displayName,
+      url: `https://greatexchange.co/chat/${chatId}`,
+    });
 
     return res;
   } catch (error) {

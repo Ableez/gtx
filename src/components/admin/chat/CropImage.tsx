@@ -21,6 +21,7 @@ import useScrollRef from "@/lib/hooks/useScrollRef";
 import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import { Timestamp } from "firebase/firestore";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
+import { getCustomTimestamp } from "@/lib/utils/custom-timestamp";
 
 const fileToBase64 = async (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -166,7 +167,7 @@ const CropImage = ({
       id: msg.id,
       type: "media",
       deleted: false,
-      timeStamp: new Date(), // date_replaced,
+      timeStamp: getCustomTimestamp(), // date_replaced,
       sender: {
         username: user.displayName,
         uid: user.uid,
@@ -193,7 +194,7 @@ const CropImage = ({
       read_receipt: {
         delivery_status: "not_sent",
         status: false,
-        time: new Date(), // date_replaced,
+        time: getCustomTimestamp(), // date_replaced,
       },
     };
 
