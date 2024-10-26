@@ -79,7 +79,7 @@ export default function AdminNavbar({ handleClose }: Props) {
             />
           </Link>
         ) : (
-          <Button onClick={handleCloseAction} variant={"ghost"} size={"icon"}>
+          <Button onClick={() => router.back()} variant={"ghost"} size={"icon"}>
             <ArrowLeftIcon width={22} />
           </Button>
         )}

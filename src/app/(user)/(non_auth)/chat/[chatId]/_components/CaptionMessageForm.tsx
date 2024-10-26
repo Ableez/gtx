@@ -35,7 +35,6 @@ const uc = Cookies.get("user");
 const user = JSON.parse(uc || "{}");
 
 const IMAGE_NAME = v4();
-const URL_REGEX = /\/(?:admin\/)?chat\/(\w+)$/;
 
 export const MessageForm = ({
   setCaption,
@@ -86,43 +85,19 @@ export const MessageForm = ({
       const mediaurl = await getDownloadURL(uploadTask.ref);
 
       if (owns === "admin") {
-        await sendAdminMessage(
-          {
-            timeStamp: new Date(),
-          },
-          chatId as string,
-          recipient as {
-            username: string;
-            uid: string;
-            email: string;
-            photoUrl: string;
-          },
-          undefined,
-          {
-            caption,
-            url: mediaurl,
-            metadata: {
-              media_name: url,
-              media_type: "",
-              media_size: 0,
-            },
-          },
-          true
-        );
+        await sendAdminMessage(chatId as string, caption);
       } else {
         await sendUserMessage(
-          {
-            timeStamp: new Date(),
-          },
           chatId as string,
           undefined,
           {
             caption,
+            text: caption,
             url: mediaurl,
             metadata: {
               media_name: url,
               media_type: "",
-              media_size: 0,
+              media_size: "0",
             },
           },
           true
@@ -140,17 +115,24 @@ export const MessageForm = ({
     }
   };
 
+  const getCustomTimestamp = () => {
+    const now = new Date();
+    const seconds = Math.floor(now.getTime() / 1000);
+    const nanoseconds = (now.getTime() % 1000) * 1000000;
+    return { seconds, nanoseconds };
+  };
+
   const updateConvo = () => {
     const msg = {
       id: v4(),
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
     };
 
     const newMessage: Message = {
       id: msg.id,
       type: "media",
       deleted: false,
-      timeStamp: msg.timeStamp,
+      timeStamp: getCustomTimestamp(), // date_replaced,
       sender: {
         username: user.displayName,
         uid: user.uid,
@@ -177,7 +159,7 @@ export const MessageForm = ({
       read_receipt: {
         delivery_status: "not_sent",
         status: false,
-        time: msg.timeStamp,
+        time: getCustomTimestamp(), // date_replaced,
       },
     };
 

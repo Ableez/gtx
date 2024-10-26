@@ -48,7 +48,7 @@ export const sendConfirmTransactionToAdmin = async (
         (msg) => msg.card.title === "start_transaction"
       );
 
-    // Getting the current timestamp
+    // Getting the current timeStamp
     const time = timeStamper();
 
     // Setting the status based on whether the transaction is accepted or not

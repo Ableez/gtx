@@ -159,14 +159,14 @@ const CropImage = ({
 
     const msg = {
       id: v4(),
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
     };
 
     const newMessage: Message = {
       id: msg.id,
       type: "media",
       deleted: false,
-      timeStamp: msg.timeStamp,
+      timeStamp: new Date(), // date_replaced,
       sender: {
         username: user.displayName,
         uid: user.uid,
@@ -193,7 +193,7 @@ const CropImage = ({
       read_receipt: {
         delivery_status: "not_sent",
         status: false,
-        time: msg.timeStamp,
+        time: new Date(), // date_replaced,
       },
     };
 

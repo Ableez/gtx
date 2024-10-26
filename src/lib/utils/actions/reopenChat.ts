@@ -3,7 +3,7 @@ import { db } from "../firebase";
 
 export const reopenChat = async (chatId: string) => {
   try {
-    const time = Timestamp.fromDate(new Date());
+    const time = new Date(); // replaced_date;
     const chatDocRef = doc(db, "Messages", chatId);
 
     await updateDoc(chatDocRef, {

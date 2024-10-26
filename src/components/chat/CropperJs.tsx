@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.min.css";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import {
   CheckIcon,
@@ -26,7 +26,6 @@ import { storage } from "@/lib/utils/firebase";
 import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { v4 } from "uuid";
-import { useMessagesStore } from "@/lib/utils/store/userConversation";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
@@ -41,7 +40,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { cn } from "@/lib/utils";
+import { cn, truncateString } from "@/lib/utils";
+import { useMessagesStore } from "@/lib/utils/store/userConversation";
 
 type Props = {
   openS: boolean;
@@ -167,42 +167,22 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
 
         if (owns === "admin") {
           await sendAdminMessage(
-            {
-              timeStamp: new Date(),
-            },
             chatId as string,
-            recipient as {
-              username: string;
-              uid: string;
-              email: string;
-              photoUrl: string;
-            },
-            undefined,
-            {
-              caption,
-              url,
-              metadata: {
-                media_name: url,
-                media_type: "",
-                media_size: 0,
-              },
-            },
-            true
+            `[Image] ${caption ? truncateString(caption, 50) : "No caption"}`
           );
         } else {
           await sendUserMessage(
-            {
-              timeStamp: new Date(),
-            },
+         
             chatId as string,
             undefined,
             {
+              text: caption || "No caption",
               caption,
               url,
               metadata: {
-                media_name: url,
-                media_type: "",
-                media_size: 0,
+                media_name: file.file.name,
+                media_type: "image",
+                media_size: file.file.size.toString(),
               },
             },
             true
@@ -249,7 +229,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
     }
   };
 
-  return (
+  return (  
     <Dialog
       open={openS}
       onOpenChange={(e) => {

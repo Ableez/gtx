@@ -1,124 +1,98 @@
 "use server";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+
+import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { v4 } from "uuid";
+import { Conversation } from "../../../../chat";
 import { cookies } from "next/headers";
-import type { UserRecord } from "firebase-admin/auth";
-import { truncateString } from "@/lib/utils";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToUser } from "../sendNotification";
 
-export const sendAdminMessage = async (
-  data: {
-    timeStamp: Date;
-  },
-  id: string,
-  recipient: {
-    username: string;
-    uid: string;
-    email: string;
-    photoUrl: string;
-  },
-  e?: FormData,
-  mediaContent?: {
-    caption?: string;
-    url: string;
-    metadata: {
-      media_name: string;
-      media_type?: string;
-      media_size: number;
-    };
-  },
-  media?: boolean
+const getCustomTimestamp = () => {
+  const now = new Date();
+  const seconds = Math.floor(now.getTime() / 1000);
+  const nanoseconds = (now.getTime() % 1000) * 1000000;
+  return { seconds, nanoseconds };
+};
+
+const createMessage = (
+  admin: any,
+  type: string,
+  content: { text?: string; media?: string }
 ) => {
+  return {
+    id: `${admin.uid}_${new Date().getTime()}`,
+    sender: admin.uid,
+    senderName: admin.displayName || "Admin",
+    type: type,
+    content: content,
+    timeStamp: getCustomTimestamp(),
+    read_receipt: {
+      delivery_status: "sent", // "not_sent" | "sent" | "delivered" | "seen"
+      time: getCustomTimestamp(),
+      status: false,
+    },
+    recipient: "user",
+  };
+};
+
+export const sendAdminMessage = async (chatId: string, message: string) => {
+  const uc = cookies().get("user")?.value;
+  const admin = JSON.parse(uc ?? "{}");
+
+  if (!admin) {
+    return { message: "Admin authentication required", success: false };
+  }
+
+  const chatDocRef = doc(db, "Messages", chatId);
+  const chatData = (await getDoc(chatDocRef)).data() as Conversation;
+
+  if (chatData.chatStatus === "closed") {
+    return { message: "Can't send message. Chat closed!", success: false };
+  }
+
   try {
-    const message = e ? e.get("message") : mediaContent?.caption;
-
-    const { timeStamp } = data;
-
-    const cachedUser = cookies().get("user")?.value;
-    const user = cachedUser ? (JSON.parse(cachedUser) as UserRecord) : null;
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Please login to send a message",
-        error: null,
-      };
-    }
-
-    const chatDocRef = doc(db, "Messages", id as string);
-
-    const content = media
-      ? mediaContent
-      : {
-          text: message,
-        };
-
-    const msg = {
-      id: v4(),
-      timeStamp: new Date(),
-    };
+    const msg = createMessage(admin, "text", { text: message });
 
     await updateDoc(chatDocRef, {
       lastMessage: {
         id: msg.id,
-        seen: false,
-        sender: user.uid,
-        read_receipt: {
-          delivery_status: "sent",
-          status: false,
-          time: msg.timeStamp,
+        sender: {
+          uid: admin.uid,
+          username: admin.displayName,
+          role: "admin",
         },
+        seen: false,
+        read_receipt: msg.read_receipt,
         content: {
-          text: message || "",
-          media: media ? true : false,
+          text: message,
+          media: false,
         },
       },
-      messages: arrayUnion({
-        id: msg.id,
-        type: media ? "media" : "text",
-        deleted: false,
-        timeStamp: timeStamp,
-        sender: {
-          username: user.displayName,
-          uid: user.uid,
-        },
-        recipient: "user",
-        content: {
-          text: message || "",
-          media: content,
-        },
-        edited: false,
-        read_receipt: {
-          delivery_status: "sent",
-          status: false,
-          time: msg.timeStamp,
-        },
-      }),
-      updated_at: msg.timeStamp,
+      messages: arrayUnion(msg),
+      updated_at: getCustomTimestamp(),
+      timeStamp: getCustomTimestamp(),
     });
 
-    await sendNotification(
-      user,
-      {
-        title: `Message`,
-        body: `${truncateString(message?.toString() || "", 64)}`,
-        url: `/chat/${id}`,
-      },
-      [recipient.uid]
-    );
+    const updatedMessage = await getDoc(chatDocRef).then((e) => e.data());
 
-    return {
-      success: true,
-      message: "Message sent",
-      error: null,
-    };
+    console.log("UPDATED MESSAGE", updatedMessage);
+
+    await sendNotificationToUser(chatData.user.uid, {
+      title: "New Message",
+      body: message,
+      url: `/chat/${chatId}`,
+    });
+
+    return { success: true, message: "Admin message sent", updatedMessage };
   } catch (error) {
-    console.log(error);
-    return {
-      success: false,
-      error: "Internal error. Message not sent",
-      message: null,
-    };
+    console.error("Error sending admin message:", error);
+    return { success: false, message: "Internal error" };
   }
 };
+
+// Helper function (implement this in a separate file if not already available)
+function truncateString(str: string, num: number): string {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + "...";
+}

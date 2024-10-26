@@ -68,7 +68,7 @@ const ECodeComp = ({
 
       const msg = {
         id: v4(),
-        timeStamp: Timestamp.fromDate(new Date()),
+        timeStamp: new Date(), // replaced_date,
       };
       const newMessage = {
         id: msg.id,
@@ -85,12 +85,12 @@ const ECodeComp = ({
             value: eCode,
           },
         },
-        timeStamp: msg.timeStamp,
+        timeStamp: new Date(), // date_replaced,
         edited: false,
         read_receipt: {
           delivery_status: "not_sent",
           status: false,
-          time: msg.timeStamp,
+          time: new Date(), // date_replaced,
         },
       };
 

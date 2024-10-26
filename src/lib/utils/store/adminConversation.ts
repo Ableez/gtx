@@ -9,6 +9,7 @@ type State = {
 type Actions = {
   addMessage: (message: Message) => void;
   updateConversation: (conversation: Conversation) => void;
+  updateMessage: (id: string, message: Message) => void;
 };
 
 export const adminCurrConversationStore = create<State & Actions>((set) => ({
@@ -29,5 +30,30 @@ export const adminCurrConversationStore = create<State & Actions>((set) => ({
 
   updateConversation: (conversation) => {
     set({ conversation });
+  },
+
+  updateMessage: (id: string, message: Message) => {
+    // const prev = get().conversation?.messages;
+
+    set(
+      produce((draft) => {
+        if (draft.conversation) {
+          const msgIdx = draft.conversation.messages.findIndex(
+            (msg: { id: string }) => msg.id === id
+          );
+
+          const newMessages = {
+            ...draft.conversation.messages.slice(0, msgIdx),
+            message,
+            ...draft.conversation.messages.slice(msgIdx + 1),
+          };
+
+          return {
+            ...draft.conversation,
+            messages: newMessages,
+          };
+        }
+      })
+    );
   },
 }));

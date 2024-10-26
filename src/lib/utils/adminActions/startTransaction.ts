@@ -74,7 +74,7 @@ export const startTransaction = async (
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: new Date(), // date_replaced,
           },
         },
         messages: arrayUnion({
@@ -94,15 +94,15 @@ export const startTransaction = async (
               status: "waiting_for_user",
             },
           },
-          timeStamp: msg.timeStamp,
+          timeStamp: new Date(), // date_replaced,
           resended: false,
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: new Date(), // date_replaced,
           },
         }),
-        updated_at: msg.timeStamp,
+        updated_at: new Date(), // date_replaced,
       });
     } else {
       if (data) {

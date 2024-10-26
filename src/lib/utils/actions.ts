@@ -13,9 +13,8 @@ import { v4 as uuid } from "uuid";
 import { GiftCard } from "../../../types";
 import type { User } from "firebase/auth";
 import type { Conversation } from "../../../chat";
-import { adminEmails } from "../../../CONSTANTS";
-import { truncateString } from "../utils";
-import { sendNotification } from "./sendNotification";
+import { queue } from "./notificationQueue";
+import { sendNotificationToAdmin } from "./sendNotification";
 
 export const getCardData = (id: string | undefined): GiftCard | null => {
   if (!id) {
@@ -62,6 +61,13 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
   const subcategoryData = data.subcategory.find(
     (c) => c.value === subcategoryValue
   );
+
+  const getCustomTimestamp = () => {
+    const now = new Date();
+    const seconds = Math.floor(now.getTime() / 1000);
+    const nanoseconds = (now.getTime() % 1000) * 1000000;
+    return { seconds, nanoseconds };
+  };
 
   const cardInfo = {
     cardTitle: data.name,
@@ -110,13 +116,13 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
               price: cardInfo.price,
             },
           },
-          timeStamp: msg.timeStamp,
+          timeStamp: new Date(), // date_replaced,
           edited: false,
           edited_at: null, //date
           read_receipt: {
             delivery_status: "sent", // "not_sent" | "sent" | "delivered" | "seen"
             status: false,
-            time: null, //date
+            time: new Date(), //date
           },
           quoted_message: {
             text: "",
@@ -139,7 +145,7 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
         read_receipt: {
           delivery_status: "sent",
           status: false,
-          time: msg.timeStamp,
+          time: new Date(), // date_replaced,
         },
       },
       user: {
@@ -148,8 +154,8 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
         email: user?.email,
         photoUrl: user?.photoURL || "",
       },
-      created_at: msg.timeStamp,
-      updated_at: msg.timeStamp,
+      created_at: new Date(), // date_replaced,
+      updated_at: new Date(), // date_replaced,
     });
 
     const link = `${createdChat.id}`;
@@ -163,15 +169,11 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       conversations: arrayUnion(link),
     });
 
-    await sendNotification(
-      user,
-      {
-        title: "You have a new Chat",
-        body: `${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price} `,
-        url: `https://greatexchange.co/chat/${createdChat.id}`,
-      },
-      null
-    );
+    void sendNotificationToAdmin({
+      title: "New Chat Started",
+      body: `${user.displayName} started a chat for ${cardInfo.cardTitle} ${cardInfo.subcategory?.value} gift card - ${cardInfo.price}`,
+      url: `https://greatexchange.co/admin/chat/${createdChat.id}`,
+    });
 
     return {
       link,
@@ -262,7 +264,7 @@ export const startCryptoChat = async (
               price: price,
             },
           },
-          timeStamp: msg.timeStamp,
+          timeStamp: new Date(), // date_replaced,
           edited: false,
           edited_at: null, //date
           read_receipt: {
@@ -291,7 +293,7 @@ export const startCryptoChat = async (
         read_receipt: {
           delivery_status: "sent",
           status: false,
-          time: msg.timeStamp,
+          time: new Date(), // date_replaced,
         },
       },
       user: {
@@ -300,8 +302,8 @@ export const startCryptoChat = async (
         email: user?.email,
         photoUrl: user?.photoURL || "",
       },
-      created_at: msg.timeStamp,
-      updated_at: msg.timeStamp,
+      created_at: new Date(), // date_replaced,
+      updated_at: new Date(), // date_replaced,
     } as unknown as Conversation);
 
     const link = `${createdChat.id}`;
@@ -310,15 +312,23 @@ export const startCryptoChat = async (
       conversations: arrayUnion(link),
     });
 
-    await sendNotification(
-      user,
-      {
+    await queue.add("sendNotification", {
+      userId: user.uid,
+      payload: {
         title: "You have a new Chat",
         body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
         url: `https://greatexchange.co/chat/${createdChat.id}`,
       },
-      null
-    );
+    });
+    // await sendNotification(
+    //   user,
+    //   {
+    //     title: "You have a new Chat",
+    //     body: `${user.displayName} wants to sell ${cryptoData.name} ${cryptoData.acc} - ${price}`,
+    //     url: `https://greatexchange.co/chat/${createdChat.id}`,
+    //   },
+    //   user.uid
+    // );
 
     return {
       link,

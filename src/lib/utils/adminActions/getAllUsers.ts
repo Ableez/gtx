@@ -3,7 +3,10 @@
 import { getAuth } from "firebase-admin/auth";
 import { User } from "../../../../types";
 import { adminAuth, adminDB } from "../firebase-admin";
-import { sendNotification } from "../sendNotification";
+import {
+  sendNotificationToAdmin,
+  sendNotificationToUser,
+} from "../sendNotification";
 
 export async function getAllUsers() {
   const snapshot = await adminDB.collection("Users").get();
@@ -60,15 +63,11 @@ export async function deleteUserAction(uid: string) {
 
     await adminAuth.deleteUser(uid);
 
-    sendNotification(
-      {},
-      {
-        title: "Account Deletion",
-        body: "Your account has been deleted, you can no longer use our services",
-        url: "/login",
-      },
-      uid
-    );
+    sendNotificationToUser(uid, {
+      title: "Account Deletion",
+      body: "Your account has been deleted, you can no longer use our services",
+      url: "/login",
+    });
 
     return { message: "User deleted successfully" };
   } catch (error) {
@@ -86,15 +85,11 @@ export async function banUserAction(uid: string) {
       disabled: true,
     });
 
-    sendNotification(
-      {},
-      {
-        title: "Account Security",
-        body: "Your account has been disabled due to some security reasons, contact our support team for more information",
-        url: "/support",
-      },
-      uid
-    );
+    sendNotificationToUser(uid, {
+      title: "Account Security",
+      body: "Your account has been disabled due to some security reasons, contact our support team for more information",
+      url: "/support",
+    });
 
     return { message: "User banned successfully" };
   } catch (error) {
@@ -112,15 +107,11 @@ export async function unbanUserAction(uid: string) {
       disabled: false,
     });
 
-    sendNotification(
-      {},
-      {
-        title: "Congratulations",
-        body: "Your account has been re-enabled, you can now login",
-        url: "/login",
-      },
-      uid
-    );
+    sendNotificationToUser(uid, {
+      title: "Congratulations",
+      body: "Your account has been re-enabled, you can now login",
+      url: "/login",
+    });
 
     return { message: "User unbanned successfully" };
   } catch (error) {
@@ -166,20 +157,17 @@ export async function makeAdminAction(uid: string) {
 
     await adminDB.collection("allowedAdmins").doc(uid).set(visitorData);
 
-    // await adminDB
-    //   .collection("visitors")
-    //   .doc(visitorData.fingerprintId)
-    //   .delete();
+    sendNotificationToUser(uid, {
+      title: "Congratulations",
+      body: "You have been made an admin",
+      url: "/admin/login",
+    });
 
-    sendNotification(
-      {},
-      {
-        title: "Admin created",
-        body: "You have been made an admin",
-        url: "/admin/login",
-      },
-      uid
-    );
+    sendNotificationToAdmin({
+      title: "Security Alert",
+      body: "A new user has been made an admin. Are you aware of this?",
+      url: "/admin/users",
+    });
 
     return { ok: true, message: "Admin created successfully" };
   } catch (error) {
@@ -227,15 +215,17 @@ export async function removeAdminAction(uid: string, username: string) {
       .doc(adminSnapshot.docs[0].id)
       .delete();
 
-    sendNotification(
-      { uid: [uid] },
-      {
-        title: "Admin removed",
-        body: `You are no longer an admin ${username}`,
-        url: "/admin/login",
-      },
-      uid
-    );
+    sendNotificationToUser(uid, {
+      title: "Admin removed",
+      body: `You are no longer an admin ${username}`,
+      url: "/admin/login",
+    });
+
+    sendNotificationToAdmin({
+      title: "Security Alert",
+      body: `A user has been removed as an admin. Are you aware of this?`,
+      url: "/admin/users",
+    });
 
     return { ok: true, message: "Admin removed successfully" };
   } catch (error) {

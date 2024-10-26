@@ -24,44 +24,34 @@ const AdminMessageInput = ({ chatId, scrollToBottom }: Props) => {
 
   const { conversation, updateConversation } = adminCurrConversationStore();
 
-  const sendMessageAction = sendAdminMessage.bind(
-    null,
-    { timeStamp: new Date() },
-    chatId,
-    conversation?.user as {
-      username: string;
-      uid: string;
-      email: string;
-      photoUrl: string;
-    }
-  );
-
-  const formAction = (e: FormData) => {
+  const formAction = async () => {
     if (message.length === 0) return;
-    setLoading(true);
 
-    sendMessageAction(e).then((res) => {
-      if (res?.error) {
-        postToast("Not sent!", {
-          description: "Previous message not sent. Please try again.",
-        });
-      }
-      setLoading(false);
-    });
+    const result = await sendAdminMessage(chatId, message);
+
+    if (!result.success) {
+      postToast("Not sent!", {
+        description:
+          result.message || "Previous message not sent. Please try again.",
+      });
+    }
+
+    setLoading(false);
   };
 
-  const submitForm = async () => {
+  const submitForm = () => {
     setMessage("");
 
     const msg = {
       id: v4(),
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
     };
+
     const newMessage = {
       id: msg.id,
       type: "text",
       deleted: false,
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
       sender: {
         username: user.displayName,
         uid: user.uid,
@@ -74,7 +64,7 @@ const AdminMessageInput = ({ chatId, scrollToBottom }: Props) => {
       read_receipt: {
         delivery_status: "not_sent",
         status: false,
-        time: msg.timeStamp,
+        time: new Date(), // date_replaced,
       },
       quoted_message: null,
       deleted_at: undefined,
@@ -82,7 +72,7 @@ const AdminMessageInput = ({ chatId, scrollToBottom }: Props) => {
 
     updateConversation({
       ...conversation,
-      id: conversation?.id || "",
+      id: chatId,
       messages: [...(conversation?.messages || []), newMessage],
     } as Conversation);
 
@@ -98,8 +88,8 @@ const AdminMessageInput = ({ chatId, scrollToBottom }: Props) => {
     <div className="bg-neutral-50 left-1/2 -translate-x-1/2 dark:bg-black fixed bottom-0 w-screen py-2 pb-4 border px-2 shadow-xl">
       <form
         ref={formRef}
+        action={formAction}
         onSubmit={() => submitForm()}
-        action={async (e: FormData) => formAction(e)}
         className="grid grid-cols-12 grid-flow-col gap-1 align-middle place-items-center justify-between max-w-xl mx-auto"
       >
         <AdminAttachFile
@@ -129,9 +119,9 @@ const AdminMessageInput = ({ chatId, scrollToBottom }: Props) => {
           title={loading ? "Sending..." : "Send Message"}
         >
           {loading ? (
-            <SunIcon className="animate-spin duration-1000 text-xl" />
+            <SunIcon width={19} className="animate-spin duration-1000" />
           ) : (
-            <PaperAirplaneIcon width={25} />
+            <PaperAirplaneIcon width={19} />
           )}
         </button>
       </form>

@@ -10,9 +10,8 @@ type Props = {
 };
 
 const uc = Cookies.get("user");
-const user = JSON.parse(uc || "{}");
 
-const TextMessage = ({ idx, message }: Props) => {
+const AdminTextMessage = ({ idx, message }: Props) => {
   if (message.content.text === "") return null;
 
   console.log("MESSAGE", message);
@@ -21,14 +20,14 @@ const TextMessage = ({ idx, message }: Props) => {
     <div
       key={idx}
       className={`max-w-[270px] md:max-w-[500px] transition-all duration-500 px-2 ${
-        message.sender.uid === user.uid
-          ? "justify-self-end"
-          : "justify-self-start"
+        message.recipient === "admin"
+          ? "justify-self-start"
+          : "justify-self-end"
       }`}
     >
       <div
         className={`${
-          message.recipient === "admin"
+          message.recipient === "user"
             ? "bg-purple-600/70 dark:bg-purple-500/50 text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
             : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-200/50 dark:bg-neutral-800 text-black/70 dark:text-white"
         } flex align-middle place-items-end justify-between px-3.5 gap-2 py-2`}
@@ -53,4 +52,4 @@ const TextMessage = ({ idx, message }: Props) => {
   );
 };
 
-export default TextMessage;
+export default AdminTextMessage;

@@ -72,38 +72,19 @@ export const POST = async (req: NextRequest) => {
     const mediaurl = await getDownloadURL(uploadTask.ref);
 
     if (owns === "admin") {
-      await sendAdminMessage(
-        {
-          timeStamp: new Date(),
-        },
-        chatId,
-        recipient,
-        undefined,
-        {
-          caption,
-          url: mediaurl,
-          metadata: {
-            media_name: metadata.name,
-            media_type: "",
-            media_size: 0,
-          },
-        },
-        true
-      );
+      await sendAdminMessage(chatId, caption);
     } else {
       await sendUserMessage(
-        {
-          timeStamp: new Date(),
-        },
         chatId,
         undefined,
         {
           caption,
+          text: caption,
           url: mediaurl,
           metadata: {
             media_name: metadata.name,
             media_type: "",
-            media_size: 0,
+            media_size: "0",
           },
         },
         true

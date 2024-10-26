@@ -5,10 +5,8 @@ import { ConversationCollections } from "../../../chat";
 import { db } from "../utils/firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { adminConversationsStore } from "../utils/store/adminAllConversations";
-import { postToast } from "@/components/postToast";
 import { saveConversationsToDB } from "../utils/indexedDb/adminConversations";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
 
 const useAdminConversations = () => {
   const [conversationState, setConversationState] =
@@ -22,8 +20,6 @@ const useAdminConversations = () => {
 
   useEffect(() => {
     const fetchChats = (): (() => void) | undefined => {
-      const uc = Cookies.get("user");
-
       const q = query(
         collection(db, "Messages"),
         orderBy("updated_at", "desc")
@@ -35,12 +31,16 @@ const useAdminConversations = () => {
           data: doc.data(),
         }));
 
+        console.log("CHAT UPDATED", chatData);
+
         const unreadChats = chatData.filter(
           (chat) => !chat?.data?.lastMessage?.read_receipt?.status
         );
 
         if (chatData && chatData.length > 0) {
           setConversationState(chatData as ConversationCollections);
+          saveConversationsToDB(chatData as ConversationCollections);
+          updateAllConversations();
         }
         updateUnReadConversationsNumber(unreadChats.length);
       });
@@ -48,7 +48,7 @@ const useAdminConversations = () => {
 
     const unsubscribe = fetchChats();
     return () => unsubscribe && unsubscribe();
-  }, [updateUnReadConversationsNumber]);
+  }, [updateAllConversations, updateUnReadConversationsNumber]);
 
   useEffect(() => {
     if (conversationState && conversationState.length > 0) {

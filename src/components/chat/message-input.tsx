@@ -28,39 +28,33 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
 
   const formAction = (e: FormData) => {
     if (message.length === 0) return;
-    setLoading(true);
 
     console.log("SENDING MESSAGE");
 
-    sendMessageAction(e)
-      .then((res) => {
-        if (!res?.success) {
-          postToast(res?.message.toString() || "An error occured");
-        }
-      })
-      .finally(() => setLoading(false));
+    sendMessageAction(e).then((res) => {
+      if (!res?.success) {
+        postToast(res?.message.toString() || "An error occured");
+      }
+    });
   };
 
   // Create a function to send a user message
-  const sendMessageAction = sendUserMessage.bind(
-    null,
-    { timeStamp: new Date() },
-    chatId
-  );
+  const sendMessageAction = sendUserMessage.bind(null, chatId);
 
   const submitForm = async () => {
     setMessage("");
+    setLoading(true);
 
     const msg = {
       id: v4(),
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
     };
 
     const newMessage = {
       id: msg.id,
       type: "text",
       deleted: false,
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
       sender: {
         username: user.displayName,
         uid: user.uid,
@@ -73,10 +67,11 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
       read_receipt: {
         delivery_status: "not_sent",
         status: false,
-        time: msg.timeStamp,
+        time: new Date(), // date_replaced,
       },
       quoted_message: null,
       deleted_at: undefined,
+      updated_at: new Date(), // replaced_date,
     };
 
     updateConversation(
@@ -94,6 +89,8 @@ const MessageInput = ({ chatId, scrollToBottom }: Props) => {
         block: "end",
       });
     }
+
+    setLoading(false);
   };
 
   return (

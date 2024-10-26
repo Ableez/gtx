@@ -49,7 +49,7 @@ self.addEventListener("push", function (event) {
           // Store the last notification
           lastNotification = {
             data: data,
-            timestamp: Date.now(),
+            timeStamp: Date.now(),
           };
 
           // Check if resubscription is needed
@@ -122,7 +122,7 @@ self.addEventListener("notificationclick", function (event) {
 // Listen for messages from clients
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "GET_LAST_NOTIFICATION") {
-    if (lastNotification && Date.now() - lastNotification.timestamp < 30000) {
+    if (lastNotification && Date.now() - lastNotification.timeStamp < 30000) {
       // Only send if the notification is less than 30 seconds old
       event.source.postMessage({
         type: "LAST_NOTIFICATION",

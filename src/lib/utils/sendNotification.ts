@@ -1,33 +1,59 @@
-import type { User } from "../../../types";
+import { adminDB } from "./firebase-admin";
+import { queue } from "./notificationQueue";
 
-const APP_URL = process.env.APP_URL!;
-
-export const sendNotification = async (
-  user: User | any,
+export const sendNotificationToUser = async (
+  userId: string,
   payload: {
     title: string;
     body: string;
     url: string;
-  },
-  userId: string | string[] | null
-) => {
-  try {
-    await fetch(`${APP_URL}/api/notifications/send-notification`, {
-      method: "POST",
-      body: JSON.stringify({
-        userId: [userId],
-        payload: {
-          title: payload.title,
-          body: payload.body,
-          icon: "/greatexc.svg",
-          data: {
-            url: payload.url,
-            userId: user.uid,
-          },
-        },
-      }),
-    });
-  } catch (error) {
-    console.error("ERROR SENDING NOTIFICATION:", error);
   }
+) => {
+  const notificationData = {
+    userId: [userId],
+    payload: {
+      title: payload.title,
+      body: payload.body,
+      icon: "/greatexc.svg",
+      data: {
+        url: payload.url,
+        recipientId: userId,
+      },
+    },
+  };
+
+  await queue.add("sendNotification", notificationData);
+};
+
+export const sendNotificationToAdmin = async (payload: {
+  title: string;
+  body: string;
+  url: string;
+}) => {
+  const admins = await getAdmins();
+
+  const notificationData = {
+    userId: admins,
+    payload: {
+      title: payload.title,
+      body: payload.body,
+      icon: "/greatexc.svg",
+      data: {
+        url: payload.url,
+        recipientId: "admin",
+      },
+    },
+  };
+
+  await queue.add("sendNotification", notificationData);
+};
+
+const getAdmins = async () => {
+  const admins = await adminDB
+    .collection("Users")
+    .where("role", "==", "admin")
+    .get();
+  const adminIds = admins.docs.map((doc) => doc.id);
+
+  return adminIds;
 };

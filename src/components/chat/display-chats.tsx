@@ -127,10 +127,16 @@ const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
       id,
       count,
       data,
-    }));
+    })).sort((a, b) => {
+      const timeStampA = new Date(
+        a.data.updated_at.seconds * 1000 + a.data.updated_at.nanoseconds / 1e6
+      );
+      const timeStampB = new Date(
+        b.data.updated_at.seconds * 1000 + b.data.updated_at.nanoseconds / 1e6
+      );
+      return timeStampB.getTime() - timeStampA.getTime();
+    });
   };
-
-  console.log(groupChats());
 
   return (
     <div className="chat-list">
@@ -180,6 +186,7 @@ const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
                             alt={chat.data.user.username}
                             width={45}
                             height={45}
+                            key={idx}
                             className="aspect-square rounded-full object-cover -ml-5 border-4 duration-300 group-hover:border-neutral-200 border-neutral-50"
                           />
                         ))}

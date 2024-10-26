@@ -1,5 +1,11 @@
 "use server";
-import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  type DocumentReference,
+  arrayUnion,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { cookies } from "next/headers";
 import { db } from "../firebase";
 import { v4 } from "uuid";
@@ -12,110 +18,96 @@ import type {
 } from "../../../../chat";
 import { timeStamper } from "../timeStamper";
 import { truncateString } from "@/lib/utils";
-import { sendNotification } from "../sendNotification";
+import { sendNotificationToAdmin } from "../sendNotification";
+
+const getCustomTimestamp = () => {
+  const now = new Date();
+  const seconds = Math.floor(now.getTime() / 1000);
+  const nanoseconds = (now.getTime() % 1000) * 1000000;
+  return { seconds, nanoseconds };
+};
+
+const getUser = () => {
+  const cachedUser = cookies().get("user")?.value;
+  return cachedUser ? (JSON.parse(cachedUser) as User) : null;
+};
+
+const updateChatDoc = async (chatDocRef: DocumentReference, updates: any) => {
+  await updateDoc(chatDocRef, updates);
+};
+
+const createMessage = (user: User, type: string, content: any) => {
+  const msg = {
+    id: v4(),
+    timeStamp: getCustomTimestamp(),
+    type,
+    deleted: false,
+    sender: {
+      username: user.displayName,
+      uid: user.uid,
+    },
+    recipient: "admin",
+    content,
+    edited: false,
+    read_receipt: {
+      delivery_status: "sent",
+      status: false,
+      time: getCustomTimestamp(),
+    },
+  };
+
+  return msg;
+};
 
 export const sendUserMessage = async (
-  data: {
-    timeStamp: Date;
-  },
   id: string,
   e?: FormData,
-  mediaContent?: {
-    caption?: string;
-    url: string;
-    metadata: {
-      media_name: string;
-      media_type?: string;
-      media_size: number;
-    };
-  },
+  mediaContent?: MediaContent,
   media?: boolean
 ) => {
-  const message = e ? e.get("message") : mediaContent?.caption;
-
-  const { timeStamp } = data;
-
-  const cachedUser = cookies().get("user")?.value;
-  const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
-
+  const user = getUser();
   if (!user)
-    return {
-      message: "Please login to send a message",
-      success: false,
-    };
+    return { message: "Please login to send a message", success: false };
 
-  const chatDocRef = doc(db, "Messages", id as string);
+  console.log("ID", id);
 
-  const docSnapshot = await getDoc(chatDocRef);
-  const chatData = docSnapshot.data() as Conversation;
+  const chatDocRef = doc(db, "Messages", id);
+  const chatData = (await getDoc(chatDocRef)).data() as Conversation;
 
   if (chatData.chatStatus === "closed") {
-    return {
-      message: "Can't send message. Chat closed!",
-      success: false,
-    };
+    return { message: "Can't send message. Chat closed!", success: false };
   }
 
-  const content = media
-    ? mediaContent
-    : {
-        text: message?.toString(),
-      };
+  const message = e ? e.get("message") : mediaContent?.caption;
+  const content = media ? mediaContent : { text: message?.toString() };
 
   try {
-    const msg = {
-      id: v4(),
-      timeStamp: new Date(),
-    };
+    const msg = createMessage(user, media ? "media" : "text", content);
 
-    await updateDoc(chatDocRef, {
+    const updaDoc = await updateChatDoc(chatDocRef, {
       lastMessage: {
         id: msg.id,
-        sender: user.uid,
-        seen: false,
-        read_receipt: {
-          delivery_status: "sent",
-          status: false,
-          time: msg.timeStamp,
+        sender: {
+          uid: user.uid,
+          username: user.displayName,
+          role: "user",
         },
+        seen: false,
+        read_receipt: msg.read_receipt,
         content: {
           text: message || "",
           media: media ? true : false,
         },
       },
-      messages: arrayUnion({
-        id: msg.id,
-        type: media ? "media" : "text",
-        deleted: false,
-        timeStamp: timeStamp,
-        sender: {
-          username: user.displayName,
-          uid: user.uid,
-        },
-        recipient: "admin",
-        content: {
-          text: message || "",
-          media: content,
-        },
-        edited: false,
-        read_receipt: {
-          delivery_status: "sent",
-          status: false,
-          time: msg.timeStamp,
-        },
-      }),
-      updated_at: msg.timeStamp,
-    });
+      messages: arrayUnion(msg),
+      updated_at: getCustomTimestamp(), // date_replaced,
+    }).then((e) => console.log(e));
 
-    await sendNotification(
-      user,
-      {
-        title: `${user.displayName} - ${chatData.transaction.cardDetails.name} Card`,
-        body: `${truncateString(message?.toString() || "", 64)}`,
-        url: `/chat/${id}`,
-      },
-      null
-    );
+    await sendNotificationToAdmin({
+      title: `${user.displayName} - ${chatData.transaction.cardDetails.name} Card`,
+      body: `${truncateString(message?.toString() || "", 64)}`,
+      url: `/admin/chat/${id}`,
+    });
 
     return { success: true, message: "Message sent" };
   } catch (error) {
@@ -133,8 +125,7 @@ export const sendEcodeToAdmin = async (
   try {
     const ecode = e.get("ecode");
 
-    const cachedUser = cookies().get("user")?.value;
-    const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+    const user = getUser();
 
     if (!user) {
       return {
@@ -153,14 +144,14 @@ export const sendEcodeToAdmin = async (
         delivery_status: "seen",
         status: true,
       },
-      updated_at: new Date(),
+      updated_at: getCustomTimestamp(),
       "transaction.cardDetails.ecode": ecode,
     });
 
     if (!edit) {
       const msg = {
         id: v4(),
-        timeStamp: new Date(),
+        timeStamp: getCustomTimestamp(),
       };
 
       await updateDoc(chatDocRef, {
@@ -181,7 +172,7 @@ export const sendEcodeToAdmin = async (
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: getCustomTimestamp(), // date_replaced,
           },
         },
         messages: arrayUnion({
@@ -199,15 +190,15 @@ export const sendEcodeToAdmin = async (
               value: ecode,
             },
           },
-          timeStamp: msg.timeStamp,
+          timeStamp: getCustomTimestamp(), // date_replaced,
           edited: false,
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: getCustomTimestamp(), // date_replaced,
           },
         }),
-        updated_at: msg.timeStamp,
+        updated_at: getCustomTimestamp(), // date_replaced,
       });
     } else {
       if (data) {
@@ -250,25 +241,17 @@ export const sendEcodeToAdmin = async (
     }
 
     if (edit) {
-      await sendNotification(
-        user,
-        {
-          title: `${user.displayName} updated their E-code`,
-          body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-          url: `https://greatexchange.co/chat/${id}`,
-        },
-        null
-      );
+      await sendNotificationToAdmin({
+        title: `${user.displayName} updated their E-code`,
+        body: `${data.transaction.cardDetails.name} Giftcard E-code`,
+        url: `https://greatexchange.co/admin/chat/${id}`,
+      });
     } else {
-      await sendNotification(
-        user,
-        {
-          title: `${user.displayName} Sent an E-code`,
-          body: `${data.transaction.cardDetails.name} Giftcard E-code`,
-          url: `https://greatexchange.co/chat/${id}`,
-        },
-        null
-      );
+      await sendNotificationToAdmin({
+        title: `${user.displayName} Sent an E-code`,
+        body: `${data.transaction.cardDetails.name} Giftcard E-code`,
+        url: `https://greatexchange.co/admin/chat/${id}`,
+      });
     }
 
     return {
@@ -291,8 +274,7 @@ export const sendAccountToAdmin = async (
   edit?: boolean,
   idx?: number
 ) => {
-  const cachedUser = cookies().get("user")?.value;
-  const user = cachedUser ? (JSON.parse(cachedUser) as User) : null;
+  const user = getUser();
 
   try {
     const accountNumber = e.get("accountNumber");
@@ -316,8 +298,6 @@ export const sendAccountToAdmin = async (
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
 
-    console.log("ACCT DETAILS:", accountDetails);
-
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {
         delivery_status: "seen",
@@ -326,12 +306,13 @@ export const sendAccountToAdmin = async (
       "transaction.accountDetails": {
         ...accountDetails,
       },
-      updated_at: new Date(),
+      updated_at: getCustomTimestamp(),
     });
+
     if (!edit) {
       const msg = {
         id: v4(),
-        timeStamp: new Date(),
+        timeStamp: getCustomTimestamp(),
       };
 
       await updateDoc(chatDocRef, {
@@ -352,7 +333,7 @@ export const sendAccountToAdmin = async (
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: getCustomTimestamp(), // date_replaced,
           },
         },
         messages: arrayUnion({
@@ -368,15 +349,15 @@ export const sendAccountToAdmin = async (
             title: "Account Details",
             data: accountDetails,
           },
-          timeStamp: msg.timeStamp,
+          timeStamp: getCustomTimestamp(), // date_replaced,
           edited: false,
           read_receipt: {
             delivery_status: "sent",
             status: false,
-            time: msg.timeStamp,
+            time: getCustomTimestamp(), // date_replaced,
           },
         }),
-        updated_at: msg.timeStamp,
+        updated_at: getCustomTimestamp(), // date_replaced,
       });
     } else {
       if (data) {
@@ -387,8 +368,6 @@ export const sendAccountToAdmin = async (
           );
 
         const time = timeStamper();
-
-        console.log("DATA:", JSON.stringify(data));
 
         if (Array.isArray(data.messages)) {
           data.messages[index] = {
@@ -422,26 +401,19 @@ export const sendAccountToAdmin = async (
     }
 
     if (edit) {
-      await sendNotification(
-        user,
-        {
-          title: `${user.displayName}'s Bank Details`,
-          body: `Just editted their account number`,
-          url: `https://greatexchange.co/chat/${id}`,
-        },
-        null
-      );
+      await sendNotificationToAdmin({
+        title: `${user.displayName}'s Bank Details`,
+        body: `Just editted their account number`,
+        url: `https://greatexchange.co/admin/chat/${id}`,
+      });
     } else {
-      await sendNotification(
-        user,
-        {
-          title: `${user.displayName}'s Bank Details`,
-          body: `Sent their bank details`,
-          url: `https://greatexchange.co/chat/${id}`,
-        },
-        null
-      );
+      await sendNotificationToAdmin({
+        title: `${user.displayName}'s Bank Details`,
+        body: `Sent their bank details`,
+        url: `https://greatexchange.co/admin/chat/${id}`,
+      });
     }
+
     return {
       message: "Account Details sent",
       success: true,

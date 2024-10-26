@@ -82,7 +82,7 @@ const UserChatPage = ({ params }: Props) => {
       </div>
       {chats.map((chat, idx) => (
         <div key={chat.id}>
-          <ChatCard idx={parseInt(chat.id)} isAdmin={false} chat={chat} />
+          <ChatCard idx={parseInt(chat.id)} isAdmin={true} chat={chat} />
         </div>
       ))}
     </div>

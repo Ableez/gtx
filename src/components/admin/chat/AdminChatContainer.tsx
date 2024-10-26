@@ -1,3 +1,5 @@
+"use client";
+
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import React from "react";
 import AdminRenderMessages from "./AdminRenderMessages";
@@ -17,6 +19,7 @@ const AdminChatContainer = ({ chatId, scrollToBottom }: Props) => {
           scrollToBottom={scrollToBottom}
           card={conversation.transaction.cardDetails}
           chatId={chatId}
+          data={conversation}
         />
       ) : (
         <div className="text-center p-8 dark:text-opacity-40">

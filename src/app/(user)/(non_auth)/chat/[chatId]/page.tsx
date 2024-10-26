@@ -61,7 +61,7 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
         } else if (doc.data()) {
           const fetchedMessages = doc.data() as Conversation;
 
-          // Sort messages by timestamp
+          // Sort messages by timeStamp
           const sortedArray = fetchedMessages.messages.sort((a, b) => {
             const timeStampA = new Date(
               a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6

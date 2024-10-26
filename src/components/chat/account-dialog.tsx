@@ -79,7 +79,7 @@ const AccountComp = ({
 
     const msg = {
       id: v4(),
-      timeStamp: Timestamp.fromDate(new Date()),
+      timeStamp: new Date(), // replaced_date,
     };
 
     if (!edit) {
@@ -113,16 +113,16 @@ const AccountComp = ({
                   url: "",
                 },
               },
-              timeStamp: msg.timeStamp,
+              timeStamp: new Date(), // date_replaced,
               edited: false,
               read_receipt: {
                 delivery_status: "sent",
                 status: false,
-                time: msg.timeStamp,
+                time: new Date(), // date_replaced,
               },
             },
           ],
-          updated_at: msg.timeStamp,
+          updated_at: new Date(), // date_replaced,
           transaction: {
             ...allMessages.transaction,
             accountDetails: {
