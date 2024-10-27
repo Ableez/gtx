@@ -18,7 +18,10 @@ export const getUserChats = async () => {
     const cachedUser = JSON.parse(uc) as UserRecord;
 
     const chatsRef = query(
-      collection(db, "Messages"),
+      collection(
+        db,
+        process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+      ),
       where("user.uid", "==", cachedUser.uid),
       orderBy("updated_at", "desc")
     );

@@ -34,7 +34,11 @@ const ChatCard: React.FC<Props> = ({ chat, chat2, idx, isAdmin }) => {
     async (lastMessage: LastMessage, chatId: string) => {
       if (!lastMessage.seen && lastMessage.sender !== user.uid) {
         console.log("MARKED SEEN");
-        const chatRef = doc(db, "Messages", chatId);
+        const chatRef = doc(
+          db,
+          process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+          chatId
+        );
         await updateDoc(chatRef, {
           lastMessage: {
             ...lastMessage,

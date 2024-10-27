@@ -22,7 +22,7 @@ export async function getUsers() {
 
     const fetchChats = async (id: string) => {
       const chatsSnapshot = query(
-        collection(db, "Messages"),
+        collection(db, process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"),
         where("user.uid", "==", id)
       );
       const snap = await getDocs(chatsSnapshot);

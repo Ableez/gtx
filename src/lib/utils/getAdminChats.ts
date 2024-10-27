@@ -16,7 +16,7 @@ export const getAdminChats = async () => {
     }
 
     const chatsRef = query(
-      collection(db, "Messages"),
+      collection(db, process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"),
       orderBy("updated_at", "desc")
     );
 

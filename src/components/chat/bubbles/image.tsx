@@ -37,13 +37,15 @@ const ImageBubble = ({
   setOpenSlide,
   scrollToBottom,
 }: Props) => {
-  if (message.content.media.url)
+  console.log("MESSAGE", message);
+
+  if (message.content.url)
     return (
       <div
         className={`${
-          message.sender.uid === user.uid
-            ? "justify-self-end"
-            : "justify-self-start flex-row-reverse"
+          message.recipient === "admin" && message.sender.uid !== user.uid
+            ? "justify-self-start flex-row-reverse"
+            : "justify-self-end"
         } flex align-middle place-items-center gap-2`}
       >
         <DropdownMenu>
@@ -89,7 +91,7 @@ const ImageBubble = ({
                     id: "download-progress",
                   });
                 };
-                xhr.open("GET", message.content.media.url);
+                xhr.open("GET", message.content.url);
                 xhr.send();
 
                 xhr.onerror = (e) => {
@@ -105,10 +107,10 @@ const ImageBubble = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <div
-          className={`max-w-[250px] md:max-w-[500px] transition-all duration-500 px-2 ${
-            message.sender.uid === user.uid
-              ? "justify-self-end"
-              : "justify-self-start"
+          className={`max-w-[250px] md:max-w-[600px] transition-all duration-500 px-2 ${
+            message.recipient === "user" && message.sender.uid === user.uid
+              ? "justify-self-start"
+              : "justify-self-end"
           }`}
           onClick={() => {
             setCurrId(message.id);
@@ -117,12 +119,12 @@ const ImageBubble = ({
         >
           <div
             className={`${
-              message.sender.uid === user.uid
-                ? "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-                : "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-black"
+              message.recipient === "admin" && message.sender.uid !== user.uid
+                ? "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
+                : "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
             } grid align-middle place-items-center justify-between px-1 gap-2 py-1 min-w-[100px] min-h-[100px]`}
           >
-            <div className="rounded-sm overflow-clip shadow-md bg-white relative">
+            <div className="rounded-sm overflow-clip shadow-md bg-white dark:bg-neutral-800 relative">
               <div className="w-full h-8 absolute bottom-0 left-0 from-transparent to-black/60 bg-gradient-to-b" />
               <h4 className="absolute bottom-2 text-white right-4 text-xs">
                 {message?.read_receipt.delivery_status === "not_sent" ? (
@@ -136,19 +138,20 @@ const ImageBubble = ({
                   )
                 )}
               </h4>
-              {message.content.media?.url ? (
+              {message.content.url ? (
                 <div
                   className={`flex align-middle place-items-center justify-between gap-4 ${
-                    message.sender.uid === user.uid ? "" : "justify-self-start"
+                    message.recipient === "admin" &&
+                    message.sender.uid !== user.uid
+                      ? "justify-self-start"
+                      : "justify-self-end"
                   }`}
                 >
                   <Image
-                    src={message.content.media?.url || "/logoplace.svg"}
-                    alt={message.content.media?.metadata?.media_name as string}
-                    width={400}
-                    height={400}
-                    autoSave="true"
-                    priority={true}
+                    src={message.content.url}
+                    alt={"IMAGE"}
+                    width={600}
+                    height={600}
                     id={message.id}
                     onLoad={() => {
                       scrollToBottom.current?.lastElementChild?.scrollIntoView({
@@ -168,11 +171,11 @@ const ImageBubble = ({
                 </div>
               )}
             </div>
-            {message.content.media?.caption && (
+            {message.content.caption && (
               <div
                 className={`md:font-medium font-normal leading-6 text-sm antialiased text-right w-full mr-2`}
               >
-                {message.content.media?.caption}
+                {message.content.caption}
               </div>
             )}
           </div>
@@ -180,6 +183,5 @@ const ImageBubble = ({
       </div>
     );
 };
-// };
 
 export default ImageBubble;

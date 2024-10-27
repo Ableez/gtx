@@ -74,7 +74,10 @@ export const startChat = async (data: GiftCard, formData: FormData) => {
       timeStamp: new Date(),
     };
 
-    const messagesRef = collection(db, "Messages");
+    const messagesRef = collection(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+    );
     const createdChat = await addDoc(messagesRef, {
       chatStatus: "open",
       transaction: {
@@ -223,7 +226,10 @@ export const startCryptoChat = async (
       };
     }
 
-    const messagesRef = collection(db, "Messages");
+    const messagesRef = collection(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+    );
 
     const createdChat = await addDoc(messagesRef, {
       chatStatus: "open",

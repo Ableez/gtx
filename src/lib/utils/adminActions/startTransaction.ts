@@ -40,7 +40,11 @@ export const startTransaction = async (
         success: false,
       };
 
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
@@ -197,7 +201,11 @@ export const finishTransactionAction = async (
         message: "Insufficient parameters",
       };
 
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
     const transactionDocRef = collection(db, "Transactions");
 
     const time = timeStamper();
@@ -307,7 +315,11 @@ export const closeChat = async (id: string) => {
         success: false,
       };
 
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
     const time = timeStamper();
 
     await updateDoc(chatDocRef, {

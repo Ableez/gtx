@@ -4,7 +4,11 @@ import { db } from "../firebase";
 export const reopenChat = async (chatId: string) => {
   try {
     const time = new Date(); // replaced_date;
-    const chatDocRef = doc(db, "Messages", chatId);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      chatId
+    );
 
     await updateDoc(chatDocRef, {
       "lastMessage.read_receipt": {

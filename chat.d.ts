@@ -45,6 +45,8 @@ export type Message = {
   content: {
     text: string;
     media: MediaContent;
+    url: string;
+    caption: string;
   };
   card: {
     title: string;

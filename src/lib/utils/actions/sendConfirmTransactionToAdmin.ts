@@ -22,7 +22,11 @@ export const sendConfirmTransactionToAdmin = async (
 ) => {
   try {
     // Creating a reference to the document in the 'Messages' collection with the given ID
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
 
     // Getting the user from the cookies
     const cachedUser = cookies().get("user")?.value;

@@ -21,7 +21,7 @@ const useAdminConversations = () => {
   useEffect(() => {
     const fetchChats = (): (() => void) | undefined => {
       const q = query(
-        collection(db, "Messages"),
+        collection(db, process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"),
         orderBy("updated_at", "desc")
       );
 

@@ -23,7 +23,7 @@ import {
 } from "../ui/carousel";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/utils/firebase";
-import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
+import { sendAdminMedia } from "@/lib/utils/adminActions/chats";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { v4 } from "uuid";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
@@ -166,13 +166,22 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
         const url = await getDownloadURL(uploadTask.ref);
 
         if (owns === "admin") {
-          await sendAdminMessage(
+          await sendAdminMedia(
             chatId as string,
-            `[Image] ${caption ? truncateString(caption, 50) : "No caption"}`
+            {
+              text: caption || "No caption",
+              caption,
+              url,
+              metadata: {
+                media_name: file.file.name,
+                media_type: "image",
+                media_size: file.file.size.toString(),
+              },
+            },
+            caption
           );
         } else {
           await sendUserMessage(
-         
             chatId as string,
             undefined,
             {
@@ -229,7 +238,7 @@ const CropperJs = ({ openS, setOpenS, scrollToBottom, owns }: Props) => {
     }
   };
 
-  return (  
+  return (
     <Dialog
       open={openS}
       onOpenChange={(e) => {

@@ -13,7 +13,10 @@ import { dataURLtoFile } from "@/lib/utils/fileConverter";
 import { TERMINAL_FgGreen } from "../../../../../../../terminal";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/utils/firebase";
-import { sendAdminMessage } from "@/lib/utils/adminActions/chats";
+import {
+  sendAdminMedia,
+  sendAdminMessage,
+} from "@/lib/utils/adminActions/chats";
 import { sendUserMessage } from "@/lib/utils/actions/userChat";
 import { getCustomTimestamp } from "@/lib/utils/custom-timestamp";
 
@@ -86,7 +89,20 @@ export const MessageForm = ({
       const mediaurl = await getDownloadURL(uploadTask.ref);
 
       if (owns === "admin") {
-        await sendAdminMessage(chatId as string, caption);
+        await sendAdminMedia(
+          chatId as string,
+          {
+            text: caption || "No caption",
+            caption,
+            url: mediaurl,
+            metadata: {
+              media_name: file.name,
+              media_type: "image",
+              media_size: file.size.toString(),
+            },
+          },
+          caption
+        );
       } else {
         await sendUserMessage(
           chatId as string,
@@ -138,6 +154,8 @@ export const MessageForm = ({
       },
       content: {
         text: caption,
+        caption: caption,
+        url: imageUrl,
         media: {
           text: "",
           caption: caption,

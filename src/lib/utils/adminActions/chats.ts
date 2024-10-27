@@ -2,7 +2,7 @@
 
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Conversation } from "../../../../chat";
+import { Conversation, MediaContent } from "../../../../chat";
 import { cookies } from "next/headers";
 import { sendNotificationToUser } from "../sendNotification";
 
@@ -16,7 +16,7 @@ const getCustomTimestamp = () => {
 const createMessage = (
   admin: any,
   type: string,
-  content: { text?: string; media?: string }
+  content: { text?: string; media?: string; caption?: string }
 ) => {
   return {
     id: `${admin.uid}_${new Date().getTime()}`,
@@ -42,7 +42,12 @@ export const sendAdminMessage = async (chatId: string, message: string) => {
     return { message: "Admin authentication required", success: false };
   }
 
-  const chatDocRef = doc(db, "Messages", chatId);
+  const chatDocRef = doc(
+    db,
+    process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+    chatId
+  );
+
   const chatData = (await getDoc(chatDocRef)).data() as Conversation;
 
   if (chatData.chatStatus === "closed") {
@@ -85,6 +90,82 @@ export const sendAdminMessage = async (chatId: string, message: string) => {
     return { success: true, message: "Admin message sent", updatedMessage };
   } catch (error) {
     console.error("Error sending admin message:", error);
+    return { success: false, message: "Internal error" };
+  }
+};
+
+export const sendAdminMedia = async (
+  chatId: string,
+  mediaContent: MediaContent,
+  caption?: string
+) => {
+  console.log("SEND ADMIN MEDIA: ", mediaContent);
+  // Get admin from cookies
+  const uc = cookies().get("user")?.value;
+  const admin = JSON.parse(uc ?? "{}");
+
+  if (!admin) {
+    return { message: "Admin authentication required", success: false };
+  }
+
+  // Get chat document reference
+  const chatDocRef = doc(
+    db,
+    process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+    chatId
+  );
+
+  // Get chat data
+  const chatData = (await getDoc(chatDocRef)).data() as Conversation;
+
+  if (chatData.chatStatus === "closed") {
+    return { message: "Can't send message. Chat closed!", success: false };
+  }
+
+  try {
+    // Create message with media content
+    const msg = createMessage(admin, "media", {
+      ...mediaContent,
+      caption: caption || "",
+    });
+
+    console.log("MSG: ", msg);
+
+    // Update the chat document
+    await updateDoc(chatDocRef, {
+      lastMessage: {
+        id: msg.id,
+        sender: {
+          uid: admin.uid,
+          username: admin.displayName,
+          role: "admin",
+        },
+        seen: false,
+        read_receipt: msg.read_receipt,
+        content: {
+          text: caption || "",
+          media: true,
+        },
+      },
+      messages: arrayUnion(msg),
+      updated_at: getCustomTimestamp(),
+      timeStamp: getCustomTimestamp(),
+    });
+
+    // Send notification to user
+    await sendNotificationToUser(chatData.user.uid, {
+      title: "Sent an image",
+      body: caption || "Admin sent an image",
+      url: `/chat/${chatId}`,
+    });
+
+    return {
+      success: true,
+      message: "Admin media message sent",
+      messageData: msg,
+    };
+  } catch (error) {
+    console.error("Error sending admin media message:", error);
     return { success: false, message: "Internal error" };
   }
 };

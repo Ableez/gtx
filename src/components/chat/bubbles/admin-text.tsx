@@ -14,8 +14,6 @@ const uc = Cookies.get("user");
 const AdminTextMessage = ({ idx, message }: Props) => {
   if (message.content.text === "") return null;
 
-  console.log("MESSAGE", message);
-
   return (
     <div
       key={idx}

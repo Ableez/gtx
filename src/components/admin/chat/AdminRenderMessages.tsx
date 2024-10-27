@@ -68,7 +68,7 @@ const AdminRenderMessages = memo(function AdminRenderMessages({
       );
     }
 
-    if (message.type === "media" && message.content.media.url) {
+    if (message.type === "media" && message.content.url) {
       return (
         <ImageBubble
           message={message}

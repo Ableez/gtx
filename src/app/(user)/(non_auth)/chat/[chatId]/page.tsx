@@ -50,7 +50,11 @@ const UserChatScreen = ({ params }: Props): JSX.Element => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      doc(db, "Messages", params.chatId),
+      doc(
+        db,
+        process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+        params.chatId
+      ),
       (doc) => {
         if (!doc.exists()) {
           postToast("Poor internet connection");

@@ -36,7 +36,7 @@ const updateChatDoc = async (chatDocRef: DocumentReference, updates: any) => {
   await updateDoc(chatDocRef, updates);
 };
 
-const createMessage = (user: User, type: string, content: any) => {
+export const createMessage = (user: User, type: string, content: any) => {
   const msg = {
     id: v4(),
     timeStamp: getCustomTimestamp(),
@@ -71,7 +71,11 @@ export const sendUserMessage = async (
 
   console.log("ID", id);
 
-  const chatDocRef = doc(db, "Messages", id);
+  const chatDocRef = doc(
+    db,
+    process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+    id
+  );
   const chatData = (await getDoc(chatDocRef)).data() as Conversation;
 
   if (chatData.chatStatus === "closed") {
@@ -134,7 +138,11 @@ export const sendEcodeToAdmin = async (
       };
     }
 
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
 
     const docSnapshot = await getDoc(chatDocRef);
     const data = docSnapshot.data() as Conversation;
@@ -216,6 +224,8 @@ export const sendEcodeToAdmin = async (
             content: data.messages[index]?.content as {
               text: string;
               media: MediaContent;
+              caption: string;
+              url: string;
             },
             recipient: data.messages[index]?.recipient as string,
             sender: data.messages[index]?.sender as Sender,
@@ -280,7 +290,11 @@ export const sendAccountToAdmin = async (
     const accountNumber = e.get("accountNumber");
     const accountName = e.get("accountName");
     const bankName = e.get("bankName");
-    const chatDocRef = doc(db, "Messages", id as string);
+    const chatDocRef = doc(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
+      id as string
+    );
 
     if (!user) {
       return {
@@ -378,6 +392,8 @@ export const sendAccountToAdmin = async (
             content: data.messages[index]?.content as {
               text: string;
               media: MediaContent;
+              caption: string;
+              url: string;
             },
             recipient: data.messages[index]?.recipient as string,
             sender: data.messages[index]?.sender as Sender,

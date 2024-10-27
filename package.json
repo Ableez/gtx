@@ -97,6 +97,7 @@
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "sonner": "^1.4.0",
+    "supabase": "^1.207.9",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^6.10.0",

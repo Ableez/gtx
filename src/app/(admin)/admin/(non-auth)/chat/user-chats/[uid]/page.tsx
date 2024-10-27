@@ -21,7 +21,11 @@ const UserChatPage = ({ params }: Props) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const messagesRef = collection(db, "Messages");
+    const messagesRef = collection(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+    );
+
     const q = query(
       messagesRef,
       where("user.uid", "==", params.uid),
@@ -37,6 +41,8 @@ const UserChatPage = ({ params }: Props) => {
           id: doc.id,
           data: doc.data() as Conversation,
         }));
+
+        console.log("FETCHED CHATS:", fetchedChats);
 
         const sortedChats = fetchedChats.map((chat) => ({
           ...chat,
@@ -73,6 +79,8 @@ const UserChatPage = ({ params }: Props) => {
   if (loading) {
     return <Loading />;
   }
+
+  console.log("CHATS:", chats);
 
   return (
     <div>

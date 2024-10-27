@@ -33,7 +33,10 @@ const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const messagesRef = collection(db, "Messages");
+    const messagesRef = collection(
+      db,
+      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+    );
     const q = isAdmin
       ? query(messagesRef, orderBy("updated_at", "desc"))
       : query(
@@ -99,13 +102,17 @@ const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
 
   if (error || chats.length === 0) {
     return (
-      <div className="error">
-        <p>{error ? "Error fetching chats" : "No chats found"}</p>
-        <p>{error || "Start a new conversation to see chats here"}</p>
-        <Button onClick={handleRetry}>
-          <ReloadIcon className="mr-2" />
-          Retry
-        </Button>
+      <div className="error w-full h-screen flex flex-col gap-8 place-items-center pt-16">
+        <p className="font-bold text-2xl uppercase">
+          {error ? "Error fetching chats" : "No chats found"}
+        </p>
+        <p>{error || "Get a customer to start a conversation with you."}</p>
+        {error && (
+          <Button onClick={handleRetry}>
+            <ReloadIcon className="mr-2" />
+            Retry
+          </Button>
+        )}
       </div>
     );
   }

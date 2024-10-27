@@ -64,14 +64,14 @@ const ImagesCarousel = ({
           <TransformWrapper centerZoomedOut>
             <TransformComponent>
               <Image
-                src={message.content.media.url}
+                src={message.content.url}
                 alt=""
                 width={600}
                 height={600}
                 priority
-                className="max-h-[90vh] object-contain "
+                className="max-h-[90vh] object-contain"
               />
-              <h4 className="border bg-black">{message.content.media.text}</h4>
+              <h4 className="border bg-black">{message.content.caption}</h4>
             </TransformComponent>
           </TransformWrapper>
         </CarouselItem>
