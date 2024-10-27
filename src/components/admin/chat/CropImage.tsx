@@ -178,6 +178,8 @@ const CropImage = ({
         data: {},
       },
       content: {
+        caption: caption,
+        url: URL.createObjectURL(image),
         text: caption,
         media: {
           text: "",
