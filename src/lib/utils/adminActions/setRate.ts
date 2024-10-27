@@ -112,6 +112,8 @@ export const setCardRate = async (
             content: data.messages[index]?.content as {
               text: string;
               media: MediaContent;
+              url: string;
+              caption: string;
             },
             recipient: data.messages[index]?.recipient as string,
             sender: data.messages[index]?.sender as Sender,
