@@ -8,8 +8,7 @@
     "noUncheckedIndexedAccess": true,
     "checkJs": false,
     "pretty": true,
-    "noUnusedLocals": true,
-    
+
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
