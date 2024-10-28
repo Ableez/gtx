@@ -8,7 +8,8 @@
     "noUncheckedIndexedAccess": true,
     "checkJs": false,
     "pretty": true,
-
+    "noUnusedLocals": true,
+    
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -38,8 +39,10 @@
     "**/*.tsx",
     "firebase.js",
     ".next/types/**/*.ts",
-    "src/components/landing/scroll-hero.tsx"
-, "src/app/(admin)/admin/(non-auth)/advanced-settings/delete-user/_components", "src/lib/utils/adminActions/create-admin.ts"  ],
+    "src/components/landing/scroll-hero.tsx",
+    "src/app/(admin)/admin/(non-auth)/advanced-settings/delete-user/_components",
+    "src/lib/utils/adminActions/create-admin.ts"
+  ],
   "exclude": ["node_modules"],
   "files": ["node_modules/gsap/types/index.d.ts"]
 }

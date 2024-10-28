@@ -6,7 +6,6 @@ import { db } from "../utils/firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { adminConversationsStore } from "../utils/store/adminAllConversations";
 import { saveConversationsToDB } from "../utils/indexedDb/adminConversations";
-import Cookies from "js-cookie";
 
 const useAdminConversations = () => {
   const [conversationState, setConversationState] =
@@ -21,7 +20,10 @@ const useAdminConversations = () => {
   useEffect(() => {
     const fetchChats = (): (() => void) | undefined => {
       const q = query(
-        collection(db, process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"),
+        collection(
+          db,
+          process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+        ),
         orderBy("updated_at", "desc")
       );
 
@@ -34,7 +36,8 @@ const useAdminConversations = () => {
         console.log("CHAT UPDATED", chatData);
 
         const unreadChats = chatData.filter(
-          (chat) => !chat?.data?.lastMessage?.read_receipt?.status
+          (chat) =>
+            chat?.data?.lastMessage?.read_receipt?.delivery_status !== "seen"
         );
 
         if (chatData && chatData.length > 0) {

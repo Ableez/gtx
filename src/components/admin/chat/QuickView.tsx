@@ -1,12 +1,8 @@
-import React, { useEffect } from "react";
-import { Conversation, ConversationCollections } from "../../../../chat";
+import React from "react";
+import { ConversationCollections } from "../../../../chat";
 import Link from "next/link";
 import useAdminConversations from "@/lib/hooks/useAdminConversations";
 import ChatCard from "./ChatCard";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/utils/firebase";
-import { postToast } from "@/components/postToast";
-import { addConversation } from "../../../lib/utils/idb";
 
 const QuickView = () => {
   const { allConversations } = useAdminConversations();
