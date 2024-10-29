@@ -61,7 +61,7 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
                 <p className="text-xs">Gallery</p>
               </DrawerClose>
 
-              {!message?.transaction.crypto ?? (
+              {!message?.transaction.crypto && (
                 <DrawerClose
                   className="transition-all duration-500 hover:dark:bg-opacity-5 hover:border-indigo-300 hover:dark:border-neutral-700 border border-transparent py-6 grid place-items-center align-middle gap-2 bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:bg-opacity-10 rounded-3xl relative"
                   onClick={() => setOpenRate(true)}
@@ -91,7 +91,7 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
         </DrawerContent>
       </Drawer>
 
-      {!message?.transaction.crypto ?? (
+      {!message?.transaction.crypto && (
         <SetRateComp
           edit={message?.transaction.cardDetails.rate ? true : false}
           chatId={chatId}

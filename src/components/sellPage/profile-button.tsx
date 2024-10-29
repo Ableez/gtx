@@ -71,7 +71,7 @@ const ProfileButton = ({ user }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 ml-2 z-[9999] grid">
         <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-          {user?.displayName ? user.displayName : "Username" || "NOT SIGNED IN"}
+          {user?.displayName ? user.displayName : "Username"}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div id="installContainer">

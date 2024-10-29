@@ -220,14 +220,16 @@ const FinishTransaction = ({
                   Amount
                 </div>
                 <div className="mt-1 text-xs leading-6 text-neutral-700 dark:text-neutral-400 sm:col-span-2 sm:mt-0">
-                  {(
+                  {card ? (
                     <p>
                       <span className="font-semibold text-lg">
                         ₦{card?.transaction.cardDetails.rate}
                       </span>{" "}
                       for {card?.transaction.cardDetails.price}
                     </p>
-                  ) || "Please wait..."}
+                  ) : (
+                    "Please wait..."
+                  )}
                 </div>
               </div>
               <Card className="border-none shadow-none dark:bg-black">
