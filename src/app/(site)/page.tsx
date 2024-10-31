@@ -7,6 +7,8 @@ import CardDeck from "@/components/landing/card-deck";
 import AboutUs from "@/components/landing/ready-to-trade";
 import Footer from "@/components/landing/Footer";
 import FAQs from "@/components/landing/FAQs";
+import { useCallback } from "react";
+import { toAdd } from "../../../public/data/cards.new";
 
 export default function Home() {
   const images = [

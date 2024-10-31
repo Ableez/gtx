@@ -7,6 +7,8 @@ import Loading from "./loading";
 import { Toaster } from "@/components/ui/sonner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NotificationWrapper from "@/lib/context/PushNotificationWrapper";
+import { ClerkProvider } from "@clerk/nextjs";
+import { TRPCReactProvider } from "@/trpc/react";
 
 const openSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -37,25 +39,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <Head />
-      <body className={`bg-[#f5f5f5] dark:bg-black ${openSans.className}`}>
-        <ThemeProvider
-          disableTransitionOnChange
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-        >
-          <Suspense fallback={<Loading />}>
-            <NotificationWrapper>{children}</NotificationWrapper>
-
-            {/* <PromptInstall /> */}
-          </Suspense>
-        </ThemeProvider>
-        <Toaster />
-        <SpeedInsights />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <Head />
+        <body className={`bg-[#f5f5f5] dark:bg-black ${openSans.className}`}>
+          <TRPCReactProvider>
+            <ThemeProvider
+              disableTransitionOnChange
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+            >
+              <Suspense fallback={<Loading />}>
+                <NotificationWrapper>{children}</NotificationWrapper>
+              </Suspense>
+            </ThemeProvider>
+            <Toaster />
+            <SpeedInsights />
+          </TRPCReactProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
 

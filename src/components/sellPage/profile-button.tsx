@@ -11,7 +11,6 @@ import {
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
-import { UserIcon } from "@heroicons/react/24/solid";
 import {
   ArrowDownTrayIcon,
   ReceiptPercentIcon,
@@ -23,40 +22,43 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import type { User } from "../../../types";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+  useAuth,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
-type Props = {
-  user?: User;
-};
+const ProfileButton = () => {
+  const { userId } = useAuth();
+  const { isLoaded, user } = useUser();
+  const router = useRouter();
 
-const ProfileButton = ({ user }: Props) => {
+  const isSignedIn = userId !== null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div>
-          {user ? (
+          {isSignedIn && user ? (
             <Button
               className="bg-neutral-200 rounded-full"
               variant={"ghost"}
               size={"icon"}
             >
-              {user.photoURL || user.imageUrl ? (
-                <Image
-                  src={user.photoURL || (user.imageUrl as string)}
-                  width={58}
-                  height={58}
-                  alt={user?.displayName}
-                  priority
-                  className="w-full rounded-full aspect-square object-cover text-[10px]"
-                />
-              ) : (
-                <UserIcon
-                  width={20}
-                  className="text-neutral-400 dark:text-white"
-                />
-              )}
+              <Image
+                src={user.imageUrl}
+                width={58}
+                height={58}
+                alt={user!.username || "image"}
+                priority
+                className="w-full rounded-full aspect-square object-cover text-[10px]"
+              />
             </Button>
           ) : (
             <Button
@@ -69,10 +71,12 @@ const ProfileButton = ({ user }: Props) => {
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 ml-2 z-[9999] grid">
-        <DropdownMenuLabel className="text-neutral-500 uppercase tracking-wider text-[0.7em]">
-          {user?.displayName ? user.displayName : "Username"}
-        </DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-56 ml-2 z-50 grid">
+        {user && (
+          <DropdownMenuLabel className="capitalize border-b pb-2 tracking-wider flex place-items-center gap-2 w-full py-1.5 px-2">
+            {user.username}
+          </DropdownMenuLabel>
+        )}
         <DropdownMenuSeparator />
         <div id="installContainer">
           <DropdownMenuItem
@@ -117,16 +121,16 @@ const ProfileButton = ({ user }: Props) => {
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {user ? (
-          <SignoutButton />
-        ) : (
-          <Link href={"/login"}>
-            <DropdownMenuItem className="w-full px-3 py-2 rounded-md flex align-middle place-items-center justify-between text-rose-600 border border-rose-600/20 bg-rose-50 hover:bg-rose-100 font-semibold dark:bg-red-500 dark:hover:bg-red-400 dark:bg-opacity-10 duration-150">
-              Login
-              <ArrowRightOnRectangleIcon width={20} />
-            </DropdownMenuItem>
-          </Link>
-        )}
+        <SignedIn>
+          <SignOutButton>
+            <Button variant={"outline"}>Sign Out</Button>
+          </SignOutButton>
+        </SignedIn>
+        <SignedOut>
+          <SignInButton>
+            <Button>Sign In</Button>
+          </SignInButton>
+        </SignedOut>
       </DropdownMenuContent>
     </DropdownMenu>
   );

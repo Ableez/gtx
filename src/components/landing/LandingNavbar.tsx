@@ -99,7 +99,7 @@ export default function LandingNavbar() {
                 <SheetClose className="w-full">
                   <Link
                     className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
-                    href={"/login"}
+                    href={"/sign-in"}
                   >
                     <li>Login</li>
                     <ChevronRightIcon

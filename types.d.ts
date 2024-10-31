@@ -45,6 +45,8 @@ export type GiftCard = {
   subcategory: Subcategory[];
 };
 
+
+
 export type Card = {
   id: string;
   name: string;

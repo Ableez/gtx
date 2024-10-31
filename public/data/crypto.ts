@@ -1,3 +1,14 @@
+type Crypto = {
+  id: string;
+  quote: string;
+  marketData: {
+    rate: number;
+    currency: string;
+  },
+  image: string;
+}
+
+
 export const crypto = [
   {
     id: "crypto/gtx_btc",

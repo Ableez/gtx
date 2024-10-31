@@ -32,13 +32,6 @@ const ToggleTheme = (props: Props) => {
         <span className="capitalize">{theme.theme}</span>
         <span>mode</span>
       </Label>
-      {/* <Switch
-        id="theme"
-        checked={theme.theme === "dark"}
-        onCheckedChange={() =>
-          theme.setTheme(theme.theme === "dark" ? "light" : "dark")
-        }
-      /> */}
     </div>
   );
 };

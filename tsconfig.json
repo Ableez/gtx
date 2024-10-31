@@ -2,12 +2,15 @@
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "ES2023"],
     "target": "esNext",
+    "types": ["firebase"],
 
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": false,
     "pretty": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
 
     "allowJs": true,
     "skipLibCheck": true,

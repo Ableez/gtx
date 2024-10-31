@@ -1,12 +1,11 @@
-import { GiftCard } from "../../../types";
-import { giftcards } from "../../../public/data/giftcards";
+import type { AssetSelect } from "@/server/db/schema";
 
 export class Pagination {
-  data: GiftCard[];
+  data: AssetSelect[];
   pageSize: number;
   currentPage: number;
 
-  constructor(data: GiftCard[], pageSize: number, currentPage: number) {
+  constructor(data: AssetSelect[], pageSize: number, currentPage: number) {
     this.currentPage = currentPage;
     this.data = data;
     this.pageSize = pageSize;
@@ -15,7 +14,7 @@ export class Pagination {
   getTotalPages() {
     return Math.ceil(this.data.length / this.pageSize);
   }
-  getCurrentPageData(): GiftCard[] {
+  getCurrentPageData(): AssetSelect[] {
     const begin = (this.currentPage - 1) * this.pageSize;
     const end = begin + this.pageSize;
     return this.data.slice(begin, end);
