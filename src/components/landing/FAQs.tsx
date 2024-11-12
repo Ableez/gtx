@@ -57,9 +57,7 @@ const faqs: FAQ[] = [
   },
 ];
 
-type Props = {};
-
-const FAQs: React.FC<Props> = (props: Props) => {
+const FAQs = () => {
   return (
     <div className="container py-24 bg-pink-50/70">
       <div className="dark:text-white font-semibold text-xl mb-8">

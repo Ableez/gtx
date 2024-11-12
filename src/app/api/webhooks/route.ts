@@ -8,7 +8,9 @@ import type { UserDataType } from "@/server/api/routers/user";
 type UpdateUserEvtData = {
   id: string;
   first_name: string;
-  email: string;
+  email_addresses: {
+    email_address: string;
+  }[];
   last_name: string;
   gender: "MALE" | "FEMALE" | "OTHER" | "PREFER_NOT_TO_SAY";
   profile_image_url: string;
@@ -18,6 +20,9 @@ type UpdateUserEvtData = {
   created_at: string;
   updated_at: string;
   external_id: string;
+  public_metadata: Record<string, string>;
+  banned: boolean;
+  last_sign_in_at: string;
 };
 
 export async function POST(req: Request) {
@@ -119,20 +124,26 @@ async function handleUserCreated(userData: UserDataType) {
     created_at: userData.created_at,
     updated_at: userData.updated_at,
     external_id: userData.external_id,
+    metadata: userData.metadata,
   });
 }
 
 async function handleUserUpdated(userData: UpdateUserEvtData) {
-  console.log(userData);
+  console.log("update user", userData);
   await api.user.update({
     id: userData.id,
     firstName: userData.first_name,
-    email: userData.email,
+    email: userData.email_addresses[0]?.email_address,
     lastName: userData.last_name,
     gender: userData.gender || "PREFER_NOT_TO_SAY",
     profileImageUrl: userData.profile_image_url,
     imageUrl: userData.image_url,
     username: userData.username,
+    metadata: userData.public_metadata,
+    birthday: userData.birthday,
+    externalId: userData.external_id,
+    lastSignInAt: userData.last_sign_in_at,
+    disabled: userData.banned,
   });
 }
 

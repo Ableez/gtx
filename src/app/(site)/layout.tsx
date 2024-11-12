@@ -1,6 +1,4 @@
-import Footer from "@/components/landing/Footer";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import Navbar from "@/components/landing/Navbar";
 import React from "react";
 import { toAdd } from "../../../public/data/cards.new";
 import { api } from "@/trpc/server";

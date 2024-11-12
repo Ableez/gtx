@@ -5,9 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-type Props = {};
-
-const Footer = (props: Props) => {
+const Footer = () => {
   return (
     <div
       className="my-8 md:p-16 p-4 bg-pink-50 grid gap-6"
@@ -59,7 +57,7 @@ const Footer = (props: Props) => {
                 href={"tel:07010662232"}
               >
                 07010662232
-            </Link>{" "}
+              </Link>{" "}
               or email us at{" "}
               <Link
                 className="font-semibold border-b-2 border-neutral-300 hover:border-primary py-0.5 duration-300"

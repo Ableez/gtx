@@ -57,14 +57,14 @@ worker.on("failed", (job, err) => {
   console.error(`Job ${job?.id} failed with error ${err}`);
 });
 
-// Add graceful shutdown function
+// Add graceful shutdown function lol
 async function gracefulShutdown() {
-  console.log('Shutting down gracefully...');
+  console.log("Shutting down gracefully...");
   await worker.close();
   await queue.close();
   process.exit(0);
 }
 
 // Handle termination signals
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);

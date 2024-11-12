@@ -14,8 +14,6 @@ import { Card, CardContent } from "../ui/card";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/utils/firebase";
 import { Feedback } from "../../../types";
-type Props = {};
-
 interface StarsProps {
   userStars: number;
   totalStars?: number;
@@ -92,7 +90,7 @@ const feedbacksdat = [
   },
 ];
 
-const UserFeedBacks = (props: Props) => {
+const UserFeedBacks = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>(feedbacksdat);
   const [cApi, setCApi] = useState<CarouselApi>();
   const [currSlide, setCurrSlide] = useState(0);

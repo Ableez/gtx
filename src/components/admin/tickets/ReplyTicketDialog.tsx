@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { TicketsData } from "../../../../types";
 import { replyTicket } from "@/lib/utils/adminActions/replyTicket";
-import { useFormStatus } from "react-dom";
 import { postToast } from "@/components/postToast";
 import Loading from "@/app/loading";
 

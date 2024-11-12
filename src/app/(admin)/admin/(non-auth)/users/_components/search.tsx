@@ -6,11 +6,9 @@ import { SearchIcon, XIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-type Props = {
-  username: string;
-};
 
-const Search = ({ username }: Props) => {
+
+const Search = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();

@@ -12,7 +12,6 @@ import { SunIcon } from "@heroicons/react/24/outline";
 import type { Conversation } from "../../../chat";
 import Image from "next/image";
 import { sendConfirmTransactionToAdmin } from "@/lib/utils/actions/sendConfirmTransactionToAdmin";
-import { formatCurrency } from "@/lib/utils/thousandSeperator";
 
 type Props = {
   chatId: string;
@@ -28,7 +27,6 @@ const ConfirmTransaction = ({
   setOpenConfirmTransaction,
   chatId,
   data,
-  edit,
   idx,
 }: Props) => {
   const [loading, setLoading] = useState(false);
@@ -166,7 +164,7 @@ const ConfirmTransaction = ({
                       <span>
                         {data?.transaction?.accountDetails?.accountName}
                       </span>
-                      •
+                      <span>•</span>
                       <span>{data?.transaction?.accountDetails?.bankName}</span>
                     </div>
                   </dd>

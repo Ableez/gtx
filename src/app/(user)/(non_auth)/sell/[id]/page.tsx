@@ -15,6 +15,14 @@ const GiftcardInfoPage = async ({ params }: Props) => {
     id: params.id,
   })) as AssetSelect;
 
+  if (!card) {
+    return (
+      <div className="container font-bold text-2xl text-center relative max-w-screen-md pb-6">
+        Card not found
+      </div>
+    );
+  }
+
   return (
     <div className="container font-bold text-lg relative max-w-screen-md pb-6">
       <CardSelector card={card} />

@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Trash2, UserPlus2, BarChartBig, Lock } from "lucide-react";
-import Link from "next/link";
+import { UserPlus2, BarChartBig, Lock } from "lucide-react";
 import React from "react";
-
-type Props = {};
 
 const settings = [
   {
@@ -22,11 +19,11 @@ const settings = [
   },
 ];
 
-const AdvancedSettings = (props: Props) => {
+const AdvancedSettings = () => {
   return (
     <div className="max-w-screen-md mx-auto p-2 md:p-16">
       <h4 className="mb-4 font-bold text-xl">Advanced settings</h4>
-      {settings.map(({ title, icon, link, latest }, idx) => (
+      {settings.map(({ title, icon, latest }, idx) => (
         <Button
           key={idx}
           className="flex place-items-center justify-between align-middle gap-4 rounded-none w-full dark:hover:bg-neutral-900 border-b dark:border-b-neutral-700 outline-2 dark:hover:outline-neutral-600 border-b-neutral-200 h-12 hover:ring-0 transition-all duration-300 ease-in-out"

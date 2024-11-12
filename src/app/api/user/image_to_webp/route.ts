@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
-import { promises as fsPromises } from "fs";
 
 export const POST = async (req: Request) => {
   try {

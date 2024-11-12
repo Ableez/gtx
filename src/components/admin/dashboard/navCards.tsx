@@ -17,11 +17,11 @@ const navBoxes = [
     link: "/admin/chat",
   },
   {
-    name: "Transactions",
+    name: "Trades",
     icon: <CurrencyDollarIcon width={24} color="white" />,
-    desc: "Your transactions",
+    desc: "Your trades",
     color: "green",
-    link: "/admin/transactions",
+    link: "/admin/trades",
   },
   {
     name: "Users",
@@ -66,7 +66,7 @@ const NavCards = () => {
                     ? "bg-blue-400 shadow-blue-200 dark:bg-blue-500 dark:shadow-blue-600/40"
                     : box.name === "Reports"
                     ? "bg-orange-400 shadow-orange-200 dark:bg-orange-500 dark:shadow-orange-600/40"
-                    : box.name === "Transactions"
+                    : box.name === "Trades"
                     ? "bg-green-400 shadow-green-200 dark:bg-green-500 dark:shadow-green-600/40"
                     : box.name === "Users"
                     ? "bg-purple-400 shadow-purple-200 dark:bg-purple-500 dark:shadow-purple-600/40"
@@ -79,7 +79,7 @@ const NavCards = () => {
                     <h4>{unReadConversationsNumber}</h4>
                   </div>
                 )}
-                {box.name === "Transactions" && activeTransaction > 0 && (
+                {box.name === "Trades" && activeTransaction > 0 && (
                   <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
                     <h4>{activeTransaction}</h4>
                   </div>

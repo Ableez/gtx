@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -14,8 +13,6 @@ import { db } from "@/lib/utils/firebase";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { addDoc, collection } from "firebase/firestore";
 import React, { BaseSyntheticEvent, useState } from "react";
-
-type Props = {};
 
 export const photoUrls = [
   "https://plus.unsplash.com/premium_photo-1696587025055-edee8ff58916?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDE2fENEd3V3WEpBYkV3fHxlbnwwfHx8fHw%3D",
@@ -27,7 +24,7 @@ export const photoUrls = [
   "https://images.unsplash.com/photo-1621246475596-153d9c743fa4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDUyfENEd3V3WEpBYkV3fHxlbnwwfHx8fHw%3D",
 ];
 
-const PostReview = (props: Props) => {
+const PostReview = () => {
   const [reviewState, setReviewState] = useState({
     loading: false,
     sent: false,

@@ -1,8 +1,6 @@
 import Image from "next/image";
 import React from "react";
 
-type Props = {};
-
 type FeatureCardType = {
   title: string;
   bgColor: string;
@@ -139,7 +137,7 @@ const featureCards: FeatureCardType[] = [
   },
 ];
 
-const Features = (props: Props) => {
+const Features = () => {
   return (
     <div className="mb-14 mt-32 md:mt-32 grid gap-8 px-4 place-items-center justify-center align-middle relative">
       <div className="w-[270px] md:w-[350px] md:text-5xl text-center text-zinc-800 text-3xl font-extrabold">
@@ -150,9 +148,7 @@ const Features = (props: Props) => {
           return (
             <div
               key={index}
-              className={`feature__card ${card.bgColor} ${
-                card.offSetTop && card.offSetTop
-              } slide-in-from-top-px sticky top-28 p-6 rounded-2xl text-left overflow-y-clip h-[30rem] md:h-[28rem] grid gap-6 place-items-start align-start justify-start hover-95 duration-500 active:scale-95 focus:scale-95`}
+              className={`feature__card ${card.bgColor} ${card.offSetTop} slide-in-from-top-px sticky top-28 p-6 rounded-2xl text-left overflow-y-clip h-[30rem] md:h-[28rem] grid gap-6 place-items-start align-start justify-start hover-95 duration-500 active:scale-95 focus:scale-95`}
             >
               <div className="grid gap-2">
                 <h4 className={`text-xl font-bold ${card.textColor}`}>

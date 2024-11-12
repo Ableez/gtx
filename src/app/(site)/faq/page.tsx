@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-function FAQs({}: Props) {
+function FAQs() {
   return (
     <section className="bg-white dark:bg-slate-900  text-sm">
       <div className="mx-auto max-w-screen-lg sm:py-16">

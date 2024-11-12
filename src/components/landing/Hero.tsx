@@ -3,9 +3,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import FlashIcon from "../icons/flash-icon";
 
-type Props = {};
-
-const Hero = (props: Props) => {
+const Hero = () => {
   return (
     <section
       className="scroller h-[100dvh] min-h-screen bg-purple-100 overflow-y-clip"

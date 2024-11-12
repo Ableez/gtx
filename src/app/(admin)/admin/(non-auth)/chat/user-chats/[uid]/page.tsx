@@ -1,96 +1,80 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-import { Conversation } from "../../../../../../../../chat";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
-import { db } from "@/lib/utils/firebase";
+import React from "react";
+import Image from "next/image";
+import ChatCard from "../../_components/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useAdminChats } from "@/lib/hooks/new/admin/use-all-chats";
 import Loading from "@/app/loading";
-import ChatCard from "@/components/admin/chat/ChatCard";
 
 type Props = { params: { uid: string } };
 
 const UserChatPage = ({ params }: Props) => {
-  const [chats, setChats] = useState<{ id: string; data: Conversation }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const messagesRef = collection(
-      db,
-      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
+  const {
+    chats: data,
+    isFetchChatLoading,
+    isFetchChatsError,
+  } = useAdminChats();
+  const chats = data
+    ?.filter((chat) => chat.userId === params.uid)
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
 
-    const q = query(
-      messagesRef,
-      where("user.uid", "==", params.uid),
-      orderBy("updated_at", "desc")
-    );
-
-    // const q = query(messagesRef, orderBy("updated_at", "desc"));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (querySnapshot) => {
-        const fetchedChats = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data() as Conversation,
-        }));
-
-        console.log("FETCHED CHATS:", fetchedChats);
-
-        const sortedChats = fetchedChats.map((chat) => ({
-          ...chat,
-          data: {
-            ...chat.data,
-            messages: chat.data.messages.sort((a, b) => {
-              const timeStampA = new Date(
-                a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
-              );
-              const timeStampB = new Date(
-                b.timeStamp.seconds * 1000 + b.timeStamp.nanoseconds / 1e6
-              );
-              return timeStampA.getTime() - timeStampB.getTime();
-            }),
-          },
-        }));
-
-        setChats(sortedChats);
-        setLoading(false);
-        setError(null);
-      },
-      (error) => {
-        console.error("Error fetching chats:", error);
-        setError(
-          "Failed to fetch chats. Please check your internet connection and try again."
-        );
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [params.uid]);
-
-  if (loading) {
+  if (isFetchChatLoading) {
     return <Loading />;
   }
 
-  console.log("CHATS:", chats);
+  if (isFetchChatsError) {
+    return <div>Error fetching chats</div>;
+  }
+
+  if (!chats)
+    return (
+      <div className="p-8 m-4 text-center mb-4 text-base font-medium flex flex-col place-items-center justify-center gap-2 border-b dark:border-neutral-800 border-neutral-200">
+        <h4 className="capitalize">No chats found</h4>
+      </div>
+    );
 
   return (
     <div>
-      <div className="p-8 m-4 text-center mb-4 text-base font-medium">
-        <span className="capitalize">{chats[0]?.data.user.username}</span>
-        &apos;s messages
+      <div className="p-8 m-4 text-center mb-4 text-base font-medium flex flex-col place-items-center justify-center gap-2 border-b dark:border-neutral-800 border-neutral-200">
+        <Image
+          src={
+            chats[1]?.user?.imageUrl ??
+            "https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yWVVEVWpEWGZUbWRub0VZY2xtOWR3SktXdGsiLCJyaWQiOiJ1c2VyXzJvRlB6VkNQVTNjbWNWSU15SkJIbnJPU0tRZCIsImluaXRpYWxzIjoiS0gifQ"
+          }
+          alt={"User"}
+          width={80}
+          height={80}
+          className="rounded-lg"
+        />
+        <h4 className="capitalize">
+          {chats[1]?.user?.username}
+          &apos;s messages
+        </h4>
+        <Link href={`/admin/user/${params.uid}`}>
+          <Button variant="link" className="w-full mt-1.5">
+            View profile
+          </Button>
+        </Link>
       </div>
-      {chats.map((chat, idx) => (
-        <div key={chat.id}>
-          <ChatCard idx={parseInt(chat.id)} isAdmin={true} chat={chat} />
+
+      <div className="border-b dark:border-neutral-800 border-neutral-200 mb-2 pb-2">
+        <div className="text-[10px] opacity-50 mb-1 uppercase font-medium px-4">
+          Latest
+        </div>
+        {chats.slice(0, 1).map((chat, idx) => (
+          <div key={chat.id} className="w-full">
+            <ChatCard key={idx} chat={chat} />
+          </div>
+        ))}
+      </div>
+
+      {chats.slice(1).map((chat, idx) => (
+        <div key={chat.id} className="w-full">
+          <ChatCard key={idx} chat={chat} />
         </div>
       ))}
     </div>

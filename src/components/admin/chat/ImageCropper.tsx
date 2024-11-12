@@ -120,7 +120,7 @@ const ImageCropper = ({
           {edit ? (
             <ReactCrop
               crop={crop}
-              onChange={(pixelCrop, percentCrop) => {
+              onChange={(pixelCrop) => {
                 setCrop(pixelCrop);
               }}
               aspect={ASPECT_RATIO}

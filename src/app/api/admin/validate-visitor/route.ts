@@ -2,7 +2,7 @@ import { adminDB } from "@/lib/utils/firebase-admin";
 import { getTypedUserCookie } from "@/lib/utils/getUserCookie";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST() {
   const u = await getTypedUserCookie();
 
   if (!u) {

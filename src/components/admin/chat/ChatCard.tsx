@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { ImageIcon } from "@radix-ui/react-icons";
 import { doc, updateDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
@@ -21,8 +20,7 @@ type Props = {
   isAdmin: boolean;
 };
 
-const ChatCard: React.FC<Props> = ({ chat, chat2, idx, isAdmin }) => {
-  const pathName = usePathname().split("/");
+const ChatCard: React.FC<Props> = ({ chat, chat2,  isAdmin }) => {
 
   const userCookie = Cookies.get("user");
   const user = React.useMemo(

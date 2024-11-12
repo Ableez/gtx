@@ -2,9 +2,7 @@ import Image from "next/image";
 import React from "react";
 import GetStarted from "./ui/get-started";
 
-type Props = {};
-
-const ServiceDetail = (props: Props) => {
+const ServiceDetail = () => {
   return (
     <div>
       <section className="text-left py-24 px-4 md:px-16">

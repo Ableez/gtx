@@ -9,7 +9,10 @@ const vapidDetails = {
   publicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
 };
 
-export async function processUserNotification(userId: string, payload: unknown) {
+export async function processUserNotification(
+  userId: string,
+  payload: unknown
+) {
   const userDoc = await adminDB
     .collection("PushSubscriptions")
     .doc(userId)

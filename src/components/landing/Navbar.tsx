@@ -4,8 +4,6 @@ import React, { useContext, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type Props = {};
-
 const tabs = [
   {
     title: "Gift cards",

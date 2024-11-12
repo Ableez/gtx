@@ -9,9 +9,7 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 
-type Props = {};
-
-const TransactionConfirmation = (props: Props) => {
+const TransactionConfirmation = () => {
   return (
     <div>
       <AlertDialog>

@@ -6,9 +6,7 @@ import { useTheme } from "next-themes";
 import { DesktopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Switch } from "./ui/switch";
 
-type Props = {};
-
-const ToggleTheme = (props: Props) => {
+const ToggleTheme = () => {
   const theme = useTheme();
 
   return (

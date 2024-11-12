@@ -2,9 +2,7 @@
 import React from "react";
 import GetStarted from "./ui/get-started";
 
-type Props = {};
-
-const Service = (props: Props) => {
+const Service = () => {
   return (
     <div className="container pb-32 pt-12">
       <div className="max-w-screen-lg mx-auto grid gap-6 justify-center align-middle place-items-center">

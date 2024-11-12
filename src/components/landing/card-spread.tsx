@@ -1,9 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-type Props = {};
-
-const CardSpread = (props: Props) => {
+const CardSpread = () => {
   return (
     <div className="h-[100vh] grid place-items-center relative">
       <div className="p-8 bg-red-200 rounded-2xl absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[90%] text-left">

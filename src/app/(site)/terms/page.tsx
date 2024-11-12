@@ -1,12 +1,6 @@
 import React from "react";
-import Navbar from "@/components/landing/Navbar";
-import Footer from "@/components/landing/Footer";
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
 
-type Props = {};
-
-const page = (props: Props) => {
+const TermsPage = () => {
   // const date = new Date().toLocaleDateString(undefined, {
   //   year: "numeric",
   //   day: "numeric",
@@ -166,4 +160,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default TermsPage;

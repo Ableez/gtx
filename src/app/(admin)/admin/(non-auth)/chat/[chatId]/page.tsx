@@ -1,118 +1,144 @@
 "use client";
-
-import { db } from "@/lib/utils/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useRef, useState } from "react";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import type { Conversation, Message } from "../../../../../../../chat";
-import { postToast } from "@/components/postToast";
-import PageDataFetchError from "@/components/PageDataFetchError";
-import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
-import dynamic from "next/dynamic";
+import React, { useEffect } from "react";
+import { useSession, useUser } from "@clerk/nextjs";
+import { supabase } from "@/lib/utils/supabase/client";
+import { MessageWithRelations } from "@/server/db/schema";
+import { useChatStore } from "@/lib/stores/chat-store";
+import { useChatSession } from "@/lib/hooks/new/useChats";
+import ChatScreen from "./_components/admin-chat-screen";
+import { useAtom } from "jotai";
+import { adminPresenceAtom } from "@/lib/stores/admin-presence-store";
 
 type Props = {
-  params: {
-    chatId: string;
-  };
+  params: { chatId: string };
 };
 
-const cachedUser = Cookies.get("user");
+export type PresenceUser = {
+  userId: string;
+  username?: string;
+  avatarUrl?: string;
+  onlineAt: string;
+  isAdmin: boolean;
+};
 
-const AdminChatWrapper = dynamic(
-  () => import("@/components/admin/chat/AdminChatWrapper"),
-  {
-    ssr: false,
-  }
-);
+const AdminChatPage = ({ params }: Props) => {
+  const { session } = useSession();
+  const { addMessage, getMessage, updateMessage } = useChatStore();
+  const { chat, trade } = useChatSession(params.chatId);
+  const { user } = useUser();
+  const [_activeUsers, setActiveUsers] = useAtom(adminPresenceAtom);
 
-const AdminChatScreen = ({ params }: Props) => {
-  const user = cachedUser ? JSON.parse(cachedUser) : null;
-  const router = useRouter();
-  const [error, setError] = useState("");
-  const [newMessage, setNewMessage] = useState<Message>();
-  const scrollToBottom = useRef<HTMLDivElement>(null);
-
-  const messages = adminCurrConversationStore((state) => state.conversation);
-
-  const updateConversation = adminCurrConversationStore(
-    (state) => state.updateConversation
-  );
-
-  // Check if user is logged in, if not show unauthorized toast and redirect to login page
-  if (!user) {
-    postToast("Unauthorized", {
-      description: "You are not logged in",
-      action: {
-        label: "Login",
-        onClick: () => router.push("/login"),
-      },
-    });
-  }
+  const { chatId } = params;
 
   useEffect(() => {
-    // Fetch chat data from Firestore and update state
-    const unsubscribe = onSnapshot(
-      doc(
-        db,
-        process.env.NODE_ENV === "development" ? "test-Messages" : "Messages",
-        params.chatId
-      ),
-      (doc) => {
-        if (!doc.exists()) {
-          postToast("Poor internet connection");
-          return;
-        } else if (doc.data()) {
-          const fetchedMessages = doc.data() as Conversation;
+    const fn = async () => {
+      if (!session?.user?.id || !params.chatId) return;
 
-          // Sort messages by timeStamp
-          const sortedArray = fetchedMessages.messages.sort((a, b) => {
-            if (!a.timeStamp.seconds || !b.timeStamp.seconds) {
-              console.log("SECS", a.timeStamp);
-              return 0;
+      console.log("⚙️Setting up Supbase", `chat_messages:${chatId}`);
+
+      const messageChannel = supabase
+        .channel(`chat_messages:${chatId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "greatex_message",
+            filter: `chat_id=eq.${chatId}`,
+          },
+          async (payload) => {
+            console.log("🔔RLS UPDATE::", payload);
+            if (payload.eventType === "INSERT") {
+              const newMessage: MessageWithRelations = {
+                chatId: payload.new.chat_id,
+                contentType: payload.new.content_type,
+                createdAt: payload.new.created_at,
+                deleted: payload.new.deleted,
+                deletedAt: payload.new.deleted_at,
+                deletedBy: payload.new.deleted_by,
+                id: payload.new.id,
+                isAdmin: payload.new.is_admin,
+                metadata: payload.new.metadata,
+                parentId: payload.new.parent_id,
+                senderId: payload.new.sender_id,
+                status: payload.new.status,
+                text: payload.new.text,
+                threadRoot: payload.new.thread_root,
+                type: payload.new.type,
+                updatedAt: payload.new.updated_at,
+                mediaUrl: payload.new.media_url,
+              };
+
+              const existingMessage = getMessage(chatId, payload.new.id);
+
+              console.log("🔍Existing message", existingMessage);
+
+              if (existingMessage) {
+                updateMessage(chatId, payload.new.id, newMessage);
+              } else {
+                addMessage(chatId, newMessage);
+              }
             }
+          }
+        )
+        .subscribe((status) => {
+          console.log(`🔛Supabase status chat ${chatId}:`, status);
+        });
 
-            const timeStampA = new Date(
-              a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
-            );
+      return () => {
+        console.log("🗑️Cleaning up Supabase", `chat_messages:${chatId}`);
+        supabase.removeChannel(messageChannel);
+      };
+    };
 
-            const timeStampB = new Date(
-              b.timeStamp.seconds * 1000 + b.timeStamp.nanoseconds / 1e6
-            );
+    fn().catch(console.error);
+  }, [
+    session?.user?.id,
+    chatId,
+    session,
+    params.chatId,
+    addMessage,
+    getMessage,
+    updateMessage,
+  ]);
 
-            return timeStampA.getTime() - timeStampB.getTime();
-          });
+  useEffect(() => {
+    const fn = async () => {
+      if (!session?.user?.id || !chatId) return;
 
-          const newChat = {
-            ...fetchedMessages,
-            messages: sortedArray,
-          };
+      const presenceChannel = supabase
+        .channel(`chat_messages:${chatId}:presence`)
+        .on("presence", { event: "sync" }, () => {
+          const state = presenceChannel.presenceState();
+          const users = Object.values(
+            state
+          ).flat() as unknown as PresenceUser[];
+          setActiveUsers(users);
+        })
+        .subscribe();
 
-          // zustand
-          updateConversation(newChat as Conversation);
-
-          // Scroll to the bottom of the chat
-        }
-      }
-    );
-
-    if (scrollToBottom.current) {
-      scrollToBottom.current.lastElementChild?.scrollIntoView({
-        behavior: "smooth",
+      // Track presence
+      await presenceChannel.track({
+        userId: user?.id,
+        username: user?.username || user?.emailAddresses[0]?.emailAddress,
+        avatarUrl: user?.imageUrl,
+        onlineAt: new Date().toISOString(),
+        isAdmin: true,
       });
-    }
 
-    return () => unsubscribe();
-  }, [params.chatId, router, newMessage, updateConversation, scrollToBottom]);
+      return () => {
+        supabase.removeChannel(presenceChannel);
+      };
+    };
 
-  // If messages are not loaded yet, show loading message and options to reload or start over
-  if (!messages && error) {
-    return <PageDataFetchError error={error} />;
-  }
+    fn().catch(console.error);
+  }, [chatId, session?.user?.id, user, setActiveUsers]);
 
   return (
-    <AdminChatWrapper scrollToBottom={scrollToBottom} chatId={params.chatId} />
+    <div>
+      <ChatScreen trade={trade} chat={chat} params={params} />
+    </div>
   );
 };
 
-export default AdminChatScreen;
+export default AdminChatPage;

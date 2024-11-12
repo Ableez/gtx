@@ -23,25 +23,22 @@ import {
 } from "@heroicons/react/20/solid";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/utils/firebase";
 import { usePathname, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
-import { useAdminUser } from "@/lib/utils/adminActions/useAdminUser";
 import { useNotificationSubscription } from "@/lib/utils/store/notifications";
+import { SignOutButton, useUser } from "@clerk/nextjs";
 
 type Props = {
   handleClose?: () => void;
 };
 
-export default function AdminNavbar({ handleClose }: Props) {
+export default function AdminNavbar({ handleClose }: Readonly<Props>) {
   const { setTheme } = useTheme();
   const router = useRouter();
   const pathName = usePathname();
   const [pageTitle, setPageTitle] = useState("Dashboard");
-  const user = useAdminUser();
+  const { user } = useUser();
 
   useEffect(() => {
     if (pathName == "/admin") {
@@ -98,9 +95,7 @@ export default function AdminNavbar({ handleClose }: Props) {
             <DropdownMenuLabel>
               <h4 className="text-sm">
                 Howdy,{" "}
-                <span className="capitalize">
-                  {user?.displayName || "Admin"}
-                </span>
+                <span className="capitalize">{user?.username ?? "Admin"}</span>
               </h4>
               <h6 className="text-neutral-500 text-[0.7em]">
                 You are an admin
@@ -108,16 +103,14 @@ export default function AdminNavbar({ handleClose }: Props) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {/\/admin\/chat\/(.*)$/.test(pathName) ? (
-              <>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={handleCloseAction} asChild>
-                    <Button variant={"ghost"} className="w-full py-3 text-left">
-                      Close chat
-                    </Button>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                </DropdownMenuGroup>
-              </>
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={handleCloseAction} asChild>
+                  <Button variant={"ghost"} className="w-full py-3 text-left">
+                    Close chat
+                  </Button>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </DropdownMenuGroup>
             ) : (
               <>
                 <DropdownMenuGroup>
@@ -186,18 +179,11 @@ export default function AdminNavbar({ handleClose }: Props) {
                     </DropdownMenuPortal>
                   </DropdownMenuSub>
                 </DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => {
-                    signOut(auth);
-                    Cookies.remove("user");
-                    Cookies.remove("state");
-                    router.refresh();
-                    router.replace("/admin/login");
-                  }}
-                  className="w-full py-3 flex align-middle place-items-center justify-between text-primary border border-primary bg-pink-100 font-semibold dark:bg-pink-500 dark:bg-opacity-10"
-                >
-                  Logout
-                </DropdownMenuItem>
+                <SignOutButton>
+                  <DropdownMenuItem className="w-full py-3 flex align-middle place-items-center justify-between text-primary border border-primary bg-pink-100 font-semibold dark:bg-pink-500 dark:bg-opacity-10">
+                    Logout
+                  </DropdownMenuItem>
+                </SignOutButton>
               </>
             )}
           </DropdownMenuContent>

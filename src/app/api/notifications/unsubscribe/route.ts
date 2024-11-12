@@ -1,5 +1,4 @@
 import { adminDB } from "@/lib/utils/firebase-admin";
-import { deleteField } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {

@@ -3,28 +3,22 @@
 import { useEffect } from "react";
 // import runOneSignal from "./Onesignal";
 
-type Props = {};
-
-const RequestNotification = (props: Props) => {
+const RequestNotification = () => {
   // Implement your logic here
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then((reg) => {
-        reg.pushManager.getSubscription().then((sub) => {
-          if (sub == undefined) {
-            if (reg) {
-              reg.pushManager
-                .subscribe({
-                  userVisibleOnly: true,
-                })
-                .then((sub) => {
-                  console.log("sub", sub.toJSON());
-                });
-            }
+      navigator.serviceWorker.ready.then(async (reg) => {
+        const sub = await reg.pushManager.getSubscription();
+        if (sub == undefined) {
+          if (reg) {
+            const sub = await reg.pushManager.subscribe({
+              userVisibleOnly: true,
+            });
+            console.log(sub.toJSON());
           } else {
-            console.log("sub", sub.toJSON());
+            console.log("sub", sub);
           }
-        });
+        }
       });
     }
   }, []);

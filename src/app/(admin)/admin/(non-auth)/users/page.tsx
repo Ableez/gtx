@@ -23,7 +23,7 @@ const CreateUser = async ({ searchParams }: Props) => {
         <h4 className="font-bold text-xl">Users</h4>
       </div>
 
-      <Search username={searchParams.username} />
+      <Search />
 
       <Suspense
         key={query + currentPage}

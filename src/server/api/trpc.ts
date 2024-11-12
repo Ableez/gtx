@@ -14,6 +14,7 @@ import { ZodError } from "zod";
 import { db } from "@/server/db";
 import { auth } from "@clerk/nextjs/server";
 import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
+import { checkRole } from "@/lib/utils/role";
 
 /**
  * 1. CONTEXT
@@ -28,7 +29,7 @@ import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (
-  opts: { headers: Headers } | CreateWSSContextFnOptions,
+  opts: { headers: Headers } | CreateWSSContextFnOptions
 ) => {
   const { userId } = auth();
 
@@ -125,6 +126,25 @@ export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(({ ctx, next }) => {
     if (!ctx.userId || !ctx.userId) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { user: ctx.userId },
+      },
+    });
+  });
+
+export const adminProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    if (!ctx.userId || !ctx.userId) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    if (!checkRole("admin")) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 

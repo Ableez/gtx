@@ -3,8 +3,6 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import {
   TERMINAL_BgRed,
-  TERMINAL_Blink,
-  TERMINAL_FgGreen,
 } from "../../../../terminal";
 
 const f = createUploadthing();

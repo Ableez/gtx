@@ -1,7 +1,6 @@
 "use client";
 import React, { memo, useEffect, useState } from "react";
 import { CardDetails, Conversation } from "../../../../chat";
-import Text from "../../chat/bubbles/text";
 import SetRateComp from "./setRateDialog";
 import StartAdminTransaction from "./StartTransaction";
 import FinishTransaction from "./FinishTransaction";

@@ -29,7 +29,7 @@ const SetRateComp = ({
   edit,
   idx,
 }: Props) => {
-  const [rate, setRate] = useState("");
+  const [_rate, setRate] = useState("");
   const [resp, setResp] = useState("");
   const [loading, setLoading] = useState(false);
 

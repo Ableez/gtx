@@ -7,13 +7,10 @@ import { useGSAP } from "@gsap/react";
 import { TextGenerateEffect } from "./text-generation-effect";
 import { FlipWords } from "./flip-words";
 import Link from "next/link";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Props = {};
-
-const ScrollHero = (props: Props) => {
+const ScrollHero = () => {
   useGSAP(() => {
     gsap.to(".heder__", {
       scrollTrigger: {

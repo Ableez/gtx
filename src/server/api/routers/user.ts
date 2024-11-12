@@ -29,6 +29,7 @@ const userDataSchema = z.object({
   external_id: z.string().optional().nullable(),
   created_at: z.number(),
   updated_at: z.number(),
+  metadata: z.record(z.string()).optional(),
 });
 export type UserDataType = z.infer<typeof userDataSchema>;
 
@@ -46,6 +47,9 @@ const updateUserSchema = z.object({
   passwordEnabled: z.boolean().optional(),
   twoFactorEnabled: z.boolean().optional(),
   externalId: z.string().optional().nullable(),
+  metadata: z.record(z.unknown()).optional(),
+  lastSignInAt: z.string().optional().nullable(),
+  disabled: z.boolean().optional(),
 });
 export type UpdateUserDataType = z.infer<typeof updateUserSchema>;
 
@@ -97,6 +101,9 @@ export const userRouter = createTRPCRouter({
             ...input,
             birthday: input.birthday ? new Date(input.birthday) : undefined,
             updatedAt: new Date(),
+            lastSignInAt: input.lastSignInAt
+              ? new Date(input.lastSignInAt)
+              : undefined,
           })
           .where(eq(user.id, input.id));
       } catch (error) {

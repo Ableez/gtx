@@ -4,9 +4,7 @@ import React from "react";
 import QuickView from "@/components/admin/chat/QuickView";
 import PostReview from "@/components/admin/chat/PostReview";
 
-type Props = {};
-
-const AdminPage = function (props: Props) {
+const AdminPage = function () {
   return (
     <div className="pb-4 max-w-screen-md mx-auto md:px-0 px-4">
       <NavCards />

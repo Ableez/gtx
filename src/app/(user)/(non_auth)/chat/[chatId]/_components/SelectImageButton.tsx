@@ -12,12 +12,11 @@ type SelectImageButtonProps = {
  *
  * @param {Object} props - The component props.
  * @param {Function} props.setImgSrc - The function to set the image source.
- * @param {Function} props.setRealUrl - The function to set the real URL of the image.
- * @returns {JSX.Element} The SelectImageButton component.
+
+* @returns {JSX.Element} The SelectImageButton component.
  */
 export const SelectImageButton = ({
   setImgSrc,
-  setRealUrl,
   setImage,
 }: SelectImageButtonProps) => {
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {

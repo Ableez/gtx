@@ -8,7 +8,7 @@ import {
 import { CopyIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import React, { useState } from "react";
-import { CardDetails, Conversation, Message } from "../../../../chat";
+import {  Message } from "../../../../chat";
 import { formatCurrency } from "@/lib/utils/thousandSeperator";
 import { adminCurrConversationStore } from "@/lib/utils/store/adminConversation";
 import Cookies from "js-cookie";

@@ -33,3 +33,22 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+
+// {
+//     publicRoutes: [
+//       "/sign-in(.*)",
+//       "/sign-up(.*)",
+//       "/api/webhooks",
+//       "/sell(.*)",
+//       "/faq",
+//       "/terms",
+//       "/support",
+//     ],
+//     ignoredRoutes: [
+//       "/((?!_next|.*\\.(?:jpg|png|gif|ico)).*)",
+//       "/(api|trpc)(.*)",
+//     ],
+//     signInUrl: "/sell",
+//     signUpUrl: "/sell",
+//     afterSignOutUrl: "/sell",
+//   }

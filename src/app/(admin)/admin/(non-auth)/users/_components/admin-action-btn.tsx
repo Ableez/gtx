@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -15,17 +14,8 @@ import {
 import {
   banUserAction,
   deleteUserAction,
-  makeAdminAction,
 } from "@/lib/utils/adminActions/getAllUsers";
-import {
-  DollarSign,
-  EllipsisVertical,
-  InfoIcon,
-  Loader2,
-  MessageCircle,
-  Trash2Icon,
-} from "lucide-react";
-import MakeAdmin from "./make-admin";
+import { EllipsisVertical, InfoIcon, Loader2, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -93,6 +83,7 @@ const AdminUserActionButton = ({ user }: { user: User }) => {
         dismiss();
       })
       .catch((err) => {
+        console.error(err);
         postToast("Error deleting user");
         setLoading(false);
         setDeleteLoading(false);

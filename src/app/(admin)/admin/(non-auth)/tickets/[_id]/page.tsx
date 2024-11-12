@@ -2,7 +2,6 @@ import { fetchTicketData } from "@/lib/utils/actions/fetchTicketData";
 import React from "react";
 import { TicketsData } from "../../../../../../../types";
 import {
-  ArrowLeftIcon,
   ArrowTopRightOnSquareIcon,
   BugAntIcon,
   CreditCardIcon,
@@ -11,7 +10,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { formatDateOnly } from "@/lib/utils/formatTime";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserByUid } from "@/lib/utils/fetchUserUid";
 import { NewType } from "../../users/page-cp";

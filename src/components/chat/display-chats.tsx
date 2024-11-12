@@ -1,262 +1,156 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  where,
-} from "firebase/firestore";
-import { db } from "@/lib/utils/firebase";
-import ChatCard from "@/components/admin/chat/ChatCard";
-import { Button } from "@/components/ui/button";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
-import Loading from "@/app/loading";
-import { Conversation } from "../../../chat";
+
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ImageIcon } from "lucide-react";
 import { formatTime } from "@/lib/utils/formatTime";
+import { useUser } from "@clerk/nextjs";
+import { ChatWithRelations } from "@/server/db/schema";
+import { useAllChats } from "@/lib/hooks/new/use-all-chats";
+import Loading from "@/app/loading";
 
-type Props = {
-  isAdmin: boolean;
-};
-
-const uc = Cookies.get("user");
-const cachedUser = JSON.parse(uc ?? "{}");
-
-const DisplayChats: React.FC<Props> = ({ isAdmin }) => {
-  const [chats, setChats] = useState<{ id: string; data: Conversation }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const messagesRef = collection(
-      db,
-      process.env.NODE_ENV === "development" ? "test-Messages" : "Messages"
-    );
-    const q = isAdmin
-      ? query(messagesRef, orderBy("updated_at", "desc"))
-      : query(
-          messagesRef,
-          where("user.uid", "==", cachedUser.uid),
-          orderBy("updated_at", "desc")
-        );
-
-    // const q = query(messagesRef, orderBy("updated_at", "desc"));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (querySnapshot) => {
-        const fetchedChats = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data() as Conversation,
-        }));
-
-        const sortedChats = fetchedChats.map((chat) => ({
-          ...chat,
-          data: {
-            ...chat.data,
-            messages: chat.data.messages.sort((a, b) => {
-              const timeStampA = new Date(
-                a.timeStamp.seconds * 1000 + a.timeStamp.nanoseconds / 1e6
-              );
-              const timeStampB = new Date(
-                b.timeStamp.seconds * 1000 + b.timeStamp.nanoseconds / 1e6
-              );
-              return timeStampA.getTime() - timeStampB.getTime();
-            }),
-          },
-        }));
-
-        setChats(sortedChats);
-        setLoading(false);
-        setError(null);
-      },
-      (error) => {
-        console.error("Error fetching chats:", error);
-        setError(
-          "Failed to fetch chats. Please check your internet connection and try again."
-        );
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [isAdmin]);
-
-  if (!cachedUser) {
-    return redirect("/sell");
-  }
-
-  const handleRetry = () => {
-    setLoading(true);
-    setError(null);
-  };
-
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (error || chats.length === 0) {
-    return (
-      <div className="error w-full h-screen flex flex-col gap-8 place-items-center pt-16">
-        <p className="font-bold text-2xl uppercase">
-          {error ? "Error fetching chats" : "No chats found"}
-        </p>
-        <p>{error || "Get a customer to start a conversation with you."}</p>
-        {error && (
-          <Button onClick={handleRetry}>
-            <ReloadIcon className="mr-2" />
-            Retry
-          </Button>
-        )}
-      </div>
-    );
-  }
-  const adminChats = chats.map((chat) => ({ count: 0, ...chat }));
+const DisplayChats = ({ searchQuery }: { searchQuery: string }) => {
+  const { user } = useUser();
+  // const { chats: data } = useChatStore();
+  const {
+    chats: data,
+    isFetchChatLoading,
+    isFetchChatsError,
+    markChatAsSeen,
+  } = useAllChats();
+  const chats = data?.filter(
+    (chat) =>
+      chat.asset?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      chat.lastMessageText?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      chat.trade?.amountInCurrency
+        ?.toString()
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+  );
 
   const groupChats = () => {
-    const map = new Map<string, (typeof adminChats)[0]>();
+    if (!chats) return [];
 
-    for (const chat of adminChats) {
-      const { data } = chat;
-      if (map.has(data.user.uid)) {
-        map.get(data.user.uid)!.count += 1;
+    const map = new Map<string, ChatWithRelations & { count: number }>();
+
+    for (const chat of chats) {
+      if (map.has(chat.assetId ?? "")) {
+        map.get(chat.assetId ?? "")!.count += 1;
       } else {
-        map.set(data.user.uid, chat);
+        map.set(chat.assetId ?? "", { ...chat, count: 1 });
       }
     }
 
-    return Array.from(map, ([id, { data, count }]) => ({
-      id,
-      count,
-      data,
-    })).sort((a, b) => {
-      const timeStampA = new Date(
-        a.data.updated_at.seconds * 1000 + a.data.updated_at.nanoseconds / 1e6
-      );
-      const timeStampB = new Date(
-        b.data.updated_at.seconds * 1000 + b.data.updated_at.nanoseconds / 1e6
-      );
-      return timeStampB.getTime() - timeStampA.getTime();
+    return Array.from(map.values()).sort((a, b) => {
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   };
 
+  if (isFetchChatLoading) return <Loading />;
+
+  if (isFetchChatsError)
+    return (
+      <div className="h-[60dvh] w-full grid place-items-center justify-center text-sm">
+        Error fetching chats
+      </div>
+    );
+
+  if (!chats) {
+    return (
+      <div className="h-[60dvh] w-full grid place-items-center justify-center text-sm">
+        No chats found
+      </div>
+    );
+  }
+
+  const groupedChats = groupChats();
+
+  console.log("GROUPED CHATS", groupedChats);
+
   return (
-    <div className="chat-list">
-      {isAdmin
-        ? groupChats().map((chat, idx) => {
-            const isUnread = !chat.data.lastMessage.read_receipt.status;
-            const isFromCurrentUser =
-              chat.data.lastMessage.sender === cachedUser.uid;
+    <div>
+      {chats.map((chat) => {
+        const isUnread =
+          chat.lastMessageId && chat.messages?.[0]?.status !== "SEEN";
+        const isFromAdmin = chat.messages?.[0]?.isAdmin;
 
-            const getMessageTextClass = () => {
-              if (isUnread && !isFromCurrentUser) {
-                return "font-semibold text-secondary";
-              }
-              return "";
-            };
+        const getMessageTextClass = () => {
+          if (isUnread && isFromAdmin) {
+            return "font-semibold text-secondary";
+          }
+          return "";
+        };
 
-            return (
-              <div
-                key={idx}
-                className="flex items-center justify-between h-fit w-full duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-black/20 pl-4 group"
-              >
-                {!chat.data.lastMessage.read_receipt.status && (
-                  <div className="p-1 rounded-full bg-primary" />
-                )}
-                <Link
-                  href={`/admin/chat/user-chats/${chat.data.user.uid}`}
-                  className="flex items-center justify-between dark:bg-opacity-10 dark:active:bg-black pr-4 pl-2 py-3 duration-300 dark:text-white w-full h-fit"
-                >
-                  {chat.count < 2 &&
-                    (chat.data.user.photoUrl ? (
-                      <Image
-                        src={chat.data.user.photoUrl}
-                        alt={chat.data.user.username}
-                        width={45}
-                        height={45}
-                        className="aspect-square rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="p-5 h-12 w-12 bg-gradient-to-tr rounded-full from-zinc-300 self-center to-stone-400 active:to-zinc-300 active:from-stone-500 shadow-primary" />
-                    ))}
-                  {chat.count >= 2 &&
-                    (chat.data.user.photoUrl ? (
-                      <div className="flex align-middle place-items-center justify-start pl-4">
-                        {Array.from({ length: 2 }).map((_, idx) => (
-                          <Image
-                            src={chat.data.user.photoUrl}
-                            alt={chat.data.user.username}
-                            width={45}
-                            height={45}
-                            key={idx}
-                            className="aspect-square rounded-full object-cover -ml-5 border-4 duration-300 group-hover:border-neutral-200 border-neutral-50"
-                          />
-                        ))}
-                        <div
-                          key={idx}
-                          className="w-6 h-6 text-[10px] flex place-items-center align-middle justify-center font-semibold rounded-full self-center shadow-primary -ml-5 bg-neutral-50"
-                        >
-                          {chat.count}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex align-middle place-items-center justify-start pl-4">
-                        {Array.from({ length: 2 }).map((_, idx) => (
-                          <div
-                            key={idx}
-                            className="p-3.5 h-3 w-3 bg-gradient-to-tr rounded-full from-zinc-300 self-center to-stone-400 active:to-zinc-300 active:from-stone-500 shadow-primary -ml-5 border-4 duration-300 group-hover:border-neutral-200 border-neutral-50"
-                          />
-                        ))}
-                        <div
-                          key={idx}
-                          className="w-6 h-6 text-[10px] flex place-items-center align-middle justify-center font-semibold rounded-full self-center shadow-primary -ml-5 bg-neutral-50"
-                        >
-                          {chat.count}
-                        </div>
-                      </div>
-                    ))}
-
-                  <div className="w-full pl-4">
-                    <h4
-                      className={`truncate max-w-[10rem] md:max-w-[13rem] ${getMessageTextClass()}`}
-                    >
-                      {chat.data.lastMessage.content.media ? (
-                        <div className="flex items-center gap-1">
-                          <ImageIcon size={16} />
-                          <p>Image</p>
-                        </div>
-                      ) : (
-                        chat.data.lastMessage.content.text
-                      )}
-                    </h4>
-                    <div className="flex items-center justify-between pt-1 w-full h-fit">
-                      <p
-                        className={`text-xs text-neutral-400 font-medium capitalize`}
-                      >
-                        {isFromCurrentUser ? "you" : chat.data.user.username}
-                      </p>
-                      <p className="text-[12px] text-neutral-500">
-                        {formatTime(
-                          new Date(
-                            (chat.data.updated_at.seconds ?? 0) * 1000 +
-                              (chat.data.updated_at.nanoseconds ?? 0) / 1e6
-                          ).toISOString()
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
+        return (
+          <div
+            key={chat.id}
+            onClick={() =>
+              markChatAsSeen({
+                chatId: chat.id,
+                messageIds: [chat.lastMessageId ?? ""],
+              })
+            }
+            className="flex items-center justify-between h-fit w-full duration-300 max-w-lg mx-auto hover:bg-neutral-200 dark:hover:bg-neutral-800/20 pl-4 group relative"
+          >
+            {isFromAdmin && isUnread && (
+              <div className="p-1 rounded-full bg-primary absolute left-2 top-1/2 -translate-y-1/2" />
+            )}
+            <Link
+              href={`/chat/${chat.id}`}
+              className="flex items-center justify-between dark:bg-opacity-10 dark:active:bg-black pr-4 pl-2 py-3 duration-300 dark:text-white w-full h-fit relative"
+            >
+              <div className={"relative"}>
+                <Image
+                  src={
+                    chat.asset?.coverImage ??
+                    "https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yWVVEVWpEWGZUbWRub0VZY2xtOWR3SktXdGsiLCJyaWQiOiJ1c2VyXzJvRlB6VkNQVTNjbWNWSU15SkJIbnJPU0tRZCIsImluaXRpYWxzIjoiS0gifQ"
+                  }
+                  alt={chat.asset?.name ?? "Profile image"}
+                  width={45}
+                  height={45}
+                  className="aspect-square rounded-full object-cover"
+                />
               </div>
-            );
-          })
-        : chats.map((chat, idx) => (
-            <ChatCard idx={idx} isAdmin={false} key={idx} chat={chat} />
-          ))}
+              <div className="w-full pl-4">
+                <h4
+                  className={`truncate text-sm max-w-[10rem] md:max-w-[13rem] ${getMessageTextClass()}`}
+                >
+                  {chat.messages?.[0]?.contentType === "MEDIA" ? (
+                    <div className="flex items-center gap-1">
+                      <ImageIcon size={16} />
+                      <p>{chat.lastMessageText ?? "Attachment"}</p>
+                    </div>
+                  ) : (
+                    chat.lastMessageText ?? chat.asset?.name
+                  )}
+                </h4>
+                <div className="flex items-center justify-between w-full h-fit">
+                  <p className="text-xs text-neutral-400 font-medium capitalize">
+                    {chat.messages?.[0]?.senderId === user?.id
+                      ? "you"
+                      : "Great Exchange"}
+                  </p>
+                  <p className="text-[12px] text-neutral-500">
+                    {formatTime(
+                      chat.lastMessageTime?.toString() ??
+                        chat.updatedAt.toString() ??
+                        chat.createdAt.toString()
+                    )}
+                  </p>
+                </div>
+              </div>
+              {!chat.lastMessageId && (
+                <div className="absolute right-1 top-1">
+                  <p className="px-2 py-1 bg-yellow-400  rounded-sm scale-[0.5] font-semibold uppercase text-yellow-800">
+                    Waiting
+                  </p>
+                </div>
+              )}
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 };

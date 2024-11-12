@@ -8,9 +8,7 @@ import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Props = {};
-
-const CardDeck = (props: Props) => {
+const CardDeck = () => {
   const cardDeck1 = ["nord-d.png", "target-d.png", "nike-d.png"];
   const cardDeck2 = ["sbux-d.png", "sephora-d.png", "ama-d.png"];
 
@@ -45,6 +43,12 @@ const CardDeck = (props: Props) => {
       <div className="flex align-middle justify-center place-items-center relative left__cards__cont">
         <div className="flex flex-col items-center absolute top-1/2 -translate-y-1/2 scale-[1.4] leff_card">
           {cardDeck1.map((img, idx) => {
+            const getRotation = () => {
+              if (idx === 2) return "rotate-[-30deg]";
+              if (idx === 0) return "rotate-[30deg]";
+              return "";
+            };
+
             return (
               <Image
                 src={`/parallax/${img}`}
@@ -52,13 +56,7 @@ const CardDeck = (props: Props) => {
                 alt="Card"
                 width={200}
                 height={200}
-                className={`shadow-sm w-[8rem] md:w-[10rem] ${
-                  idx == 2
-                    ? "rotate-[-30deg]"
-                    : idx == 0
-                    ? "rotate-[30deg]"
-                    : ""
-                }`}
+                className={`shadow-sm w-[8rem] md:w-[10rem] ${getRotation()}`}
               />
             );
           })}
@@ -84,6 +82,12 @@ const CardDeck = (props: Props) => {
 
         <div className="flex flex-col items-center absolute top-1/2 -translate-y-1/2 scale-[1.4] rii_card">
           {cardDeck2.map((img, idx) => {
+            const getRotation = () => {
+              if (idx === 2) return "rotate-[30deg]";
+              if (idx === 0) return "rotate-[-30deg]";
+              return "";
+            };
+
             return (
               <Image
                 src={`/parallax/${img}`}
@@ -91,13 +95,7 @@ const CardDeck = (props: Props) => {
                 alt="Card"
                 width={200}
                 height={200}
-                className={`shadow-sm w-[8rem] md:w-[10rem] ${
-                  idx == 2
-                    ? "rotate-[30deg]"
-                    : idx == 0
-                    ? "rotate-[-30deg]"
-                    : ""
-                }`}
+                className={`shadow-sm w-[8rem] md:w-[10rem] ${getRotation()}`}
               />
             );
           })}

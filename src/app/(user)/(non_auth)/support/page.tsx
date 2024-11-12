@@ -5,36 +5,29 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { getUserTickets } from "@/lib/utils/actions/getUserTickets";
 import { getUserCookie } from "@/lib/utils/getUserCookie";
 import {
-  BugAntIcon,
   ChatBubbleOvalLeftEllipsisIcon,
-  CreditCardIcon,
   PlusCircleIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import React from "react";
 
-type Props = {};
+// const iconMap = {
+//   "Bug Report": (
+//     <BugAntIcon className="text-fuchsia-700 dark:text-fuchsia-500" width={20} />
+//   ),
+//   "Transaction issues": <CreditCardIcon className="text-rose-500" width={20} />,
+//   "Improvement suggestion": (
+//     <SparklesIcon className="text-blue-500" width={20} />
+//   ),
+//   Question: <QuestionMarkCircleIcon className="text-yellow-500" width={20} />,
+// };
 
-const iconMap = {
-  "Bug Report": (
-    <BugAntIcon className="text-fuchsia-700 dark:text-fuchsia-500" width={20} />
-  ),
-  "Transaction issues": <CreditCardIcon className="text-rose-500" width={20} />,
-  "Improvement suggestion": (
-    <SparklesIcon className="text-blue-500" width={20} />
-  ),
-  Question: <QuestionMarkCircleIcon className="text-yellow-500" width={20} />,
-};
-
-const UserSupportPage = async (props: Props) => {
+const UserSupportPage = async () => {
   const tickets = await getUserTickets();
   const uc = await getUserCookie();
 

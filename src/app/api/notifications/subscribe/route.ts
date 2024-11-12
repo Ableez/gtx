@@ -1,4 +1,4 @@
-import admin, { adminDB } from "@/lib/utils/firebase-admin";
+import { adminDB } from "@/lib/utils/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 import * as webpush from "web-push";
 

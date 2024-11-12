@@ -49,3 +49,10 @@ gtx-service-account.json
 t.ts
 # Sentry Config File
 .sentryclirc
+
+
+firebase.js
+ins.sql
+terminal.ts
+
+CONSTANTS.js

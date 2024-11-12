@@ -1,7 +1,7 @@
 import getConfig from "next/config";
 import { NextResponse } from "next/server";
 
-export function GET(req: Request) {
+export function GET() {
   const { publicRuntimeConfig } = getConfig();
   return NextResponse.json(
     {

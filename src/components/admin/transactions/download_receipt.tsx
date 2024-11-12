@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 
-type Props = {};
-
-const DownloadReceipt = (props: Props) => {
+const DownloadReceipt = () => {
   return (
     <div className="w-full grid gap-2 align-middle place-items-center justify-center">
       <Button disabled={true} aria-disabled="true">

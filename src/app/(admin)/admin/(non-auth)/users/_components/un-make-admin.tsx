@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -42,7 +41,7 @@ const initialState = {
 };
 
 const wrappedRemoveAdminAction = async (
-  prevState: typeof initialState,
+  _prevState: typeof initialState,
   formData: FormData
 ) => {
   const userId = formData.get("userId") as string;

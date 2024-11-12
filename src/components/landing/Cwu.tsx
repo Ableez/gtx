@@ -1,11 +1,8 @@
 import Image from "next/image";
 import React from "react";
-import Link from "next/link";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import GetStarted from "./ui/get-started";
 
-type Props = {};
-const Cwu = (props: Props) => {
+const Cwu = () => {
   return (
     <div>
       <h4 className="md:text-4xl text-3xl font-extrabold py-8 mt-8 px-8 md:px-4 my-12">

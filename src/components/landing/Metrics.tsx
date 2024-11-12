@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const Metrics = (props: Props) => {
+const Metrics = () => {
   return (
     <div className="py-10 md:px-16 px-4 md:flex-row flex-col flex align-middle place-items-center justify-center md:gap-[7em] gap-8">
       <div>

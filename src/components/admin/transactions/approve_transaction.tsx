@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { DialogTrigger } from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -27,7 +26,7 @@ type Props = {
   };
 };
 
-const ApproveTransaction = ({ id, transaction, reval }: Props) => {
+const ApproveTransaction = ({ id, reval }: Props) => {
   const [resp, setResp] = useState("");
   const [loading, setLoading] = useState(false);
   const [referenceId, setReferenceId] = useState("");

@@ -3,7 +3,9 @@ import { userRouter } from "./routers/user";
 import { giftcardRouter } from "./routers/giftcard";
 import { chatRouter } from "./routers/chat";
 import { tradeRouter } from "./routers/trade";
-
+import { mediaRouter } from "./routers/media";
+import { adminChatRouter } from "./routers/admin-chat";
+import { notificationRouter } from "./routers/notification";
 /**
  * This is the primary router for your server.
  *
@@ -13,7 +15,10 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   giftcard: giftcardRouter,
   chat: chatRouter,
+  adminChat: adminChatRouter,
   trade: tradeRouter,
+  media: mediaRouter,
+  notification: notificationRouter,
 });
 
 // export type definition of API

@@ -22,6 +22,7 @@ import { AssetSelect } from "@/server/db/schema";
 import { postToast } from "../postToast";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useChatStore } from "@/lib/stores/chat-store";
 
 interface CardSelectorProps {
   card: AssetSelect;
@@ -51,6 +52,7 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
   const [currency, setCurrency] = useState<Currency>("USD");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { addChat } = useChatStore();
 
   const { isSignedIn, isLoaded } = useUser();
 
@@ -85,8 +87,10 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
       const res = await startChat({
         type: "TRADE",
         assetId: card.id,
-        amountInCURRENCY: price.toString(),
+        amountInCurrency: price.toString(),
         currency,
+        assetName: card.name,
+        assetType: card.type,
       });
 
       if (res.error) {
@@ -99,11 +103,9 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
         return;
       }
 
-      console.log("RESP: ", res);
-
-      if (!res.data) {
+      if (!res.data?.data) {
         toast({
-          description: "Failed to start chat",
+          description: res.data?.error ?? "Failed to start chat",
           variant: "destructive",
         });
         setIsLoading(false);
@@ -111,7 +113,10 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
         return;
       }
 
-      router.push(`/chat/${res.data.id!}`);
+      if (res?.data?.data?.id) {
+        addChat(res.data.data);
+        router.push(`/chat/${res.data.data.id}`);
+      }
 
       toast({ description: "Chat started. Redirecting..." });
     } catch (error) {
@@ -122,7 +127,7 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
       });
       setIsLoading(false);
     }
-  }, [card.id, currency, isSubmitDisabled, price, router]);
+  }, [addChat, card.id, card.name, card.type, currency, isSubmitDisabled, price, router]);
 
   const handleWhatsappClick = useCallback(() => {
     if (!price) {
@@ -149,7 +154,7 @@ export const CardSelector: React.FC<CardSelectorProps> = ({ card }) => {
       <div className="grid place-items-center justify-center gap-6">
         <h5 className="text-center text-base w-[60vw]">{card.name} Giftcard</h5>
         <Image
-          src={card.coverImage || "/greatex.svg"}
+          src={card.coverImage || "/logoplace.svg"}
           width={65}
           height={65}
           alt="Vendor Logo"

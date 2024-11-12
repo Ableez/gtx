@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
+const FeedbacksPage = () => {
+  return <div>FeedbacksPage</div>;
+};
 
-const FeedbacksPage = (props: Props) => {
-  return (
-    <div>FeedbacksPage</div>
-  )
-}
-
-export default FeedbacksPage
+export default FeedbacksPage;

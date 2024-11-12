@@ -4,9 +4,7 @@ import { Button } from "../ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
-type Props = {};
-
-const AboutUs = (props: Props) => {
+const AboutUs = () => {
   return (
     <div id="about-us" className="md:p-0 p-8">
       <div className="pt-32"></div>

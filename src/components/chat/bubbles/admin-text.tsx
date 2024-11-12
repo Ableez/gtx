@@ -2,14 +2,11 @@ import React from "react";
 import { Message } from "../../../../chat";
 import { formatTime } from "@/lib/utils/formatTime";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
 
 type Props = {
   message: Message;
   idx: number;
 };
-
-const uc = Cookies.get("user");
 
 const AdminTextMessage = ({ idx, message }: Props) => {
   if (message.content.text === "") return null;

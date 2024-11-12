@@ -12,8 +12,8 @@ const TicketPage: React.FC = () => {
     { data: string; name: string; type: string }[] | null
   >(null);
   const [description, setDescription] = useState("");
-  const [email, setEmail] = useState("");
-  const [fullname, setFullname] = useState("");
+  const [email] = useState("");
+  const [fullname] = useState("");
   const [sent, setSent] = useState(false);
 
   const handleSetImages = (

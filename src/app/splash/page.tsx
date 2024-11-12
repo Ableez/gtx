@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const SplashPage = (props: Props) => {
+const SplashPage = () => {
   return <div>SplashPage</div>;
 };
 

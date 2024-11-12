@@ -97,9 +97,30 @@ const Head = () => {
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="msapplication-tap-highlight" content="no" />
-      <link rel="manifest" href="/manifest.json" />
+      <link
+        rel="manifest"
+        href="https://firebasestorage.googleapis.com/v0/b/great-exchange.appspot.com/o/manifest.json?alt=media&token=b7321165-19b9-410b-9059-866a1838287e"
+      />
       <link rel="shortcut icon" href="/icons/maskable_icon_x192.png" />
       {/* <Script src="../../install-pwa.js" /> */}
+
+      {/* <script
+        // src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+        defer
+      ></script> */}
+      {/* <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(
+          async (OneSignal) => {
+            await OneSignal.init({
+              
+              notifyButton: {
+                enable: true,
+              },
+            })
+          }
+        );
+      </script> */}
     </head>
   );
 };

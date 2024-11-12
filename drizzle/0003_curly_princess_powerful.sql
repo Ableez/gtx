@@ -1,1 +1,0 @@
-ALTER TABLE "greatex_trade" ALTER COLUMN "user_id" SET DATA TYPE varchar;

@@ -1,8 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 
-type Props = {};
-
-const TransactionSkeleton = (props: Props) => {
+const TransactionSkeleton = () => {
   return (
     <div className="px-4">
       <div className="mb-4">

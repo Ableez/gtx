@@ -1,12 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import {
   BugAntIcon,
-  ChatBubbleLeftIcon,
   CreditCardIcon,
-  CurrencyDollarIcon,
-  DocumentIcon,
   EllipsisHorizontalCircleIcon,
   QuestionMarkCircleIcon,
   SparklesIcon,
@@ -20,14 +16,7 @@ type Props = {
   link: string;
 };
 
-const iconMap = {
-  ticket: <DocumentIcon width={20} />,
-  transactional: <CurrencyDollarIcon width={20} />,
-  feedback: <ChatBubbleLeftIcon width={20} />,
-  chat: <ChatBubbleLeftIcon width={20} />,
-};
-
-const TicketCard = ({ ticket, idx, link }: Props) => {
+const TicketCard = ({ ticket, link }: Props) => {
   return (
     <Link
       href={link}

@@ -10,7 +10,7 @@ interface BeforeInstallPromptEvent extends Event {
    * This is provided for user agents that want to present a choice of versions to the user such as,
    * for example, "web" or "play" which would allow the user to chose between a web version or
    * an Android version.
-   */
+   */ 
   readonly platforms: Array<string>;
 
   /**

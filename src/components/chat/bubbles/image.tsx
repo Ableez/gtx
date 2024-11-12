@@ -29,7 +29,7 @@ type Props = {
 };
 
 const cachedUser = Cookies.get("user");
-const user = JSON.parse(cachedUser || "{}");
+const user = JSON.parse(cachedUser ?? "{}");
 
 const ImageBubble = ({
   message,
@@ -37,151 +37,154 @@ const ImageBubble = ({
   setOpenSlide,
   scrollToBottom,
 }: Props) => {
-  console.log("MESSAGE", message);
+  if (!message.content.url) return null;
 
-  if (message.content.url)
-    return (
-      <div
-        className={`${
-          message.recipient === "admin" && message.sender.uid !== user.uid
-            ? "justify-self-start flex-row-reverse"
-            : "justify-self-end"
-        } flex align-middle place-items-center gap-2`}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
-              <EllipsisVerticalIcon width={18} className="rotate-90" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              className="flex align-middle place-items-center gap-2"
-              onClick={() => {
-                const xhr = new XMLHttpRequest();
-                xhr.responseType = "blob";
+  return (
+    <div
+      className={`${
+        message.recipient === "admin" && message.sender.uid !== user.uid
+          ? "justify-self-start flex-row-reverse"
+          : "justify-self-end"
+      } flex align-middle place-items-center gap-2`}
+    >
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant={"ghost"} size={"icon"}>
+            <EllipsisVerticalIcon width={18} className="rotate-90" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem
+            className="flex align-middle place-items-center gap-2"
+            onClick={() => {
+              const xhr = new XMLHttpRequest();
+              xhr.responseType = "blob";
 
-                xhr.onprogress = (event) => {
-                  postToast("", {
-                    description: (
-                      <div className="flex align-middle place-items-center gap-2">
-                        <SunIcon width={18} className="animate-spin" />
-                        <Progress value={event.loaded} max={event.total} />
-                        {Math.round((event.loaded * 100) / event.total) + "%"}
-                      </div>
-                    ),
-                    duration: 100000,
-                    id: "download-toast",
-                  });
-                };
+              xhr.onprogress = (event) => {
+                postToast("", {
+                  description: (
+                    <div className="flex align-middle place-items-center gap-2">
+                      <SunIcon width={18} className="animate-spin" />
+                      <Progress value={event.loaded} max={event.total} />
+                      {Math.round((event.loaded * 100) / event.total) + "%"}
+                    </div>
+                  ),
+                  duration: 100000,
+                  id: "download-toast",
+                });
+              };
 
-                xhr.onload = (event) => {
-                  const blob = xhr.response;
+              xhr.onload = () => {
+                const blob = xhr.response;
 
-                  const url = URL.createObjectURL(blob);
+                const url = URL.createObjectURL(blob);
 
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = url;
-                  link.click();
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = url;
+                link.click();
 
-                  toast.dismiss("download-toast");
-                  postToast("✔️ Done", {
-                    duration: 2000,
-                    id: "download-progress",
-                  });
-                };
-                xhr.open("GET", message.content.url);
-                xhr.send();
+                toast.dismiss("download-toast");
+                postToast("✔️ Done", {
+                  duration: 2000,
+                  id: "download-progress",
+                });
+              };
+              xhr.open("GET", message.content.url);
+              xhr.send();
 
-                xhr.onerror = (e) => {
-                  toast.dismiss("download-toast");
-                  toast.dismiss("download-progress");
-                  postToast("❌ Could not download image", { duration: 2500 });
-                  console.log("ERROR DOWNLOADING IMAGE", e);
-                };
-              }}
-            >
-              <DownloadIcon /> Download
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div
-          className={`max-w-[250px] md:max-w-[600px] transition-all duration-500 px-2 ${
-            message.recipient === "user" && message.sender.uid === user.uid
-              ? "justify-self-start"
-              : "justify-self-end"
-          }`}
-          onClick={() => {
+              xhr.onerror = (e) => {
+                toast.dismiss("download-toast");
+                toast.dismiss("download-progress");
+                postToast("❌ Could not download image", { duration: 2500 });
+                console.log("ERROR DOWNLOADING IMAGE", e);
+              };
+            }}
+          >
+            <DownloadIcon /> Download
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <button
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
             setCurrId(message.id);
             setOpenSlide(true);
-          }}
+          }
+        }}
+        className={`max-w-[250px] md:max-w-[600px] transition-all duration-500 px-2 border-none bg-transparent ${
+          message.recipient === "user" && message.sender.uid === user.uid
+            ? "justify-self-start"
+            : "justify-self-end"
+        }`}
+        onClick={() => {
+          setCurrId(message.id);
+          setOpenSlide(true);
+        }}
+      >
+        <div
+          className={`${
+            message.recipient === "admin" && message.sender.uid !== user.uid
+              ? "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
+              : "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
+          } grid align-middle place-items-center justify-between px-1 gap-2 py-1 min-w-[100px] min-h-[100px]`}
         >
-          <div
-            className={`${
-              message.recipient === "admin" && message.sender.uid !== user.uid
-                ? "rounded-r-md rounded-bl-md rounded-tl-[3px] bg-neutral-100 dark:bg-neutral-800"
-                : "bg-secondary text-white rounded-l-md rounded-br-md rounded-tr-[3px]"
-            } grid align-middle place-items-center justify-between px-1 gap-2 py-1 min-w-[100px] min-h-[100px]`}
-          >
-            <div className="rounded-sm overflow-clip shadow-md bg-white dark:bg-neutral-800 relative">
-              <div className="w-full h-8 absolute bottom-0 left-0 from-transparent to-black/60 bg-gradient-to-b" />
-              <h4 className="absolute bottom-2 text-white right-4 text-xs">
-                {message?.read_receipt.delivery_status === "not_sent" ? (
-                  <ClockIcon width={14} />
-                ) : (
-                  formatTime(
-                    new Date(
-                      (message?.timeStamp?.seconds ?? 0) * 1000 +
-                        (message?.timeStamp?.nanoseconds ?? 0) / 1e6
-                    ).toISOString()
-                  )
-                )}
-              </h4>
-              {message.content.url ? (
-                <div
-                  className={`flex align-middle place-items-center justify-between gap-4 ${
-                    message.recipient === "admin" &&
-                    message.sender.uid !== user.uid
-                      ? "justify-self-start"
-                      : "justify-self-end"
-                  }`}
-                >
-                  <Image
-                    src={message.content.url}
-                    alt={"IMAGE"}
-                    width={600}
-                    height={600}
-                    id={message.id}
-                    onLoad={() => {
-                      scrollToBottom.current?.lastElementChild?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "end",
-                      });
-                    }}
-                    className="w-full max-h-[420px] bg-slate-200 dark:bg-black select-all"
-                  />
-                </div>
+          <div className="rounded-sm overflow-clip shadow-md bg-white dark:bg-neutral-800 relative">
+            <div className="w-full h-8 absolute bottom-0 left-0 from-transparent to-black/60 bg-gradient-to-b" />
+            <h4 className="absolute bottom-2 text-white right-4 text-xs">
+              {message?.read_receipt.delivery_status === "not_sent" ? (
+                <ClockIcon width={14} />
               ) : (
-                <div className="flex align-middle place-items-center justify-center w-full h-full">
-                  <PhotoIcon
-                    width={120}
-                    className="opacity-70 text-neutral-50"
-                  />
-                </div>
+                formatTime(
+                  new Date(
+                    (message?.timeStamp?.seconds ?? 0) * 1000 +
+                      (message?.timeStamp?.nanoseconds ?? 0) / 1e6
+                  ).toISOString()
+                )
               )}
-            </div>
-            {message.content.caption && (
+            </h4>
+            {message.content.url ? (
               <div
-                className={`md:font-medium font-normal leading-6 text-sm antialiased text-right w-full mr-2`}
+                className={`flex align-middle place-items-center justify-between gap-4 ${
+                  message.recipient === "admin" &&
+                  message.sender.uid !== user.uid
+                    ? "justify-self-start"
+                    : "justify-self-end"
+                }`}
               >
-                {message.content.caption}
+                <Image
+                  src={message.content.url}
+                  alt={"IMAGE"}
+                  width={600}
+                  height={600}
+                  id={message.id}
+                  onLoad={() => {
+                    scrollToBottom.current?.lastElementChild?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "end",
+                    });
+                  }}
+                  className="w-full max-h-[420px] bg-slate-200 dark:bg-black select-all"
+                />
+              </div>
+            ) : (
+              <div className="flex align-middle place-items-center justify-center w-full h-full">
+                <PhotoIcon width={120} className="opacity-70 text-neutral-50" />
               </div>
             )}
           </div>
+          {message.content.caption && (
+            <div
+              className={`md:font-medium font-normal leading-6 text-sm antialiased text-right w-full mr-2`}
+            >
+              {message.content.caption}
+            </div>
+          )}
         </div>
-      </div>
-    );
+      </button>
+    </div>
+  );
 };
 
 export default ImageBubble;

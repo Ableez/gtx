@@ -1,88 +1,54 @@
-// hooks/useRealtimeChat.ts
 "use client";
+
 import { useEffect, useState } from "react";
-import { MessageWithRelations } from "@/server/db/schema";
-import { supabase } from "@/lib/utils/supabase/client";
-import { useSession } from "@clerk/nextjs";
+import { ChatWithRelations } from "@/server/db/schema";
 import { api } from "@/trpc/react";
+import { useChatStore } from "@/lib/stores/chat-store";
 
 export function useChatSession(chatId: string) {
-  const [messages, setMessages] = useState<MessageWithRelations[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { session } = useSession();
+  const [chat, setChat] = useState<ChatWithRelations | null>(null);
+  const { getChat, addChat } = useChatStore();
 
-  // TRPC query for initial messages
-  const { data: initialMessages } = api.chat.getChatById.useQuery(
-    { chatId },
-    { enabled: !!chatId }
-  );
-
-  const utils = api.useUtils();
-
-  useEffect(() => {
-    if (initialMessages?.messages) {
-      setMessages(initialMessages.messages);
-      setIsLoading(false);
-    }
-  }, [initialMessages]);
-
-  useEffect(() => {
-    if (!chatId || !session?.user?.id) return;
-
-    // Subscribe to new messages
-    const channel = supabase
-      .channel(`chat:${chatId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "greatex_message",
-          filter: `chat_id=eq.${chatId}`,
-        },
-        async (payload) => {
-          if (payload.eventType === "INSERT") {
-            const newMessage = payload.new as MessageWithRelations;
-            setMessages((prev) => [...prev, newMessage]);
-            // Invalidate queries to refresh chat list
-            await utils.chat.getRecentChats.invalidate();
-          }
-          if (payload.eventType === "DELETE") {
-            const deletedMessageId = payload.old.id;
-            setMessages((prev) =>
-              prev.filter((msg) => msg.id !== deletedMessageId)
-            );
-          }
-          if (payload.eventType === "UPDATE") {
-            const updatedMessage = payload.new as MessageWithRelations;
-            setMessages((prev) =>
-              prev.map((msg) =>
-                msg.id === updatedMessage.id ? updatedMessage : msg
-              )
-            );
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [chatId, session?.user?.id, utils]);
-
-  // Send message function
-  const sendMessage = api.chat.sendMessage.useMutation({
-    onSuccess: () => {
-      utils.chat.getChatById.invalidate({ chatId });
-      utils.chat.getRecentChats.invalidate();
-    },
+  const { data: chatData } = api.chat.getChat.useQuery({ chatId });
+  const { data: tradeData } = api.trade.getTradeByChatId.useQuery({ chatId });
+  const { data: messagesData } = api.chat.getMessages.useQuery({
+    chatId,
+    limit: 50,
   });
 
+  useEffect(() => {
+    if (chatData && chatId) {
+      setIsLoading(false);
+    }
+  }, [chatData, chatId]);
+
+  // update chat effect
+  useEffect(() => {
+    if (chatData) {
+      if (getChat(chatId)) {
+        setChat(chatData);
+      } else {
+        addChat(chatData);
+      }
+    }
+  }, [addChat, chatData, chatId, getChat]);
+
+  // const sendMessage = api.chat.sendMessage.useMutation({
+  //   onSuccess: () => {
+  //     // Invalidate queries
+
+  //   },
+  // });
+
   return {
-    messages,
-    isLoading,
-    sendMessage: sendMessage.mutate,
-    isError: sendMessage.isError,
-    error: sendMessage.error,
+    chat,
+    trade: tradeData,
+    isLoading: isLoading || (!chatData && !!chatId),
+    // sendMessage: sendMessage.mutateAsync,
+    // isError: sendMessage.isError,
+    // error: sendMessage.error,
+    hasMore: messagesData?.nextCursor !== undefined,
+    nextCursor: messagesData?.nextCursor,
   };
 }

@@ -13,6 +13,7 @@ import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
 import {
   ArrowDownTrayIcon,
+  ChatBubbleBottomCenterTextIcon,
   ReceiptPercentIcon,
   UserIcon as UserIconOutline,
 } from "@heroicons/react/24/outline";
@@ -83,7 +84,7 @@ const ProfileButton = () => {
             id="installButton"
             className="py-3 w-full juxstify-start gap-2 hidden"
           >
-            <ArrowDownTrayIcon width={14} />
+            <ArrowDownTrayIcon width={16} />
             Install App
           </DropdownMenuItem>
         </div>
@@ -92,21 +93,27 @@ const ProfileButton = () => {
 
         {user && (
           <DropdownMenuGroup className="">
-            <Link className="py-3" href={"/transactions"}>
-              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
-                <ReceiptPercentIcon width={14} />
+            <Link className="py-3" href={"/chat"}>
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-4">
+                <ChatBubbleBottomCenterTextIcon width={16} />
+                Chats
+              </DropdownMenuItem>
+            </Link>
+            <Link className="py-3" href={"/trade"}>
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-4">
+                <ReceiptPercentIcon width={16} />
                 Transactions
               </DropdownMenuItem>
             </Link>
             <Link className="py-3" href={"/profile"}>
-              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
-                <UserIconOutline width={14} />
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-4">
+                <UserIconOutline width={16} />
                 Profile
               </DropdownMenuItem>
             </Link>
             <Link className="py-3" href={"/notification"}>
-              <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
-                <BellIcon width={14} />
+              <DropdownMenuItem className="py-3 w-full juxstify-start gap-4">
+                <BellIcon width={16} />
                 Notifications
               </DropdownMenuItem>
             </Link>
@@ -114,7 +121,7 @@ const ProfileButton = () => {
         )}
         <DropdownMenuGroup>
           <Link className="py-3" href={"/support"}>
-            <DropdownMenuItem className="py-3 w-full juxstify-start gap-2">
+            <DropdownMenuItem className="py-3 w-full juxstify-start gap-4">
               <InformationCircleIcon width={16} />
               Support
             </DropdownMenuItem>

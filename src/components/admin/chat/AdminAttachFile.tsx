@@ -2,14 +2,10 @@
 
 import {
   CreditCardIcon,
-  DocumentTextIcon,
-  PaperAirplaneIcon,
   PaperClipIcon,
   PhotoIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/solid";
-import React, { useEffect, useState } from "react";
-import { formatFileSize } from "@/lib/utils/formartFileSize";
+import React, { useState } from "react";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { CardDetails, Conversation } from "../../../../chat";
 import {
@@ -18,26 +14,21 @@ import {
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Progress } from "@/components/ui/progress";
 import SetRateComp from "./setRateDialog";
 import StartAdminTransaction from "./StartTransaction";
-import { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import CropImage from "./CropImage";
-import useScrollRef from "@/lib/hooks/useScrollRef";
-import CropperJs from "@/components/chat/CropperJs";
+import CropperJs from "@/components/chat/admin-attachment-input";
 
 type Props = {
   message?: Conversation;
   chatId: string;
-  scrollToBottom: React.RefObject<HTMLDivElement>;
 };
 
-const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
+const AdminAttachFile = ({ message, chatId }: Props) => {
   const [openRate, setOpenRate] = useState(false);
   const [openStartTransaction, setOpenStartTransaction] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const [_openEdit, setOpenEdit] = useState(false);
 
   return (
     <>
@@ -115,12 +106,7 @@ const AdminAttachFile = ({ message, chatId, scrollToBottom }: Props) => {
         owns="admin"
         scrollToBottom={scrollToBottom}
       /> */}
-      <CropperJs
-        owns="admin"
-        scrollToBottom={scrollToBottom}
-        openS={openEdit}
-        setOpenS={setOpenEdit}
-      />
+      <CropperJs chatId={chatId} />
     </>
   );
 };

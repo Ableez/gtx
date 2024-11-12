@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
   CardContent,
@@ -11,28 +10,23 @@ import {
 } from "@/components/ui/card";
 
 import { ArrowLeft, Bell, BellOff, Settings2 } from "lucide-react";
-import type { Preferences, User } from "../../../../types";
-import Cookies from "js-cookie";
-import { useNotificationPreferences } from "@/lib/utils/store/notificationsPreferences";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { SunIcon } from "@radix-ui/react-icons";
+import Loading from "@/app/loading";
+import { api } from "@/trpc/react";
 import {
-  AlertDialog,
   AlertDialogCancel,
+  AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { SunIcon } from "@radix-ui/react-icons";
-import Loading from "@/app/loading";
+import { env } from "@/env";
+import { Switch } from "@/components/ui/switch";
 
-type NotificationType = {
-  id: keyof Preferences;
-  label: string;
-};
-
-const notificationTypes: NotificationType[] = [
+const notificationTypes = [
   { id: "message", label: "Chat Messages" },
   { id: "updates", label: "Promotions & Deals" },
   { id: "reminders", label: "Reminders" },
@@ -40,108 +34,71 @@ const notificationTypes: NotificationType[] = [
 ];
 
 export default function PushNotificationManager() {
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
   const [permissionStatus, setPermissionStatus] = useState("default");
   const [subscribing, setSubscribing] = useState(false);
   const router = useRouter();
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const [user, setUser] = useState<User | null>(null);
+  const {
+    data: preferences,
+    isLoading,
+    refetch,
+  } = api.notification.getNotificationPreferences.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    initialData: () => {
+      const cached =
+        typeof window !== "undefined"
+          ? localStorage.getItem("notificationPreferences")
+          : undefined;
+      return cached ? JSON.parse(cached) : undefined;
+    },
+  });
 
-  const { notificationPreferences, setNotificationPreferences } =
-    useNotificationPreferences();
-
-  const loadNotificationPreferences = useCallback(async () => {
-    const savedPreferences = localStorage.getItem("notificationPreferences");
-
-    if (savedPreferences) {
-      setNotificationPreferences(JSON.parse(savedPreferences));
-    } else {
-      const resp = await fetch("/api/notifications/preferences", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!resp.ok) {
-        const defaultPreferences = notificationTypes.reduce(
-          (acc, type) => ({
-            ...acc,
-            [type.id]: true,
-          }),
-          {}
-        );
-
-        setNotificationPreferences(defaultPreferences);
-        localStorage.setItem(
-          "notificationPreferences",
-          JSON.stringify(defaultPreferences)
-        );
-        return;
-      }
-
-      const userPreferences = (await resp.json()) as Preferences;
-
-      setNotificationPreferences(userPreferences);
-
+  useEffect(() => {
+    if (preferences && typeof window !== "undefined") {
       localStorage.setItem(
         "notificationPreferences",
-        JSON.stringify(userPreferences)
+        JSON.stringify(preferences)
       );
     }
-  }, [setNotificationPreferences]);
+  }, [preferences]);
 
-  useEffect(() => {
-    if (!user?.preferences) {
-      setIsSubscribed(false);
-    }
-  }, [user?.preferences]);
+  const { mutate: subscribe } =
+    api.notification.subscribeToNotifications.useMutation({
+      onSuccess: () => {
+        // isSubscribed(true);
+        refetch();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
 
-  useEffect(() => {
-    const uc = Cookies.get("user");
-
-    if (uc) {
-      const user = JSON.parse(uc) as User;
-
-      setUser(user);
-    }
-  }, []);
-
-  const checkSubscription = useCallback(async () => {
-    if ("serviceWorker" in navigator) {
-      const registration = await navigator.serviceWorker.ready;
-      const existingSubscription =
-        await registration.pushManager.getSubscription();
-
-      const preferences = await fetch(
-        `/api/notifications/preferences?userId=${user?.uid}`,
-        {
-          method: "GET",
-        }
-      );
-
-      const { subscribed } = await preferences.json();
-
-      if (!subscribed) {
+  const { mutate: unsubscribe } =
+    api.notification.unsubscribeFromNotifications.useMutation({
+      onSuccess: () => {
+        // isSubscribed(false);
+        setSubscription(null);
         setIsSubscribed(false);
-        return;
-      }
 
-      setIsSubscribed(!!existingSubscription);
-      setSubscription(existingSubscription);
-      setPermissionStatus(Notification.permission);
-    }
-  }, [user?.uid]);
+        refetch();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  const { mutate: updatePreferences } =
+    api.notification.updateNotificationPreferences.useMutation({
+      onSuccess: () => {
+        refetch();
+      },
+    });
 
-  useEffect(() => {
-    checkSubscription();
-    loadNotificationPreferences();
-  }, [checkSubscription, loadNotificationPreferences]);
-
-  const requestNotificationPermission = async () => {
+  const requestNotificationPermission = useCallback(async () => {
     if (!("Notification" in window)) {
       console.log("This browser does not support notifications.");
       toast.error("This browser does not support notifications.");
@@ -151,122 +108,154 @@ export default function PushNotificationManager() {
     const permission = await Notification.requestPermission();
     setPermissionStatus(permission);
     return permission;
-  };
+  }, []);
 
-  const subscribeUser = async () => {
-    if (navigator.serviceWorker) {
-      setSubscribing(true);
+  const subscribeUser = useCallback(async () => {
+    if (!navigator.serviceWorker) return;
 
-      try {
-        const permission = await requestNotificationPermission();
+    setSubscribing(true);
+    try {
+      const permission = await requestNotificationPermission();
 
-        if (permission === "granted") {
-          const registration = await navigator.serviceWorker.ready;
-          const newSubscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-          });
+      if (permission === "granted") {
+        const registration = await navigator.serviceWorker.ready;
 
-          await fetch("/api/notifications/subscribe", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user?.uid,
-              subscription: newSubscription,
-              preferences: notificationPreferences,
-            }),
-          });
-
-          setIsSubscribed(true);
-          setSubscription(newSubscription);
-          toast.success("Subscribed to notifications");
-        } else {
-          console.log("Notification permission denied");
-          toast.error("Notification permissions denied", {
-            action: {
-              label: "Allow",
-              onClick: async () => {
-                toast.dismiss();
-                await requestNotificationPermission();
-              },
-            },
-          });
+        // Unsubscribe from any existing subscription first
+        const existingSubscription =
+          await registration.pushManager.getSubscription();
+        if (existingSubscription) {
+          await existingSubscription.unsubscribe();
         }
-      } catch (err) {
-        console.error("\x1b[41m", "Failed to subscribe the user: ", err);
-      } finally {
-        setSubscribing(false);
-      }
-    }
-  };
 
-  const unsubscribeUser = async () => {
-    if (!subscription) {
-      console.log("No subscription to unsubscribe from");
+        const newSubscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        });
+
+        const auth = newSubscription.getKey("auth");
+        const p256dh = newSubscription.getKey("p256dh");
+
+        subscribe({
+          subscription: {
+            endpoint: newSubscription.endpoint,
+            auth: auth ? Buffer.from(auth).toString("base64") : "",
+            p256dh: p256dh ? Buffer.from(p256dh).toString("base64") : "",
+            expirationTime: newSubscription.expirationTime
+              ? new Date(newSubscription.expirationTime)
+              : undefined,
+          },
+        });
+        setSubscription(newSubscription);
+        setIsSubscribed(true);
+      } else {
+        toast.error("Notification permissions denied");
+        setIsSubscribed(false);
+      }
+    } catch (err) {
+      console.error("Failed to subscribe:", err);
+      toast.error("Failed to subscribe to notifications");
+      setIsSubscribed(false);
+    } finally {
+      setSubscribing(false);
+    }
+  }, [requestNotificationPermission, subscribe]);
+
+  const checkSubscription = useCallback(async () => {
+    if (!("serviceWorker" in navigator)) {
+      console.log("Service Worker not supported");
       return;
     }
 
     try {
-      await subscription.unsubscribe();
+      const registration = await navigator.serviceWorker.ready;
+      const existingSubscription =
+        await registration.pushManager.getSubscription();
 
-      await fetch("/api/notifications/unsubscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          endpoint: subscription.endpoint,
-          userId: user?.uid,
-        }),
-      });
+      // Update states based on current subscription
+      setIsSubscribed(!!existingSubscription);
+      setSubscription(existingSubscription);
+      setPermissionStatus(Notification.permission);
 
-      setIsSubscribed(false);
-      setSubscription(null);
-      console.log("User is unsubscribed.");
-      toast.success("Unsubscribed from notifications");
-    } catch (err) {
-      console.log("Error unsubscribing", err);
-      toast.error(
-        "Failed to unsubscribe from notifications. Please try again later.",
-        {
-          action: {
-            label: "Retry",
-            onClick: async () => {
-              toast.dismiss();
-              await unsubscribeUser();
-            },
-          },
+      // Auto-resubscribe logic
+      if (Notification.permission === "granted") {
+        // Case 1: No subscription exists
+        if (!existingSubscription) {
+          console.log("No subscription found, resubscribing...");
+          await subscribeUser();
+          return;
         }
-      );
+
+        // Case 2: Subscription is expired or will expire soon
+        if (existingSubscription.expirationTime) {
+          const expirationTime = new Date(
+            existingSubscription.expirationTime
+          ).getTime();
+          const now = new Date().getTime();
+          const timeUntilExpiration = expirationTime - now;
+
+          // Resubscribe if expired or will expire in the next hour
+          if (timeUntilExpiration < 1000 * 60 * 60) {
+            console.log(
+              "Subscription expired or expiring soon, resubscribing..."
+            );
+            await existingSubscription.unsubscribe();
+            await subscribeUser();
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+      toast.error("Failed to check notification subscription status");
     }
-  };
+  }, [subscribeUser]);
+
+  // Add new effect to check subscription status on mount
+  useEffect(() => {
+    checkSubscription();
+
+    // Set up periodic subscription checks
+    const checkInterval = setInterval(checkSubscription, 1000 * 60 * 60); // Check every hour
+
+    return () => clearInterval(checkInterval);
+  }, [checkSubscription]);
+
+  const unsubscribeUser = useCallback(async () => {
+    try {
+      if (subscription) {
+        await subscription.unsubscribe();
+      }
+
+      if (navigator.serviceWorker) {
+        const registration = await navigator.serviceWorker.ready;
+        const existingSubscription =
+          await registration.pushManager.getSubscription();
+        if (existingSubscription) {
+          await existingSubscription.unsubscribe();
+        }
+      }
+
+      unsubscribe();
+    } catch (err) {
+      console.error("Error unsubscribing:", err);
+      toast.error("Failed to unsubscribe from notifications");
+    }
+  }, [subscription, unsubscribe]);
 
   const handlePreferenceChange = async (typeId: string, enabled: boolean) => {
-    const newPreferences = { ...notificationPreferences, [typeId]: enabled };
-    setNotificationPreferences(newPreferences);
+    if (!preferences?.preferences) return;
 
-    localStorage.setItem(
-      "notificationPreferences",
-      JSON.stringify(newPreferences)
-    );
+    const newPreferences = {
+      ...preferences.preferences,
+      [typeId]: enabled,
+    };
 
-    if (isSubscribed) {
-      await fetch("/api/notifications/preferences", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          preferences: newPreferences,
-          userId: user?.uid,
-        }),
-      });
-    }
+    updatePreferences({
+      preferences: newPreferences,
+      isSubscribed: isSubscribed,
+    });
   };
 
-  if (!user) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -345,7 +334,7 @@ export default function PushNotificationManager() {
                   <span>{type.label}</span>
                   <Switch
                     disabled={!isSubscribed}
-                    checked={notificationPreferences[`${type.id}`] || false}
+                    checked={preferences?.preferences?.[type.id] ?? false}
                     onCheckedChange={(enabled) =>
                       handlePreferenceChange(type.id, enabled)
                     }

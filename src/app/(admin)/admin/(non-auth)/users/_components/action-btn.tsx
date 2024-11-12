@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -15,7 +14,6 @@ import {
 import {
   banUserAction,
   deleteUserAction,
-  makeAdminAction,
 } from "@/lib/utils/adminActions/getAllUsers";
 import {
   DollarSign,
@@ -85,24 +83,21 @@ const UserActionButton = ({ user }: { user: User }) => {
         setLoading(false);
         setDeleteLoading(false);
         update({
-          description: (
-            <div className="flex flex-col gap-2">Deleted</div>
-          ),
+          description: <div className="flex flex-col gap-2">Deleted</div>,
           id: "delete-user",
         });
 
         dismiss();
       })
       .catch((err) => {
+        console.error(err);
         postToast("Error deleting user");
         setLoading(false);
         setDeleteLoading(false);
         update({
           variant: "destructive",
           description: (
-            <div className="flex flex-col gap-2">
-              Error deleting user
-            </div>
+            <div className="flex flex-col gap-2">Error deleting user</div>
           ),
           id: "delete-user",
         });
@@ -198,8 +193,8 @@ const UserActionButton = ({ user }: { user: User }) => {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the user
-                    account and remove their data from our servers.
+                    This action cannot be undone. This will permanently delete
+                    the user account and remove their data from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
