@@ -7,7 +7,11 @@ const SellPage = async () => {
   const giftcards = (await api.giftcard.getAllCards()) as AssetSelect[];
 
   if (!giftcards) {
-    return <div>We have no cards to show</div>;
+    return (
+      <div className={"h-[60dvh] grid place-items-center justify-center"}>
+        We have no cards to show
+      </div>
+    );
   }
 
   return (

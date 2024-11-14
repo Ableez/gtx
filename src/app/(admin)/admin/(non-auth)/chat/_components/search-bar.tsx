@@ -18,7 +18,7 @@ export default function SearchBar() {
   return (
     <div className="flex items-center justify-center">
       <motion.div
-        className="relative flex items-center w-full max-w-md mx-auto"
+        className="relative flex items-center w-full max-w-screen-sm mx-auto"
         initial={false}
         animate={{
           width: isFocused ? "90%" : "88%",
@@ -33,7 +33,7 @@ export default function SearchBar() {
           }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <Search className="w-5 h-5" />
+          <Search className="w-5 h-5 opacity-60" />
         </motion.div>
         <input
           type="text"

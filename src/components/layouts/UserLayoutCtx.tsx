@@ -11,17 +11,12 @@ const UserLayoutCtx: React.FC<UserLayoutCtxProps> = ({ children }) => {
   const pathName = usePathname();
   const hideNavbarRegex = /^\/chat\//;
 
-  const isChatPage = hideNavbarRegex.test(pathName);
+  const isChatPage = hideNavbarRegex.test(pathName);   ''
   const pageTitle = pathName.split("/")[1];
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      {!isChatPage && (
-        <SellNavbar
-          pathLen={pathName.split("/")[2] as string}
-          pageTitle={pageTitle as string}
-        />
-      )}
+      {!isChatPage && <SellNavbar />}
       <div>{children}</div>
     </div>
   );

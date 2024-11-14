@@ -42,7 +42,7 @@
 //         action: {
 //           label: "Login",
 //           onClick: () => {
-//             router.push("/login");
+//             router.push("/sign-in");
 //           },
 //         },
 //         duration: 8000,
@@ -95,7 +95,7 @@
 //           duration: 4500,
 //           action: {
 //             label: "Login",
-//             onClick: () => router.push("/login"),
+//             onClick: () => router.push("/sign-in"),
 //           },
 //         });
 //         setLoading(false);

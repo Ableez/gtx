@@ -8,7 +8,7 @@ export async function adminLoader() {
 
   // If not authenticated, redirect to login page
   if (!isAuthenticated) {
-    redirect("/admin/login");
+    redirect("/sign-in");
   }
 
   // Check if user has admin privileges
@@ -16,7 +16,7 @@ export async function adminLoader() {
   const snap = await getDoc(ref);
 
   if (!snap.exists()) {
-    redirect("/admin/login");
+    redirect("/sign-in");
   }
 
   // If authenticated and has admin privileges, proceed

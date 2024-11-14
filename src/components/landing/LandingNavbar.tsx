@@ -59,7 +59,7 @@ export default function LandingNavbar() {
                 </SheetClose>
                 <SheetClose className="w-full">
                   <Link
-                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                     href={"/sell/crypto"}
                   >
                     <li>Crypto currencies</li>
@@ -72,7 +72,7 @@ export default function LandingNavbar() {
                 </SheetClose>
                 <SheetClose className="w-full">
                   <Link
-                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                     href={"#about-us"}
                   >
                     <li>About Us</li>
@@ -85,7 +85,7 @@ export default function LandingNavbar() {
                 </SheetClose>
                 <SheetClose className="w-full">
                   <Link
-                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                     href={"/terms"}
                   >
                     <li>Terms & Policies</li>
@@ -98,7 +98,7 @@ export default function LandingNavbar() {
                 </SheetClose>
                 <SheetClose className="w-full">
                   <Link
-                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 dark:hover:bg-black group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
+                    className="rounded-2xl w-full hover:bg-neutral-100 duration-200 group px-3 py-2.5 border border-transparent hover:border-neutral-600 flex align-middle place-items-center justify-between"
                     href={"/sign-in"}
                   >
                     <li>Login</li>
@@ -130,13 +130,13 @@ export default function LandingNavbar() {
         <NavigationMenuList className="hidden md:flex">
           <Link
             href="#about-us"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
+            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             About Us
           </Link>
           <Link
             href="/terms"
-            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 dark:hover:bg-black hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
+            className="bg-transparent p-2 border border-transparent transition-colors duration-300 rounded-2xl px-6 hover:bg-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-800"
           >
             Terms & Policies
           </Link>
@@ -147,7 +147,7 @@ export default function LandingNavbar() {
             <Button className="px-10 rounded-2xl">Sell</Button>
           </Link>
         ) : (
-          <Link className="sm:flex hidden" href="/login">
+          <Link className="sm:flex hidden" href="/sign-in">
             <Button className="px-10 rounded-2xl">Login</Button>
           </Link>
         )}

@@ -9,7 +9,7 @@ const AdminPage = function () {
     <div className="pb-4 max-w-screen-md mx-auto md:px-0 px-4">
       <NavCards />
       <QuickView />
-      <PostReview />
+      {/* <PostReview /> */}
     </div>
   );
 };

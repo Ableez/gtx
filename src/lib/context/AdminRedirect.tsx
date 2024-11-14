@@ -16,7 +16,7 @@ const AdminRedirect = async (props: Props) => {
   const state = cookies().get("state")?.value;
 
   if (!uc) {
-    return redirect("/admin/login");
+    return redirect("/sign-in");
   }
 
   if (uc && state) {

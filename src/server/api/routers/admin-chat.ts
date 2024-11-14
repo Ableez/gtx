@@ -123,6 +123,7 @@ export const adminChatRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       if (!ctx.userId) return null;
+
       const chats = await ctx.db.query.chat.findMany({
         where: and(
           eq(chat.deleted, false),
@@ -145,6 +146,24 @@ export const adminChatRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+
+  getUnreadMessagesCount: protectedProcedure.query(async ({ ctx }) => {
+    if (!checkRole("admin")) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Only administrators can access this resource",
+      });
+    }
+
+    const unreadMessagesCount = await ctx.db
+      .select({
+        count: sql<number>`count(*)`,
+      })
+      .from(chat)
+      .where(eq(chat.lastMessageStatus, "SENT"));
+
+    return unreadMessagesCount[0]?.count ?? 0;
+  }),
 
   getMessages: protectedProcedure
     .input(
@@ -219,7 +238,7 @@ export const adminChatRouter = createTRPCRouter({
             id: input.messageId,
             chatId: input.chatId,
             text: input.text,
-            type: input.type || "STANDARD",
+            type: input.type ?? "STANDARD",
             isAdmin: true,
             senderId: ctx.userId,
             parentId: input.replyToId,
@@ -329,6 +348,22 @@ export const adminChatRouter = createTRPCRouter({
       return { success: true };
     }),
 
+  deleteChat: protectedProcedure
+    .input(z.object({ chatIds: z.array(z.string().uuid()) }))
+    .mutation(async ({ ctx, input }) => {
+      if (!checkRole("admin")) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only administrators can delete chats",
+        });
+      }
+
+      await ctx.db
+        .update(chat)
+        .set({ deleted: true, deletedAt: new Date(), deletedBy: ctx.userId })
+        .where(sql`${chat.id} = ANY(${input.chatIds})`);
+    }),
+
   getAllChats: adminProcedure
     .input(
       z.object({
@@ -345,11 +380,11 @@ export const adminChatRouter = createTRPCRouter({
           input.type ? eq(chat.type, input.type) : undefined,
           input.searchQuery
             ? or(
-                sql`${chat.lastMessageText} ILIKE ${`%${input.searchQuery}%`}`,
-                sql`${user.firstName} ILIKE ${`%${input.searchQuery}%`}`,
-                sql`${user.lastName} ILIKE ${`%${input.searchQuery}%`}`,
-                sql`${user.username} ILIKE ${`%${input.searchQuery}%`}`,
-                sql`${asset.name} ILIKE ${`%${input.searchQuery}%`}`
+                sql`${chat.lastMessageText} ILIKE '%${input.searchQuery}%'`
+                // sql`${user.firstName} ILIKE '%${input.searchQuery}%'`,
+                // sql`${user.lastName} ILIKE '%${input.searchQuery}%'`,
+                // sql`${user.username} ILIKE '%${input.searchQuery}%'`,
+                // sql`${asset.name} ILIKE '%${input.searchQuery}%'`
               )
             : undefined,
           input.cursor

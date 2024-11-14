@@ -8,5 +8,6 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["greatex_*"],
+  out: "./src/lib/drizzle",
+  tablesFilter: [`${env.NODE_ENV === "development" ? "dev_" : ""}greatex_*`],
 } satisfies Config;

@@ -1,12 +1,12 @@
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
   notificationPreferences,
   NotificationPreferencesSelect,
   pushSubscriptions,
   user,
 } from "@/server/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import * as webpush from "web-push";
 import { env } from "@/env";
@@ -218,14 +218,12 @@ export const notificationRouter = createTRPCRouter({
         }
 
         const admins = await ctx.db.query.user.findMany({
-          where: eq(user.metadata, { role: "admin" }),
+          where: sql`${user.metadata}->>'role' = 'admin'`,
         });
 
         if (admins.length === 0) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "No admins found",
-          });
+          console.error({ success: false, error: "No admins found" });
+          return { success: false, error: "No admins found" };
         }
 
         const adminIds = admins.map((admin) => admin.id);
@@ -333,4 +331,28 @@ export const notificationRouter = createTRPCRouter({
         });
       }
     }),
+
+  getNotificationStatus: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User not found",
+      });
+    }
+
+    const subscription = await ctx.db
+      .select()
+      .from(pushSubscriptions)
+      .where(eq(pushSubscriptions.userId, ctx.userId));
+
+    const preferences = await ctx.db
+      .select()
+      .from(notificationPreferences)
+      .where(eq(notificationPreferences.userId, ctx.userId));
+
+    return {
+      isSubscribed: subscription.length > 0,
+      preferences: preferences[0],
+    };
+  }),
 });

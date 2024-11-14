@@ -48,7 +48,7 @@ const updateUserSchema = z.object({
   twoFactorEnabled: z.boolean().optional(),
   externalId: z.string().optional().nullable(),
   metadata: z.record(z.unknown()).optional(),
-  lastSignInAt: z.string().optional().nullable(),
+  lastSignInAt: z.number().nullable().optional(),
   disabled: z.boolean().optional(),
 });
 export type UpdateUserDataType = z.infer<typeof updateUserSchema>;
@@ -94,7 +94,7 @@ export const userRouter = createTRPCRouter({
     .input(updateUserSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        console.log("INPUT ONE_", input);
+        console.log("INPUT TWO_", input);
         await ctx.db
           .update(user)
           .set({
@@ -103,7 +103,7 @@ export const userRouter = createTRPCRouter({
             updatedAt: new Date(),
             lastSignInAt: input.lastSignInAt
               ? new Date(input.lastSignInAt)
-              : undefined,
+              : null,
           })
           .where(eq(user.id, input.id));
       } catch (error) {

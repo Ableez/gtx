@@ -8,8 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
-import SignoutButton from "../SignoutButton";
 import ToggleTheme from "../toggleTheme";
 import {
   ArrowDownTrayIcon,
@@ -31,15 +29,13 @@ import {
   SignInButton,
   SignOutButton,
   useAuth,
-  UserButton,
   useUser,
 } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const ProfileButton = () => {
   const { userId } = useAuth();
-  const { isLoaded, user } = useUser();
-  const router = useRouter();
+  const { user } = useUser();
 
   const isSignedIn = userId !== null;
   return (

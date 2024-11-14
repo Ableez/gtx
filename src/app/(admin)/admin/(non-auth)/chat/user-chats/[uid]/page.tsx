@@ -38,8 +38,8 @@ const UserChatPage = ({ params }: Props) => {
     );
 
   return (
-    <div>
-      <div className="p-8 m-4 text-center mb-4 text-base font-medium flex flex-col place-items-center justify-center gap-2 border-b dark:border-neutral-800 border-neutral-200">
+    <div className="max-w-screen-md mx-auto">
+      <div className="p-8 my-4 text-center mb-4 text-base font-medium flex flex-col place-items-center justify-center gap-2 border-b dark:border-neutral-900 border-neutral-200">
         <Image
           src={
             chats[1]?.user?.imageUrl ??
@@ -65,16 +65,16 @@ const UserChatPage = ({ params }: Props) => {
         <div className="text-[10px] opacity-50 mb-1 uppercase font-medium px-4">
           Latest
         </div>
-        {chats.slice(0, 1).map((chat, idx) => (
+        {chats.slice(0, 1).map((chat) => (
           <div key={chat.id} className="w-full">
-            <ChatCard key={idx} chat={chat} />
+            <ChatCard key={chat.id} chat={chat} />
           </div>
         ))}
       </div>
 
-      {chats.slice(1).map((chat, idx) => (
+      {chats.slice(1).map((chat) => (
         <div key={chat.id} className="w-full">
-          <ChatCard key={idx} chat={chat} />
+          <ChatCard key={chat.id} chat={chat} />
         </div>
       ))}
     </div>

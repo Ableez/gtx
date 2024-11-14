@@ -19,12 +19,27 @@ type ChatsStore = {
     chatId: string,
     messageId: string
   ) => MessageWithRelations | undefined;
+  deleteChat: (chatId: string) => void;
+  deleteAllChats: () => void;
+  setChats: (chats: ChatWithRelations[]) => void;
 };
 
 export const useChatStore = create<ChatsStore>()(
   persist(
     (set, get) => ({
       chats: [],
+
+      deleteChat: (chatId: string) => {
+        set({ chats: get().chats.filter((chat) => chat.id !== chatId) });
+      },
+
+      deleteAllChats: () => {
+        set({ chats: [] });
+      },
+
+      setChats: (chats: ChatWithRelations[]) => {
+        set({ chats });
+      },
 
       addChat: (chat: ChatWithRelations) => {
         console.log("[ADD::CHAT::STORE]", chat);

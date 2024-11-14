@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import useAdminConversations from "@/lib/hooks/useAdminConversations";
+import { api } from "@/trpc/react";
 
 const navBoxes = [
   {
@@ -40,8 +41,12 @@ const navBoxes = [
 ];
 
 const NavCards = () => {
-  const { unReadConversationsNumber, allConversations } =
-    useAdminConversations();
+  const { allConversations } = useAdminConversations();
+
+  const { data: unReadConversationsNumber } =
+    api.adminChat.getUnreadMessagesCount.useQuery();
+
+  console.log("unReadConversationsNumber", unReadConversationsNumber);
 
   const activeTransaction = allConversations?.filter((conversation) => {
     return (
@@ -74,11 +79,13 @@ const NavCards = () => {
                 }  p-3.5 shadow-md rounded-xl relative`}
               >
                 {box.icon}
-                {box.name === "Messages" && unReadConversationsNumber > 0 && (
-                  <div className="absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
-                    <h4>{unReadConversationsNumber}</h4>
-                  </div>
-                )}
+                {box.name === "Messages" &&
+                  unReadConversationsNumber &&
+                  unReadConversationsNumber > 0 && (
+                    <div className="absolute -top-1 -right-1 bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
+                      <h4>{unReadConversationsNumber}</h4>
+                    </div>
+                  )}
                 {box.name === "Trades" && activeTransaction > 0 && (
                   <div className="absolute -top-1 -right-1  bg-red-500 rounded-full h-4 w-4 text-[10px] grid align-middle place-items-center text-center font-semibold text-white">
                     <h4>{activeTransaction}</h4>

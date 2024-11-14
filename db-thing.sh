@@ -1,5 +1,5 @@
-if [ -d "./drizzle" ]; then
-  rm -r drizzle
+if [ -d "./src/lib/drizzle" ]; then
+  rm -r ./src/lib/drizzle
   echo "Deleted existing drizzle directory."
 else
   echo "No drizzle directory found, skipping deletion."

@@ -57,6 +57,13 @@
       "when": 1731283200356,
       "tag": "0007_right_tiger_shark",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1731447746332,
+      "tag": "0008_bent_multiple_man",
+      "breakpoints": true
     }
   ]
 }

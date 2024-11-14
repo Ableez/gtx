@@ -93,7 +93,7 @@ const Navbar = () => {
           {navTabs}
         </nav>
 
-        <Link href={"/login"}>
+        <Link href={"/sign-in"}>
           <button
             className="px-8 py-3 bg-pink-500 rounded-full text-white hover:bg-pink-400 duration-300 border border-transparent hover:border-pink-600"
             style={{ fontWeight: "500" }}

@@ -35,10 +35,10 @@ export default function Redirect() {
           continue.
         </p>
         <div className="mt-6 flex items-center justify-center gap-2">
-          <Link href="/login">
+          <Link href="/sign-in">
             <Button className="w-full sm:w-auto">Log In</Button>
           </Link>
-          <Link href="/signup">
+          <Link href="/sign-up">
             <Button variant="outline" className="w-full sm:w-auto">
               Sign Up
             </Button>

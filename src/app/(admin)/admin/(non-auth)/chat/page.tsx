@@ -13,7 +13,7 @@ const AdminChats = () => {
     limit: 50,
   });
 
-  const { chats, addChat, getChat, updateChat } = useChatStore();
+  const { addChat, getChat, updateChat } = useChatStore();
 
   useEffect(() => {
     const chatChannel = supabase
@@ -65,7 +65,7 @@ const AdminChats = () => {
     };
   }, [addChat, chatData, getChat, updateChat]);
 
-  if (!isLoading && !chats) {
+  if (!isLoading && !chatData) {
     return (
       <div className="h-[50dvh] font-semibold w-screen flex place-items-center text-center justify-center">
         No chats found

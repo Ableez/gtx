@@ -18,10 +18,12 @@ export const AdminChatMessage: React.FC<AdminChatMessageProps> = ({
   user,
 }) => {
   return (
-    <div
+    <button
+      type="button"
+      onKeyDown={(e) => e.key === "Enter" && onReply(message.id)}
       className={`${
         message.isAdmin ? "justify-end" : "justify-start"
-      } grid grid-flow-col align-top place-items-center group gap-2 mb-1.5 active:scale-[0.99] ease-out duration-200 transition-all relative`}
+      } grid grid-flow-col align-top place-items-center group gap-2 mb-1.5 active:scale-[0.99] ease-out duration-200 transition-all relative w-full text-left`}
       id={message.id}
       onDoubleClick={() => onReply(message.id)}
     >
@@ -63,11 +65,7 @@ export const AdminChatMessage: React.FC<AdminChatMessageProps> = ({
           } py-1 leading-none rounded-sm ${
             message.parentId && message.isAdmin ? "rounded-tr-[2px]" : ""
           } ${
-            !message.mediaUrl
-              ? message.isAdmin
-                ? "bg-primary text-white rounded-tr-[2px]"
-                : "dark:bg-muted bg-neutral-200/80 rounded-tl-[2px]"
-              : message.isAdmin
+            message.isAdmin
               ? "bg-primary text-white rounded-tr-[2px]"
               : "dark:bg-muted bg-neutral-200/80 rounded-tl-[2px]"
           }`}
@@ -106,6 +104,6 @@ export const AdminChatMessage: React.FC<AdminChatMessageProps> = ({
           <Reply size={16} />
         </button>
       </div>
-    </div>
+    </button>
   );
 };

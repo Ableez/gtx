@@ -22,7 +22,7 @@ type UpdateUserEvtData = {
   external_id: string;
   public_metadata: Record<string, string>;
   banned: boolean;
-  last_sign_in_at: string;
+  last_sign_in_at: number;
 };
 
 export async function POST(req: Request) {

@@ -121,6 +121,12 @@ self.addEventListener("notificationclick", function (event) {
 
 // Listen for messages from clients
 self.addEventListener("message", (event) => {
+  // Verify the message origin matches our API_URL
+  if (new URL(event.origin).origin !== new URL(API_URL).origin) {
+    console.error("Received message from unauthorized origin:", event.origin);
+    return;
+  }
+
   if (event.data && event.data.type === "GET_LAST_NOTIFICATION") {
     if (lastNotification && Date.now() - lastNotification.timeStamp < 30000) {
       // Only send if the notification is less than 30 seconds old
@@ -206,24 +212,28 @@ function urlBase64ToUint8Array(base64String) {
 
 // Helper function for base64 decoding
 function atob(input) {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-  let str = input.replace(/=+$/, "");
-  let output = "";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  let str = input.replace(/=+$/, '');
+  let output = '';
 
   if (str.length % 4 == 1) {
-    throw new Error(
-      "'atob' failed: The string to be decoded is not correctly encoded."
+    throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+  }
+
+  // Refactored loop for better readability and proper counter usage
+  for (let i = 0; i < str.length; i += 4) {
+    const n1 = chars.indexOf(str[i]);
+    const n2 = chars.indexOf(str[i + 1]);
+    const n3 = chars.indexOf(str[i + 2]);
+    const n4 = chars.indexOf(str[i + 3]);
+
+    output += String.fromCharCode(
+      (n1 << 2) | (n2 >> 4),
+      ((n2 & 15) << 4) | (n3 >> 2),
+      ((n3 & 3) << 6) | n4
     );
   }
-  for (
-    let bc = 0, bs = 0, buffer, i = 0;
-    (buffer = str.charAt(i++));
-    ~buffer && ((bs = bc % 4 ? bs * 64 + buffer : buffer), bc++ % 4)
-      ? (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6))))
-      : 0
-  ) {
-    buffer = chars.indexOf(buffer);
-  }
-  return output;
+
+  // Remove padding characters
+  return output.replace(/\0+$/, '');
 }

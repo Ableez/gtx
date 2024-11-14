@@ -17,7 +17,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const createTable = pgTableCreator((name) => `greatex_${name}`);
+import { env } from "@/env";
+
+export const createTable = pgTableCreator(
+  (name) => `${env.NODE_ENV === "development" ? "dev_" : ""}greatex_${name}`
+);
 
 // Enum definitions
 export const assetTypeEnum = pgEnum("asset_type", ["CRYPTO", "GIFTCARD"]);
@@ -143,7 +147,7 @@ export const trade = createTable(
       .references(() => asset.id, { onDelete: "cascade" }),
     chatId: uuid("chat_id")
       .notNull()
-      .references(() => chat.id, { onDelete: "restrict" }),
+      .references(() => chat.id, { onDelete: "cascade" }),
     currency: currencyEnum("currency").notNull().default("USD"),
     status: tradeStatusEnum("status").notNull(),
     amountInCurrency: decimal("amount_in_currency", {

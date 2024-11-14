@@ -66,7 +66,7 @@ export async function deleteUserAction(uid: string) {
     sendNotificationToUser(uid, {
       title: "Account Deletion",
       body: "Your account has been deleted, you can no longer use our services",
-      url: "/login",
+      url: "/sign-in",
     });
 
     return { message: "User deleted successfully" };
@@ -110,7 +110,7 @@ export async function unbanUserAction(uid: string) {
     sendNotificationToUser(uid, {
       title: "Congratulations",
       body: "Your account has been re-enabled, you can now login",
-      url: "/login",
+      url: "/sign-in",
     });
 
     return { message: "User unbanned successfully" };
@@ -160,7 +160,7 @@ export async function makeAdminAction(uid: string) {
     sendNotificationToUser(uid, {
       title: "Congratulations",
       body: "You have been made an admin",
-      url: "/admin/login",
+      url: "/sign-in",
     });
 
     sendNotificationToAdmin({
@@ -218,7 +218,7 @@ export async function removeAdminAction(uid: string, username: string) {
     sendNotificationToUser(uid, {
       title: "Admin removed",
       body: `You are no longer an admin ${username}`,
-      url: "/admin/login",
+      url: "/sign-in",
     });
 
     sendNotificationToAdmin({
