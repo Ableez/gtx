@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/faq",
   "/terms",
   "/support",
+  "/",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
