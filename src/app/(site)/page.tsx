@@ -1,44 +1,59 @@
 "use client";
 
-import Features from "@/components/landing/Features";
-import ScrollHero from "@/components/landing/scroll-hero";
-import { InfiniteMovingCards } from "@/components/landing/moving-cards";
-import CardDeck from "@/components/landing/card-deck";
-import AboutUs from "@/components/landing/ready-to-trade";
-import Footer from "@/components/landing/Footer";
-import FAQs from "@/components/landing/FAQs";
+import dynamic from "next/dynamic";
+
+// Lazy load components that are below the fold
+const Features = dynamic(() => import("@/components/landing/features-section"));
+const HeroSection = dynamic(() => import("@/components/landing/scroll-hero"));
+const BrandScroller = dynamic(
+  () => import("@/components/landing/brand-scroller-section")
+);
+const ProductShowcase = dynamic(
+  () => import("@/components/landing/product-showcase-section")
+);
+const CallToAction = dynamic(
+  () => import("@/components/landing/call-to-action-section")
+);
+const Footer = dynamic(() => import("@/components/landing/footer-section"));
+const FAQSection = dynamic(() => import("@/components/landing/faq-section"));
 
 export default function Home() {
-  const images = [
-    "/parallax/adidas.png",
-    "/parallax/apple.png",
-    "/parallax/banana.png",
-    "/parallax/bb.png",
+  const primaryBrands = [
+    "https://d38v990enafbk6.cloudfront.net/Adidas.png",
+    "https://d38v990enafbk6.cloudfront.net/Apple.png",
+    "https://d38v990enafbk6.cloudfront.net/banana_republic.png",
+    "https://d38v990enafbk6.cloudfront.net/Apple.png",
+    "https://d38v990enafbk6.cloudfront.net/Blizzard.png",
   ];
-  const images2 = [
-    "/parallax/ebay.jpg",
-    "/parallax/footlocker.png",
-    "/parallax/gp.png",
-    "/parallax/sbux.png",
-    "/parallax/target.png",
+
+  const secondaryBrands = [
+    "https://d38v990enafbk6.cloudfront.net/Ebay.png",
+    "https://d38v990enafbk6.cloudfront.net/Gamestop.png",
+    "https://d38v990enafbk6.cloudfront.net/Playstore.png",
+    "https://d38v990enafbk6.cloudfront.net/Starbucks.png",
+    "https://d38v990enafbk6.cloudfront.net/Target.png",
   ];
 
   return (
     <main className="text-center bg-white text-black">
-      <ScrollHero />
+      <HeroSection />
       <Features />
       <div className="flex justify-center items-center place-items-center p-4 gap-4">
-        <InfiniteMovingCards speed="fast" items={images} pauseOnHover={false} />
-        <InfiniteMovingCards
-          items={images2}
+        <BrandScroller
+          speed="fast"
+          items={primaryBrands}
+          pauseOnHover={false}
+        />
+        <BrandScroller
+          items={secondaryBrands}
           speed="normal"
           direction="right"
           pauseOnHover={false}
         />
       </div>
-      <AboutUs />
-      <CardDeck />
-      <FAQs />
+      <CallToAction />
+      <ProductShowcase />
+      <FAQSection />
       <Footer />
     </main>
   );

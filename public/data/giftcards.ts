@@ -262,7 +262,8 @@ export const giftcards = [
     id: "American_Eagle Outfitters",
     popular: false,
     name: "American Eagle Outfitters",
-    image: "/cards/American_Eagle_outfitters.jpg",
+    image:
+      "https://d38v990enafbk6.cloudfront.net/American_Eagle_outfitters.png",
     title: "American Eagle Outfitters Card",
     category: "Fashion",
     subcategory: [
@@ -284,7 +285,8 @@ export const giftcards = [
     id: "amex",
     popular: true,
     name: "American Express",
-    image: "/cards/american-express.svg",
+    image:
+      "https://d38v990enafbk6.cloudfront.net/American-Express.png",
     title: "American Express Card",
     category: "Banking",
     subcategory: [

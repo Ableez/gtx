@@ -12,62 +12,40 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ScrollHero = () => {
   useGSAP(() => {
-    gsap.to(".heder__", {
+    // Batch animations together for better performance
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".heder__cont",
+        start: "-=60px top",
+        scrub: 1.2,
         pin: true,
-        start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 1.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-        snap: "labels",
-      },
+      }
+    });
+
+    tl.to(".heder__", {
       scale: 0.4,
       opacity: 0,
       ease: "power3.inOut",
-    });
-
-    gsap.to(".phone__fr", {
-      scrollTrigger: {
-        trigger: ".heder__cont",
-        start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 0.8, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-      },
+    })
+    .to(".phone__fr", {
       scale: 0.76,
       top: "-60px",
       ease: "power3.inOut",
-    });
-
-    gsap.to(".phone__fr__header", {
-      scrollTrigger: {
-        trigger: ".heder__cont",
-        start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 1.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-      },
+    }, "<") // Start at same time as previous animation
+    .to(".phone__fr__header", {
       opacity: 1,
       ease: "power1.inOut",
-    });
-
-    gsap.to(".side_text", {
-      scrollTrigger: {
-        trigger: ".heder__cont",
-        start: "-=60px top", // when the top of the trigger hits the top of the viewport
-        scrub: 0.5, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-      },
+    }, "<")
+    .to(".side_text", {
       opacity: 1,
       marginTop: -10,
       top: "-60px",
-      delay: 2,
       ease: "power1.inOut",
-    });
-
-    gsap.to(".phone_fr_btns", {
-      scrollTrigger: {
-        trigger: ".heder__cont",
-        start: "-=100px top", // when the top of the trigger hits the top of the viewport
-        scrub: 3.2, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-      },
+    }, "<")
+    .to(".phone_fr_btns", {
       scale: 0.86,
       ease: "power1.inOut",
-    });
+    }, "<");
   });
 
   return (
@@ -141,12 +119,18 @@ const ScrollHero = () => {
           </Link>
         </div>
       </div>
-      <div className="phone__fr__header opacity-0 absolute top-14 left-1/2 -translate-x-1/2 w-full px-8 md:hidden">
+      <div
+        className="phone__fr__header opacity-0 absolute top-14 left-1/2 -translate-x-1/2 w-full px-8 md:hidden"
+        style={{ willChange: "opacity, transform" }} // Optimize for animations
+      >
         <h4 className="text-[1.2rem] text-center font-bold">
           We make selling your giftcard simple.
         </h4>
       </div>
-      <div className="grid place-items-center phone__fr absolute left-1/2 -translate-x-1/2 w-full scale-[1] md:grid-flow-col grid-flow-row md:grid-cols-3 md:grid-rows-none md:gap-8 grid-rows-2 gap-4 md:px-4 px-0 pt-4">
+      <div
+        className="grid place-items-center phone__fr absolute left-1/2 -translate-x-1/2 w-full scale-[1] md:grid-flow-col grid-flow-row md:grid-cols-3 md:grid-rows-none md:gap-8 grid-rows-2 gap-4 md:px-4 px-0 pt-4"
+        style={{ willChange: "transform" }}
+      >
         <div className="side_text md:mt-64 mt-80 opacity-0 hidden md:block">
           <h4 className="md:text-[2.8rem] text-[1.8rem] font-black text-left ">
             We make selling your giftcard simple.
@@ -154,20 +138,22 @@ const ScrollHero = () => {
         </div>
         <div
           style={{
-            backgroundImage: `url("/phone_frame.png")`,
+            backgroundImage: `url("/phone_frame.webp")`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "110%",
             backgroundPosition: "center center",
             backgroundClip: "content-box",
+            willChange: "transform",
           }}
           className="md:w-[399px] md:h-[786px] w-[369px] h-[686px] text-2xl font-bold"
         >
           <Image
-            src={"/dets_scn.png"}
-            alt=""
+            src="/screenshot_overlay.webp"
+            alt="Phone screen details"
             width={1050}
             height={2277}
-            className="md:mt-[4.6rem] mt-[3rem] md:w-[75%] w-[76%] rounded-[42px] mx-auto max-h-[76.8%]"
+            priority
+            className="md:mt-[3.8rem] mt-[2.2rem] md:w-[75%] w-[76%] rounded-[42px] mx-auto max-h-[76.8%]"
           />
         </div>
         <div className="side_text md:mt-64 md:opacity-0 mt-0 mb-16 md:mb-0 self-start md:self-center">

@@ -72,11 +72,11 @@ const CardDeck = () => {
           className="w-[299px] h-[586px] scale-95 text-2xl font-bold z-50"
         >
           <Image
-            src={"/mst_scn.png"}
+            src={"/cards_display.webp"}
             alt="Phone"
             width={399}
             height={786}
-            className="md:mt-[3.4rem] mt-[3.5rem] w-[75%] rounded-[42px] mx-auto"
+            className="md:mt-[2.6rem] mt-[2.4rem] w-[75%] rounded-[42px] mx-auto"
           />
         </div>
 

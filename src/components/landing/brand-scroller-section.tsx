@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 
-export const InfiniteMovingCards = ({
+const InfiniteMovingCards = ({
   items,
   direction = "left",
   speed = "fast",
@@ -89,7 +89,7 @@ export const InfiniteMovingCards = ({
       >
         {items.map((item, idx) => (
           <Image
-            key={idx}
+            key={item}
             src={item}
             alt=""
             width={100}
@@ -101,3 +101,5 @@ export const InfiniteMovingCards = ({
     </div>
   );
 };
+
+export default InfiniteMovingCards;
