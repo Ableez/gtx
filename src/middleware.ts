@@ -5,11 +5,13 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks",
+  "/api/inngest",
   "/sell(.*)",
   "/faq",
   "/terms",
   "/support",
   "/",
+  "/(.*)inngest(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);

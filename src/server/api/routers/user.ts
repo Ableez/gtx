@@ -2,6 +2,9 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { PostgresError } from "postgres";
+import { TRPCClientError } from "@trpc/client";
+import { TRPCError } from "@trpc/server";
 
 // Schemas for input validation
 const emailAddressSchema = z.object({
@@ -86,7 +89,18 @@ export const userRouter = createTRPCRouter({
         });
       } catch (error) {
         console.error("[INTERNAL_ERROR]", error);
-        throw new Error("Failed to create user");
+
+        const postgresError = error as PostgresError;
+        if (postgresError.code === "23505") {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "User already exists",
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create user",
+        });
       }
     }),
 
@@ -121,6 +135,7 @@ export const userRouter = createTRPCRouter({
           .set({
             deleted: true,
             deletedAt: new Date(),
+            disabled: true,
           })
           .where(eq(user.id, input.id));
       } catch (error) {
