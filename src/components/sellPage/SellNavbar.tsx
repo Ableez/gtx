@@ -107,7 +107,7 @@ export default function SellNavbar() {
                       src={user.imageUrl}
                       width={58}
                       height={58}
-                      alt={user.username || "User"}
+                      alt={user.username ?? "User"}
                       priority
                       className="w-full rounded-full aspect-square object-cover text-[10px]"
                     />
