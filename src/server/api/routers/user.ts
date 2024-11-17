@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { PostgresError } from "postgres";
-import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 
 // Schemas for input validation
@@ -126,18 +125,11 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
-  softDelete: publicProcedure
+  softDelete: protectedProcedure
     .input(z.object({ id: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db
-          .update(user)
-          .set({
-            deleted: true,
-            deletedAt: new Date(),
-            disabled: true,
-          })
-          .where(eq(user.id, input.id));
+        await ctx.db.delete(user).where(eq(user.id, input.id));
       } catch (error) {
         console.error("[INTERNAL_ERROR]", error);
         throw new Error("Failed to delete user");
