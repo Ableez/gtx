@@ -9,6 +9,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import NotificationWrapper from "@/lib/context/PushNotificationWrapper";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "@/trpc/react";
+import { TopBanner } from "@/components/banner/top-banner";
+import { BannerProvider } from "@/lib/context/BannerContext";
 
 const openSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -51,7 +53,10 @@ export default function RootLayout({
               enableSystem
             >
               <Suspense fallback={<Loading />}>
-                <NotificationWrapper>{children}</NotificationWrapper>
+                <NotificationWrapper>
+               
+{children}
+                </NotificationWrapper>
               </Suspense>
             </ThemeProvider>
             <Toaster />

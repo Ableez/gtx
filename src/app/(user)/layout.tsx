@@ -3,6 +3,8 @@ import Loading from "../loading";
 import Link from "next/link";
 import { checkRole } from "@/lib/utils/role";
 import { FaWhatsapp } from "react-icons/fa6";
+import { TopBanner } from "@/components/banner/top-banner";
+import { BannerProvider } from "@/lib/context/BannerContext";
 
 type Props = {
   children: React.ReactNode;
@@ -22,9 +24,9 @@ const UserLayout = async (props: Props) => {
         </div>
       ) : null}
       <Suspense fallback={<Loading />}>
-        <div
+        {/* <div
           className={
-            "z-[99999999] w-fit px-2 rounded-sm md:px-16 mx-auto  grid place-items-center  py-2 text-xs dark:bg-neutral-950 bg-pink-200"
+            "z-[99999999] w-fit px-2 rounded-sm md:px-16 mx-auto  grid place-items-center scale-[0.5]  py-2 text-xs dark:bg-neutral-950 bg-pink-200"
           }
         >
           We&apos;re pleased to announce that we&apos;ve resolved the WhatsApp.
@@ -32,8 +34,11 @@ const UserLayout = async (props: Props) => {
           <span className="text-green-500 font-bold text-lg flex align-middle place-items-center justify-start  gap-3 mt-1">
             <FaWhatsapp color={"green"} size={24} /> 08165837925
           </span>
-        </div>
-        {props.children}
+        </div> */}
+        <BannerProvider>
+          <TopBanner />
+          {props.children}
+        </BannerProvider>
       </Suspense>
     </div>
   );

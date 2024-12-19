@@ -291,10 +291,8 @@ export const notificationRouter = createTRPCRouter({
         });
 
         if (!data) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "No subscription found for user",
-          });
+          console.error("No subscription found for user");
+          return { success: false };
         }
 
         const subscription = {
@@ -307,10 +305,8 @@ export const notificationRouter = createTRPCRouter({
         } as unknown as webpush.PushSubscription;
 
         if (!subscription) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "No subscription found for user",
-          });
+          console.error("No subscription found for user");
+          return { success: false };
         }
 
         await webpush.sendNotification(
