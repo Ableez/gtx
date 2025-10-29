@@ -26,5 +26,6 @@ export function useBannerContext() {
   if (context === undefined) {
     throw new Error("useBannerContext must be used within a BannerProvider");
   }
+  
   return context;
 }

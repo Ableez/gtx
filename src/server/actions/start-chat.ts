@@ -69,21 +69,25 @@ export const startChat = async ({
 
     const url = `${process.env.NEXT_PUBLIC_APP_URL}/admin/chat/${newChat.data.id}`;
 
-    await api.notification.sendNotificationToAdmin({
-      title: `${assetName} ${
-        assetType === "GIFTCARD" ? "Gift Card" : "Crypto"
-      } Trade request`,
-      body: text,
-      url,
-    });
+    try {
+      await api.notification.sendNotificationToAdmin({
+        title: `${assetName} ${
+          assetType === "GIFTCARD" ? "Gift Card" : "Crypto"
+        } Trade request`,
+        body: text,
+        url,
+      });
+    } catch (error) {
+      console.error("error sending a notification");
+    }
 
     // await sendSMSNotification("+2348103418286", `${text} - VIEW CHAT: ${url}`);
 
-    // await sendNewChatNotification(
-    //   "+2348103418286",
-    //   // "+2348052555161", ask praise to verify with OTP
-    //   `${text} - VIEW CHAT: ${url}`
-    // );
+    await sendNewChatNotification(
+      "+2348103418286",
+      // "+2348052555161", ask praise to verify with OTP
+      `${text} - VIEW CHAT: ${url}`
+    );
 
     return { data: newChat, error: null };
   } catch (error) {

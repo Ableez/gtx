@@ -1,4 +1,4 @@
-const PUBLIC_URL = "/cards";
+const PUBLIC_URL = "https://d38v990enafbk6.cloudfront.net";
 
 export const giftcards = [
   {
@@ -27,7 +27,7 @@ export const giftcards = [
     id: "foot_locker",
     popular: true,
     name: "Foot Locker",
-    image: `${PUBLIC_URL}/foot_locker.svg`,
+    image: `${PUBLIC_URL}/footlocker.png`,
     title: "Foot Locker Card",
     category: "Shopping, Footwears",
     subcategory: [

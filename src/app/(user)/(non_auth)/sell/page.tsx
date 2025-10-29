@@ -5,6 +5,7 @@ import { AssetSelect } from "@/server/db/schema";
 
 const SellPage = async () => {
   const giftcards = (await api.giftcard.getAllCards()) as AssetSelect[];
+  console.log("GIFTCARDS", giftcards)
 
   if (!giftcards) {
     return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { giftcards } from "../../../public/data/giftcards";
 import {
   CommandDialog,
   CommandEmpty,
@@ -17,12 +16,18 @@ import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSellTab } from "@/lib/utils/store/sellTabs";
+import { api } from "@/trpc/react";
 
 const SearchBar = () => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   const { tab, updateTab } = useSellTab((state) => state);
+
+  // Fetch giftcards with React Query caching
+  const { data: giftcards = [] } = api.giftcard.getAllCards.useQuery(undefined, {
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
 
   const TABS: { title: string; link: string }[] = [
     {
@@ -52,7 +57,7 @@ const SearchBar = () => {
         <CommandItem className="flex gap-3">
           <Image
             priority
-            src={card.image}
+            src={card.coverImage || ""}
             width={22}
             height={22}
             alt={card.name}
@@ -72,7 +77,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="sticky px-4 top-0 z-50 bg-white dark:bg-black py-4 shadow-sm dark:rounded-2xl max-w-screen-md mx-auto">
+    <div className="sticky px-3 top-0 z-50 bg-white/70 backdrop-blur-xl dark:bg-black py-2.5 pt-3 shadow-sm dark:rounded-2xl max-w-screen-md mx-auto rounded-2xl dark:bg-neutral-800/70">
       <Button
         className="w-full border flex align-middle place-items-center justify-between text-neutral-500 py-6"
         aria-label="Search"
@@ -86,7 +91,7 @@ const SearchBar = () => {
           <span>Search...</span>
         </div>
       </Button>
-      <div className="mt-3 gap-2 flex w-full overflow-x-scroll py-2.5 px-2.5">
+      <div className="mt-1.5 gap-2 flex w-full overflow-x-scroll py-1 px-0">
         {TABS.map((t, idx) => {
           return (
             <Link href={"/sell"} key={idx} onClick={() => updateTab(t.link)}>

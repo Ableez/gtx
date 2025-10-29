@@ -7,7 +7,7 @@ import { Banner } from "./banner"
 export function TopBanner() {
   const { currentBanner, dismissBanner } = useBannerContext()
 
-  if (!currentBanner) return "No banner to show"
+  if (!currentBanner) return null
 
   return (
     <Banner

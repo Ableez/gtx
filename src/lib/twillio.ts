@@ -14,15 +14,25 @@ const client = twilio(accountSid, authToken);
 
 export const sendNewChatNotification = async (to: string, text: string) => {
   try {
-    const msg = await client.messages.create({
-      body: text,
-      from: env.TWILIO_PHONE_NUMBER,
-      to: to,
-      forceDelivery: true,
-    });
+    // const msg = await client.messages.create({
+    //   body: text,
+    //   from: env.TWILIO_PHONE_NUMBER,
+    //   to: to,
+    //   forceDelivery: true,
+    // });
+    const messageBody = {
+      api_key: "Your API Key",
+      to: to ?? "09071957815",
+      from: "Greatxchng",
+      sms: text ?? "You have a new chat request from the website",
+      type: "plain",
+      channel: "generic",
+    };
 
-    console.log("[TWILLIO_SUCCESS]:[SEND_NEW_CHAT_NOTIFICATION]", msg);
+    
+
+    // console.log("[SMS_SUCCESS]:[SEND_NEW_CHAT_NOTIFICATION]", msg);
   } catch (error) {
-    console.error("[TWILLIO_ERROR]:[SEND_NEW_CHAT_NOTIFICATION]", error);
+    console.error("[SMS_ERROR]:[SEND_NEW_CHAT_NOTIFICATION]", error);
   }
 };
